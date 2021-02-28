@@ -4,8 +4,8 @@
 
 **Team Strengths and Weaknesses:** 
 Sara: 
-  Strengths:
-    Likes to make things look pretty
+  &nbsp;Strengths:
+    &nbsp;&nbsp;Likes to make things look pretty
     Communication
     Planning
   Weaknesses:
