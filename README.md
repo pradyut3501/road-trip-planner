@@ -1,8 +1,47 @@
 # cs0320 Term Project 2021
 
-**Team Members:** _Fill this in!_
+**Team Members:** Sara (ssyed7), Abby (adicther), Erika (ebussman), Pradyut (psekhsar)
 
-**Team Strengths and Weaknesses:** _Fill this in!_
+**Team Strengths and Weaknesses:** 
+Sara: 
+  Strengths:
+    Likes to make things look pretty
+    Communication
+    Planning
+  Weaknesses:
+    Doesn’t like to work in a consistent schedule (doesn’t like do a little bit at a time)
+    Not great at github
+    Not good at estimating how long something will take
+    Not a big javascript fan
+Abby:
+  Strengths:
+	  Will crunch to get it done, can work efficiently
+	  Problem solving
+	  Unique ideas
+  Weaknesses:
+	  Only likes coding in the morning, doesn’t stay up late
+	  Can have erratic working schedule sometimes
+	  Gets frustrated with finicky syntax
+Erika: 
+  Strengths: 
+    Backend logic/data structures
+    Refactoring
+    Debugging
+  Weaknesses: 
+    Like to do work in bursts (trying to improve consistency) 
+    Front end/design
+    Edge cases/small details
+    Prioritizing work I don’t want to do/unsure about
+Pradyut:
+  Strengths: 
+    Algorithms, data structures
+    Planning
+    Testing, finding edge cases etc.
+  Weaknesses: 
+    Cannot code in the morning
+    Javascript/html stuff
+    Github
+
 
 **Project Idea(s):** _Fill this in with three unique ideas! (Due by March 1)_
 ### Idea 1
