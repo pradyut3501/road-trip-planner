@@ -3,11 +3,11 @@
 **Team Members:** Sara (ssyed7), Abby (adicther), Erika (ebussman), Pradyut (psekhsar)
 
 **Team Strengths and Weaknesses:** 
-Sara: 
-  &nbsp;Strengths:
-    &nbsp;&nbsp;Likes to make things look pretty
-    Communication
-    Planning
+<br />Sara: 
+<br />  &nbsp;Strengths:
+ <br />   &nbsp;&nbsp;Likes to make things look pretty
+ <br />   Communication
+ <br />   Planning
   Weaknesses:
     Doesn’t like to work in a consistent schedule (doesn’t like do a little bit at a time)
     Not great at github
