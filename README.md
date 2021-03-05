@@ -51,6 +51,8 @@ overview/directions
 <br /> -Semi-automating the process of visualization for the map (eg. icons for stops, 
 categorization of stop types, etc.)
 
+**HTA Approval (crusch):** Accepted, just make sure you have a strong core algorithm as your main feature.
+
 ### Idea 2: Recipe Generator
 <br />Overview:
 <br />A user could input whatever ingredients they have in their fridge, and this program would generate meal ideas for the user! This would help users who are lacking recipe ideas and want inspiration for a meal that will help prevent their food from going to waste!
@@ -83,6 +85,7 @@ small/medium/large, # of people it serves, calories, etc.)
 <br />Why:
 <br />Again, this would be a good filtering strategy for recipes, based on the user’s needs
 
+**HTA Approval (crusch):** Approved, again, just make sure there's a strong core algorithm — there seems to be lacking one right now, but I think you could come up with something.
 
 ### Idea 3: Vacation Planner
 Overview: The Vacation planner would generate a destination and itinerary for users unsure of where to travel next. The vacation planner would allow users to input their time frame and budget as well as what they look for in vacations and previous destinations that they liked/disliked. Given these inputs, the vacation planner would recommend several locations as well a sample itinerary.
@@ -114,6 +117,8 @@ differentiate our project from other trip planners.
 <br /> -A lot of information may be displayed, so it could be a challenge to keep the interface 
 simple and intuitive.
 <br /> -Overall there are a lot of different design choices that can be made
+
+**HTA Approval (crusch):** Rejected — go with the first idea since it's similar enough.
 
 **Mentor TA:** _Put your mentor TA's name and email here once you're assigned one!_
 
