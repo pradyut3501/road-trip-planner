@@ -63,3 +63,5 @@ categorization of stop types, etc.)
 
 ## How to Build and Run
 _A necessary part of any README!_
+
+## Google Maps API Specs
