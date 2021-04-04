@@ -6,10 +6,11 @@ import './App.css';
 import './index.js'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { DirectionsRenderer, DirectionsService, TravelMode, DirectionsStatus } from "react-google-maps";
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
 import TextBox from './TextBox.js';
+import axios from 'axios';
 
 /*global google*/
 
@@ -17,10 +18,16 @@ let origin = null
 let dest = null
 let direction_service = null
 let costPreference = 0
+let steps = []
+let shortestRouteDist = ""
+//let shortestRouteTime = null
+let distanceMessage = ["", ""]
+
 //const google = window.google;
 
-
 function App() {
+
+  const [shortestRouteTime, setShortestRouteTime] = useState("");
 
   //const [value, setValue] = useState(null);
 
@@ -57,18 +64,22 @@ function App() {
 
   function setDest(newDest){
     dest = newDest
-    //direction_service.destination = dest
     console.log(dest.value.place_id)
-    //console.log(origin.value)
-    //let directions = direction_service.route()
-    //console.log(directions)
-    //let directions = DirectionsService;
-    let directions = new google.maps.DirectionsService()
+    //let directions = new google.maps.DirectionsService()
     console.log(dest.value)
-    let directionsRenderer = new google.maps.DirectionsRenderer()
+    //let directionsRenderer = new google.maps.DirectionsRenderer()
+
+    getRouteInfo();
+  }
     //console.log(dest.value.formatted_address)
     //directions.origin = origin.location;
     //directions.destination = dest.location;
+
+    function getRouteInfo(){
+
+    let directions = new google.maps.DirectionsService()
+    let directionsRenderer = new google.maps.DirectionsRenderer()
+
 
     directions.route({
         origin: origin.value.description,
@@ -80,25 +91,24 @@ function App() {
 
       directionsRenderer.setDirections(result);
 
-      var directionsData = result.routes[0].legs[0];
+      shortestRouteDist = result.routes[0].legs[0].distance.text
+      setShortestRouteTime(result.routes[0].legs[0].duration.text)
 
-      var steps = [];
+
+      let directionsData = result.routes[0].legs[0];
+
+      steps = [];
 
       for (var i = 0; i < directionsData.steps.length; i++) {
         let currStep = directionsData.steps[i]
-        let startLat = currStep.start_location.lat()//.Scopes[0].d
-        let startLon = currStep.start_location.lng()//.Scopes[0].e
-        let endLat = currStep.end_location.lat()//.Scopes[0].d
-        let endLon = currStep.end_location.lng()//.Scopes[0].e
+        let startLat = currStep.start_location.lat()
+        let startLon = currStep.start_location.lng()
+        let endLat = currStep.end_location.lat()
+        let endLon = currStep.end_location.lng()
         steps.push([startLat, startLon, endLat, endLon])
 
        }
-
        console.log(steps)
-
-          //this.setState({
-          //  directions: result,
-          //});
         } else {
           console.error(`error fetching directions ${result}`);
         }
@@ -109,13 +119,43 @@ function App() {
     // make axios post request to the backend
     function requestTrip(){
 
+      // the source and destination of our desired route
+      const toSend = {
+        costPref: costPreference,
+        route: steps
 
+      };
 
+      let config = {
+        headers: {
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*',
+        }
+      }
 
+      axios.post(
+          "http://localhost:4567/route",
+          toSend,
+          config
+        )
+        .then(response => {
+          console.log(response.data);
+        })
 
+        .catch(function(error) {
+          console.log(error);
 
+        });
 
     }
+
+    useEffect(()=> {
+      console.log("in use effect")
+      console.log(shortestRouteDist)
+      console.log(shortestRouteTime)
+      distanceMessage[0] = "The quickest route for this origin and destination is "
+      distanceMessage[1] = "and"
+    }, [shortestRouteTime])
 
   return (
 
@@ -144,6 +184,15 @@ function App() {
 
       <br></br>
 
+      <div>
+      <p>{distanceMessage[0]} {shortestRouteDist} {distanceMessage[1]} {shortestRouteTime}</p>
+      </div>
+      <br></br>
+      Based on this, how much long would you like to spend on the road?
+      &nbsp;
+      <br></br>
+      <TextBox label = {"Maximum time (hours): "} change = {setStops} />
+      <TextBox label = {"Maximum distance (miles): "} change = {setStops} />
 
       <br></br>
       &nbsp;

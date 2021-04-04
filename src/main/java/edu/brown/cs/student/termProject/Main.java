@@ -129,11 +129,7 @@ public final class Main {
     // Setup Spark Routes
     Spark.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
     Spark.exception(Exception.class, new ExceptionPrinter());
-    // Spark.post("/route", new RouteHandler());
-    // Spark.post("/ways", new WaysHandler());
-    // Spark.post("/nearest", new NearestHandler());
-    // Spark.get("/checkin", new CheckinHandler());
-    // Spark.post("/userdata", new UserDataHandler());
+    Spark.post("/route", new RouteHandler());
   }
 
   /**
@@ -169,25 +165,17 @@ public final class Main {
   /**
    * Class that handles getting nearest traversable node for maps3 frontend.
    */
-  // private static class NearestHandler implements spark.Route {
-  //   @Override
-  //   public Object handle(Request request, Response response) throws Exception {
-  //
-  //     JSONObject data = new JSONObject(request.body());
-  //     double lat = data.getDouble("lat");
-  //     double lon = data.getDouble("lon");
-  //     List<String> input = new ArrayList<>();
-  //     input.add("nearest");
-  //     input.add(String.valueOf(lat));
-  //     input.add(String.valueOf(lon));
-  //
-  //     //return order: latitude, longitude
-  //     List<Double> dims = NEARESTCOMMAND.getNearestDim(input);
-  //
-  //     Map<String, Object> variables = ImmutableMap.of("nearest", dims);
-  //     return GSON.toJson(variables);
-  //   }
-  // }
+   private static class RouteHandler implements spark.Route {
+     @Override
+     public Object handle(Request request, Response response) throws Exception {
+
+       JSONObject data = new JSONObject(request.body());
+       String status = "success";
+
+       Map<String, Object> variables = ImmutableMap.of("nearest", status);
+       return new Gson().toJson(variables);
+     }
+   }
 
 
 }
