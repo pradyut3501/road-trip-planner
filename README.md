@@ -65,3 +65,8 @@ categorization of stop types, etc.)
 _A necessary part of any README!_
 
 ## Google Maps API Specs
+
+## Support sources utilized for Google Maps API implementation
+https://tintef.github.io/react-google-places-autocomplete/docs/
+https://developers.google.com/maps/documentation/places/web-service/details
+https://developers.google.com/maps/documentation/directions/start#api-key
