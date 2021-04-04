@@ -7,12 +7,16 @@ import './index.js'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { DirectionsRenderer, DirectionsService, TravelMode, DirectionsStatus } from "react-google-maps";
 import {useState} from 'react'
+import { AwesomeButton } from "react-awesome-button";
+import "react-awesome-button/dist/styles.css";
+import TextBox from './TextBox.js';
 
 /*global google*/
 
 let origin = null
 let dest = null
 let direction_service = null
+let costPreference = 0
 //const google = window.google;
 
 
@@ -32,6 +36,22 @@ function App() {
     //direction_service = new DirectionsService
     //direction_service.origin = origin
     console.log(origin.value.place_id)
+
+  }
+
+  function setDollar1(){
+    costPreference = 1
+  }
+
+  function setDollar2(){
+    costPreference = 2
+  }
+
+  function setDollar3(){
+    costPreference = 3
+  }
+
+  function setStops(){
 
   }
 
@@ -83,14 +103,28 @@ function App() {
           console.error(`error fetching directions ${result}`);
         }
       });
-  
+
   }
+
+    // make axios post request to the backend
+    function requestTrip(){
+
+
+
+
+
+
+
+    }
 
   return (
 
     <div>
-    <h1>     Welcome to the RhodeTrip Planner!</h1>
+    &nbsp;
+    <h1> Welcome to the RhodeTrip Planner!</h1>
     <div>
+    &nbsp;
+
     Where do you want to start?
     <GooglePlacesAutocomplete id = "origin" apiKey="AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c"
     selectProps={{
@@ -99,12 +133,50 @@ function App() {
         }}/>
 
     <br></br>
+    <br></br>
+    &nbsp;
     Where do you want to go?
     <GooglePlacesAutocomplete id = "destination" apiKey="AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c"
     selectProps={{
           dest,
           onChange: setDest,
         }}/>
+
+      <br></br>
+
+
+      <br></br>
+      &nbsp;
+      What's your budget like?
+      <br></br>
+
+      &nbsp;
+      <AwesomeButton type = "primary" onPress = {setDollar1} > $ < /AwesomeButton>
+      &nbsp;
+      <AwesomeButton type = "primary" onPress = {setDollar2} > $$ < /AwesomeButton>
+      &nbsp;
+      <AwesomeButton type = "primary" onPress = {setDollar3} > $$$ < /AwesomeButton>
+
+      <br></br>
+      <br></br>
+
+      <TextBox label = {"Maximum # of stops: "}
+      change = {setStops} />
+
+      <br></br>
+      Any stops you need to make on the way?
+      <GooglePlacesAutocomplete id = "destination" apiKey="AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c"
+      selectProps={{
+            dest,
+            onChange: setDest,
+          }}/>
+
+
+      <br></br>
+      <br></br>
+      &nbsp;
+      <AwesomeButton type = "primary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
+
 
 
     </div>
