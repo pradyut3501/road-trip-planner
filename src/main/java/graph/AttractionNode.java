@@ -39,4 +39,25 @@ public interface AttractionNode {
    */
   double generateValue();
 
+  /**
+   * Sets the "cost" associated with the node to be used in Dijkstra's
+   *
+   * @param c the cost
+   */
+  void setCost(double c);
+
+  /**
+   * Retrieves the "cost" associated with the node to be used in Dijkstra's
+   *
+   * @returns the cost
+   */
+  double getCost();
+
+//  /**
+//   * check if the node has been visited
+//   *
+//   * @returns boolean to represent if it has been visited
+//   */
+//  boolean visited();
+
 }

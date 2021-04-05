@@ -13,6 +13,8 @@ public class Park implements AttractionNode {
   private double[] coordinates;
   private double price;
   private double rating;
+  private double cost;
+  private boolean visit = false;
 
   /**
    * The constructor sets the fields
@@ -31,6 +33,7 @@ public class Park implements AttractionNode {
     coordinates = coords;
     price = p;
     rating = rate;
+    cost = Double.POSITIVE_INFINITY;
 
   }
   @Override
@@ -56,5 +59,15 @@ public class Park implements AttractionNode {
   @Override
   public double generateValue() {
     return 0;
+  }
+
+  @Override
+  public void setCost(double c) {
+    cost = c;
+  }
+
+  @Override
+  public double getCost() {
+    return cost;
   }
 }
