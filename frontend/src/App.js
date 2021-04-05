@@ -8,9 +8,11 @@ import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { DirectionsRenderer, DirectionsService, TravelMode, DirectionsStatus } from "react-google-maps";
 import {useState, useEffect} from 'react'
 import { AwesomeButton } from "react-awesome-button";
-import "react-awesome-button/dist/styles.css";
+// import "react-awesome-button/dist/styles.css";
 import TextBox from './TextBox.js';
+import "react-awesome-button/dist/themes/theme-eric.css";
 import axios from 'axios';
+
 
 /*global google*/
 
@@ -163,7 +165,7 @@ function App() {
 
     <div>
     &nbsp;
-      <div className={"center"}><img src={logo} alt={"RhodeTrip logo"} style={{width: '200px'}}></img></div>
+      <div className={"center"}><img src={logo} alt={"RhodeTrip logo"} style={{width: '300px'}}></img></div>
     <div>
     &nbsp;
 
@@ -201,12 +203,17 @@ function App() {
       What's your budget like?
       <br></br>
 
-      &nbsp;
-      <AwesomeButton type = "primary" onPress = {setDollar1} > $ < /AwesomeButton>
-      &nbsp;
-      <AwesomeButton type = "primary" onPress = {setDollar2} > $$ < /AwesomeButton>
-      &nbsp;
-      <AwesomeButton type = "primary" onPress = {setDollar3} > $$$ < /AwesomeButton>
+      {/*&nbsp;*/}
+      {/*<AwesomeButton type = "primary" onPress = {setDollar1} > $ < /AwesomeButton>*/}
+      {/*&nbsp;*/}
+      {/*<AwesomeButton type = "primary" onPress = {setDollar2} > $$ < /AwesomeButton>*/}
+      {/*&nbsp;*/}
+      {/*<AwesomeButton type = "primary" onPress = {setDollar3} > $$$ < /AwesomeButton>*/}
+        <div class="item1">
+          <input type="radio" value="$" name="budget" onChange={setDollar1} checked/> $
+          <input type="radio" value="$$" name="budget" onChange={setDollar2}/> $$
+          <input type="radio" value="$$$" name="budget" onChange={setDollar3}/> $$$
+        </div>
 
       <br></br>
       <br></br>
@@ -226,7 +233,7 @@ function App() {
       <br></br>
       <br></br>
       &nbsp;
-      <AwesomeButton type = "primary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
+      <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
 
 
 

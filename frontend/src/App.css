@@ -62,7 +62,11 @@
   overflow:auto;
 }
 
-body {background-color: #f5ffcf;}
+body {
+  background-color: #f5ffcf;
+  margin:50px;
+  padding:0px;
+}
 
 .center {
   display: block;
