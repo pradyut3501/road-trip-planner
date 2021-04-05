@@ -23,6 +23,8 @@ let shortestRouteDist = ""
 //let shortestRouteTime = null
 let distanceMessage = ["", ""]
 
+let logo = "https://i.ibb.co/drqk6c8/logo.png";
+
 //const google = window.google;
 
 function App() {
@@ -161,7 +163,7 @@ function App() {
 
     <div>
     &nbsp;
-    <h1> Welcome to the RhodeTrip Planner!</h1>
+      <div className={"center"}><img src={logo} alt={"RhodeTrip logo"} style={{width: '200px'}}></img></div>
     <div>
     &nbsp;
 
