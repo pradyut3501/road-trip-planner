@@ -14,6 +14,11 @@ import "react-awesome-button/dist/themes/theme-eric.css";
 import axios from 'axios';
 
 
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Slider from '@material-ui/core/Slider';
+
 /*global google*/
 
 let origin = null
@@ -27,11 +32,41 @@ let distanceMessage = ["", ""]
 
 let logo = "https://i.ibb.co/drqk6c8/logo.png";
 
+
+
+
+
+
 //const google = window.google;
 
 function App() {
 
   const [shortestRouteTime, setShortestRouteTime] = useState("");
+
+  const [restaurant, setRestaurant] = useState(30);
+  const [museum, setMuseum] = useState(30);
+  const [park, setPark] = useState(30);
+
+  const handleChangeRestaurant = (event, newValue) => {
+    setRestaurant(newValue);
+  };
+
+  const handleChangeMuseum = (event, newValue) => {
+    setMuseum(newValue);
+  };
+
+  const handleChangePark = (event, newValue) => {
+    setPark(newValue);
+  };
+
+  const useStyles = makeStyles({
+    root: {
+      width: 100,
+    },
+  });
+
+  const classes = useStyles();
+
 
   //const [value, setValue] = useState(null);
 
@@ -126,8 +161,10 @@ function App() {
       // the source and destination of our desired route
       const toSend = {
         costPref: costPreference,
-        route: steps
-
+        route: steps,
+        restValue: restaurant,
+        musValue: museum,
+        parkValue: park
       };
 
       let config = {
@@ -234,8 +271,36 @@ function App() {
       <br></br>
       &nbsp;
       <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
+          <div className={classes.root}>
 
+            <Typography id="continuous-slider" gutterBottom>
+              Restaurants
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs>
+                <Slider value={restaurant} onChange={handleChangeRestaurant} aria-labelledby="continuous-slider" />
+              </Grid>
+            </Grid>
 
+            <Typography id="continuous-slider" gutterBottom>
+              Museums
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs>
+                <Slider value={museum} onChange={handleChangeMuseum} aria-labelledby="continuous-slider" />
+              </Grid>
+            </Grid>
+
+            <Typography id="continuous-slider" gutterBottom>
+              Parks
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs>
+                <Slider value={park} onChange={handleChangePark} aria-labelledby="continuous-slider" />
+              </Grid>
+            </Grid>
+
+        </div>
 
     </div>
     </div>

@@ -75,3 +75,12 @@ body {
   width: 50%;
   text-align: center;
 }
+
+.flex-box{
+  position: relative;
+  display: flex;
+  flex-wrap: wrap; /*this is default*/
+  flex-direction: row;
+  /*justify-content: space-between;*/
+  /*align-items: flex-start;*/
+}
