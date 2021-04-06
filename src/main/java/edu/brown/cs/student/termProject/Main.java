@@ -17,6 +17,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import database.Database;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import spark.ExceptionHandler;
@@ -70,6 +72,7 @@ public final class Main {
    */
   private void run() {
     System.out.println("You good");
+    Database.setYelpDatabaseConnection();
 
     // Parse command line arguments
     OptionParser parser = new OptionParser();
