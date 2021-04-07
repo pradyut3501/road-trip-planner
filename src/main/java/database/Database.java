@@ -1,6 +1,5 @@
 package database;
 
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -36,6 +35,10 @@ public class Database {
     return conn;
   }
 
+  /**
+   * Establishes a connection to the Yelp Database and sets yelpConn
+   * to be this connection.
+   */
   public static void setYelpDatabaseConnection() {
     try {
       yelpConn = connectToDatabase("data/yelp_business_database.sqlite3");
@@ -44,10 +47,9 @@ public class Database {
     }
   }
 
-
   /**
-   * An accessor method for the connection created in the constructor.
-   * @return the Connection of this database.
+   * An accessor method for the Yelp Database Connection.
+   * @return the Connection ton the Yelp Database.
    */
   public static Connection getYelpDatabaseConnection() {
     return yelpConn;
