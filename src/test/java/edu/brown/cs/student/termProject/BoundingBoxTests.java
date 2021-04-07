@@ -1,6 +1,7 @@
 package edu.brown.cs.student.termProject;
 
 import database.BoundingBox;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
