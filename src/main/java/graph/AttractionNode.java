@@ -4,10 +4,25 @@ package graph;
  * The attraction node interface is implemented by each attraction and is used for Dijkstra's
  */
 public interface AttractionNode {
+
+  /**
+   * Gets the unique Id of the node
+   *
+   * @return Id of the node
+   */
+  String getId();
+
+  /**
+   * Gets the non-unique name of the node
+   *
+   * @return name of the node
+   */
+  String getName();
+
   /**
    * Gets the location of the node
    *
-   * @returns [id, name, city, state code, zip code]
+   * @returns [address, city, state, postal_code]
    */
   String[] getLocation();
 
