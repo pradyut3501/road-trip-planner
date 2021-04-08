@@ -63,4 +63,19 @@ public class BoundingBoxTests {
             new double[]{-1, 5, 2, 4}, 0);
   }
 
+  @Test
+  public void testExpandBoundingBoxBounds() {
+    assertArrayEquals(BoundingBox.expandBoundingBoxBounds(
+            new double[]{-1, 5, 2, 4}, 0),
+            new double[]{-1, 5, 2, 4}, 0);
+
+    assertArrayEquals(BoundingBox.expandBoundingBoxBounds(
+            new double[]{-1, 5, 2, 4}, 2),
+            new double[]{-3, 7, 0, 6}, 0);
+
+    assertArrayEquals(BoundingBox.expandBoundingBoxBounds(
+            new double[]{-1, 5, 2, 4}, -3),
+            new double[]{2, 2, 5, 1}, 0);
+  }
+
 }
