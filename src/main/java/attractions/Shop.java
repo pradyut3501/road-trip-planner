@@ -3,10 +3,10 @@ package attractions;
 import graph.AttractionNode;
 
 /**
- * The Restaurant class stores information of Restaurants and implements the attraction node
- * interface for Dijkstra's
+ * The Shop class stores information of Shops and implements the attraction node interface
+ * for Dijkstra's
  */
-public class Restaurant implements AttractionNode {
+public class Shop implements AttractionNode {
   private String id;
   private String name;
   private String[] location;
@@ -17,17 +17,17 @@ public class Restaurant implements AttractionNode {
 
   /**
    * The constructor sets the fields
-   * @param RestaurantId the id
-   * @param RestaurantName the name of the stop
-   * @param loc the address of the Restaurant in an array
+   * @param ShopId the id
+   * @param ShopName the name of the stop
+   * @param loc the address of the Museum in an array
    * @param coords the latitude/longitude coordinates
    * @param p the price associated with the stop
    * @param rate the five star rating
    */
-  public Restaurant(String RestaurantId, String RestaurantName, String[] loc, double[] coords,
-                   Double p, Double rate){
-    id = RestaurantId;
-    name = RestaurantName;
+  public Shop(String ShopId, String ShopName, String[] loc, double[] coords, Double p,
+                Double rate){
+    id = ShopId;
+    name = ShopName;
     location = loc;
     coordinates = coords;
     price = p;
@@ -80,3 +80,4 @@ public class Restaurant implements AttractionNode {
     return cost;
   }
 }
+

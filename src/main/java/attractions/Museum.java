@@ -3,7 +3,7 @@ package attractions;
 import graph.AttractionNode;
 
 /**
- * The the Museum class stores information of Museums and implements the attraction node interface
+ * The Museum class stores information of Museums and implements the attraction node interface
  * for Dijkstra's
  */
 public class Museum implements AttractionNode {
