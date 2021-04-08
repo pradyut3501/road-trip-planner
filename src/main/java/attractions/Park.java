@@ -36,6 +36,17 @@ public class Park implements AttractionNode {
     cost = Double.POSITIVE_INFINITY;
 
   }
+
+  @Override
+  public String getId() {
+    return id;
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
   @Override
   public String[] getLocation() {
     return location;

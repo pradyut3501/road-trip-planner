@@ -25,8 +25,7 @@ public class Restaurant implements AttractionNode {
    * @param rate the five star rating
    */
   public Restaurant(String RestaurantId, String RestaurantName, String[] loc, double[] coords,
-                   Double p,
-                Double rate){
+                   Double p, Double rate){
     id = RestaurantId;
     name = RestaurantName;
     location = loc;
@@ -34,8 +33,18 @@ public class Restaurant implements AttractionNode {
     price = p;
     rating = rate;
     cost = Double.POSITIVE_INFINITY;
-
   }
+
+  @Override
+  public String getId() {
+    return id;
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
   @Override
   public String[] getLocation() {
     return location;
