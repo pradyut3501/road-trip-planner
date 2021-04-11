@@ -2,7 +2,7 @@ package graph;
 
 
 import attractions.Park;
-import org.w3c.dom.Attr;
+import edu.brown.cs.student.termProject.AttractionNode;
 
 import java.util.*;
 

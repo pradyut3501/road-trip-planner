@@ -1,34 +1,19 @@
 package edu.brown.cs.student.termProject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import database.Database;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-import spark.ExceptionHandler;
-import spark.ModelAndView;
+import spark.*;
 
-import spark.QueryParamsMap;
-import spark.Response;
-import spark.Request;
-import spark.Spark;
-import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import com.google.common.collect.ImmutableMap;
@@ -88,7 +73,7 @@ public final class Main {
   }
 
   /**
-   * creates free marker egine.
+   * creates free marker engine.
    * @return free marker engine
    */
   private static FreeMarkerEngine createEngine() {
@@ -111,6 +96,8 @@ public final class Main {
   private void runSparkServer(int port) {
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
+    Spark.exception(Exception.class, new ExceptionPrinter());
+
 
     Spark.options("/*", (request, response) -> {
       String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
@@ -147,6 +134,70 @@ public final class Main {
     }
   }
 
+  private static class Test{
+    public Test(){
+
+    }
+  }
+
+
+  /**
+   * Class that handles getting nearest traversable node for maps3 frontend.
+   */
+   private static class RouteHandler implements Route {
+     @Override
+     public Object handle(Request request, Response response) throws Exception {
+
+       System.out.println("here");
+       try{
+         JSONObject data = new JSONObject(request.body());
+       } catch(Exception e){
+         System.out.println("problem with data");
+       }
+       // creating filler stops for now to test with front-end
+       //AttractionNode[] stops = new AttractionNode[];
+       System.out.println("here1");
+
+       Map <String, AttractionNode> route = new HashMap<>();
+       List<AttractionNode> stops = new ArrayList<>();
+       System.out.println("here2");
+       List<Double> stops2 = new ArrayList<>();
+       stops2.add(4.0);
+
+       try{
+         //Museum m = new Museum();
+         //Park p = new Park();
+         String[] rLoc = new String[]{"475 3rd St", "San Francisco", "CA", "94107"};
+         double [] rCoords = new double[]{37.7817529521, -122.39612197};
+         Restaurant r = new Restaurant("tnhfDv5Il8EaGSXZGiuQGg", "Garaje", rLoc, rCoords, 1.0,  4.5);
+         Restaurant r2 = new Restaurant("tnhfDv5Il8EaGSXZGiuQGh", "Garaje", rLoc, rCoords, 1.0,  4.5);
+
+         //Shop s = new Shop();
+
+         //stops.put(m.getId(), m);
+         //stops.put(p.getId(), p);
+         //route.put(r.getId(), r);
+         //route.put(r2.getId(), r2);
+          stops.add(r);
+          stops.add(r2);
+         //Test t = new Test();
+         //stops.add(t);
+
+         //stops.put(s.getId(), s);
+
+       } catch(Exception e){
+         System.out.println("something went wrong");
+       }
+       System.out.println("here3");
+       String status = "success";
+
+       Map<String, Object> variables = ImmutableMap.of("route", stops);
+       System.out.println("here4");
+
+       return new Gson().toJson(variables);
+     }
+   }
+
   /**
    * Display an error page when an exception occurs in the server.
    */
@@ -163,22 +214,6 @@ public final class Main {
       res.body(stacktrace.toString());
     }
   }
-
-
-  /**
-   * Class that handles getting nearest traversable node for maps3 frontend.
-   */
-   private static class RouteHandler implements spark.Route {
-     @Override
-     public Object handle(Request request, Response response) throws Exception {
-
-       JSONObject data = new JSONObject(request.body());
-       String status = "success";
-
-       Map<String, Object> variables = ImmutableMap.of("nearest", status);
-       return new Gson().toJson(variables);
-     }
-   }
 
 
 }

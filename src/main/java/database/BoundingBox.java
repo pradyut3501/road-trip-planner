@@ -2,9 +2,9 @@ package database;
 
 import attractions.Museum;
 import attractions.Park;
-import attractions.Restaurant;
+import edu.brown.cs.student.termProject.Restaurant;
 import attractions.Shop;
-import graph.AttractionNode;
+import edu.brown.cs.student.termProject.AttractionNode;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

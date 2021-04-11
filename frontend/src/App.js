@@ -1,18 +1,12 @@
 import './App.css';
-//import './Location.js';
-//import MapContainer from './Map.js';
-//import {GoogleMapReact, LocationPin} from 'google-maps-react';
-//import GooglePlacesAutocomplete from './Map.js'
 import './index.js'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { DirectionsRenderer, DirectionsService, TravelMode, DirectionsStatus } from "react-google-maps";
 import {useState, useEffect} from 'react'
 import { AwesomeButton } from "react-awesome-button";
-// import "react-awesome-button/dist/styles.css";
 import TextBox from './TextBox.js';
 import "react-awesome-button/dist/themes/theme-eric.css";
 import axios from 'axios';
-
 
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -24,17 +18,13 @@ import Slider from '@material-ui/core/Slider';
 let origin = null
 let dest = null
 let direction_service = null
-let costPreference = 0
+let costPreference = 1
 let steps = []
 let shortestRouteDist = ""
 //let shortestRouteTime = null
 let distanceMessage = ["", ""]
-
 let logo = "https://i.ibb.co/drqk6c8/logo.png";
-
-
-
-
+let response_message = ""
 
 
 //const google = window.google;
@@ -42,10 +32,13 @@ let logo = "https://i.ibb.co/drqk6c8/logo.png";
 function App() {
 
   const [shortestRouteTime, setShortestRouteTime] = useState("");
+  const [submitted, setSubmitted] = useState(0)
+  const [attractions, setAttractions] = useState([])
 
   const [restaurant, setRestaurant] = useState(30);
   const [museum, setMuseum] = useState(30);
   const [park, setPark] = useState(30);
+  const [shop, setShop] = useState(30);
 
   const handleChangeRestaurant = (event, newValue) => {
     setRestaurant(newValue);
@@ -57,6 +50,10 @@ function App() {
 
   const handleChangePark = (event, newValue) => {
     setPark(newValue);
+  };
+
+  const handleChangeShop = (event, newValue) => {
+    setShop(newValue);
   };
 
   const useStyles = makeStyles({
@@ -156,7 +153,13 @@ function App() {
   }
 
     // make axios post request to the backend
-    function requestTrip(){
+    const requestTrip = () => {
+
+      console.log(costPreference)
+      console.log(steps)
+      console.log(restaurant)
+      console.log(museum)
+      console.log(park)
 
       // the source and destination of our desired route
       const toSend = {
@@ -181,6 +184,21 @@ function App() {
         )
         .then(response => {
           console.log(response.data);
+          //console.log(response.data["stops"])
+          // stops is a map of [business id, AttractionNode object]
+          const stops = response.data["route"]
+          //setAttractions()
+          /*console.log(stops)
+          for (const id in stops) {
+            console.log(stops[id].id)
+            console.log(stops[id].name)
+            console.log(stops[id].location)
+            console.log(stops[id].price)
+            console.log(stops[id].rating)
+          }*/
+
+          setSubmitted(1);
+
         })
 
         .catch(function(error) {
@@ -198,6 +216,11 @@ function App() {
       distanceMessage[1] = "and"
     }, [shortestRouteTime])
 
+    useEffect(()=> {
+      console.log("changing message")
+      response_message = "Here's your route!"
+    }, [submitted])
+
   return (
 
     <div>
@@ -211,7 +234,8 @@ function App() {
     selectProps={{
           origin,
           onChange: setOrigin,
-        }}/>
+        }}
+      style = {{width: '66%'}}/>
 
     <br></br>
     <br></br>
@@ -266,13 +290,11 @@ function App() {
             onChange: setDest,
           }}/>
 
+      <br></br>
 
-      <br></br>
-      <br></br>
-      &nbsp;
-      <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
+      How much do you prefer the following types of stops?
+
           <div className={classes.root}>
-
             <Typography id="continuous-slider" gutterBottom>
               Restaurants
             </Typography>
@@ -300,7 +322,20 @@ function App() {
               </Grid>
             </Grid>
 
+            <Typography id="continuous-slider" gutterBottom>
+              Shops
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs>
+                <Slider value={shop} onChange={handleChangeShop} aria-labelledby="continuous-slider" />
+              </Grid>
+            </Grid>
+
         </div>
+        <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
+        <div><p>{response_message}</p></div>
+
+        
 
     </div>
     </div>

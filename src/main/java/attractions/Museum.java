@@ -1,6 +1,6 @@
 package attractions;
 
-import graph.AttractionNode;
+import edu.brown.cs.student.termProject.AttractionNode;
 
 /**
  * The Museum class stores information of Museums and implements the attraction node interface

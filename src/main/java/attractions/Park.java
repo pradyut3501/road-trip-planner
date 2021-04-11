@@ -1,6 +1,6 @@
 package attractions;
 
-import graph.AttractionNode;
+import edu.brown.cs.student.termProject.AttractionNode;
 
 /**
  * The park class stores information of parks and implements the attraction node interface for

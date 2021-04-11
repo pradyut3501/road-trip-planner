@@ -1,6 +1,6 @@
 package attractions;
 
-import graph.AttractionNode;
+import edu.brown.cs.student.termProject.AttractionNode;
 
 /**
  * The Shop class stores information of Shops and implements the attraction node interface

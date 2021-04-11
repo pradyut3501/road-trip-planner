@@ -1,4 +1,4 @@
-package graph;
+package edu.brown.cs.student.termProject;
 
 /**
  * The attraction node interface is implemented by each attraction and is used for Dijkstra's
