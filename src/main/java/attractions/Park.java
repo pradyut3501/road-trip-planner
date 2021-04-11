@@ -15,6 +15,8 @@ public class Park implements AttractionNode {
   private double rating;
   private double cost;
   private boolean visit = false;
+  private double distance = 0;
+  private int numPrev = 0;
 
   /**
    * The constructor sets the fields
@@ -68,7 +70,7 @@ public class Park implements AttractionNode {
   }
 
   @Override
-  public double generateValue() {
+  public double generateValue(double PreferredPrice, double PreferredStop) {
     return 0;
   }
 
@@ -81,4 +83,33 @@ public class Park implements AttractionNode {
   public double getCost() {
     return cost;
   }
+
+  @Override
+  public void setDistance(double c) {distance = c;}
+
+  @Override
+  public double getDistance() { return distance; }
+
+  @Override
+  public void setVisited(boolean c) { visit = c; }
+
+  @Override
+  public boolean getVisited() { return visit; }
+
+  @Override
+  public void setNumPrev(int c) {numPrev = c;}
+
+  @Override
+  public int getNumPrev() {return numPrev;}
+
+  @Override
+  public void reset() {
+    distance = 0;
+    visit = false;
+    numPrev = 0;
+  }
+
+  @Override
+  public int getType() {return 1;}
+
 }
