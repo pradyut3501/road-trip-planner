@@ -52,7 +52,7 @@ public interface AttractionNode {
    *
    * @returns numerical "value"
    */
-  double generateValue();
+  double generateValue(double PreferredPrice, double PreferredStop);
 
   /**
    * Sets the "cost" associated with the node to be used in Dijkstra's
@@ -67,6 +67,23 @@ public interface AttractionNode {
    * @returns the cost
    */
   double getCost();
+
+  void setDistance(double c);
+
+  double getDistance();
+
+  void setVisited(boolean c);
+
+  boolean getVisited();
+
+  void setNumPrev(int c);
+
+  int getNumPrev();
+
+  void reset();
+
+  int getType();
+
 
 //  /**
 //   * check if the node has been visited
