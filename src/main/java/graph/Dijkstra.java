@@ -4,6 +4,7 @@ package graph;
 import attractions.Park;
 import edu.brown.cs.student.termProject.AttractionNode;
 import edu.brown.cs.student.termProject.Constants;
+import org.w3c.dom.Attr;
 
 import java.util.*;
 
@@ -29,24 +30,9 @@ public class Dijkstra {
     previous = new HashMap<>();
     connectionChunks = new HashMap<>();
     chunkLookup = new HashMap<>();
-//    for (AttractionNode node: nodes){
-//      distances.put(node, distanceFormula(0.0,0.0,0.0,0.0));
-//      node.setCost(distances.get(node)); //will need to add value to this!
-////      node.setCost(node.generateValue() + distances.get(node)); //set the cost of the node based off
-//      // of
-//      // its
-//      // calculated
-//      // value and its distance to the target
-//    }
   }
-  public List<AttractionNode> execute(double[] starting, double[] ending, int numStops,
-                                      double[] boundBox){
-    for (AttractionNode n: nodes){
-      if (n.getName() == null){
-        System.out.println("Node with null name");
-        nodes.remove(n);
-      }
-    }
+  public List<AttractionNode> execute(double[] starting, double[] ending, int numStops){
+    double pathDistance = distanceFormula(starting[0], starting[1], ending[0], ending[1]);
     visited = new HashMap<>();
     distances = new HashMap<>();
     previous = new HashMap<>();
@@ -54,10 +40,10 @@ public class Dijkstra {
       public int compare(AttractionNode o1, AttractionNode o2) {
         //The comparator implements the A* extension as it considers both path cost and
         // distance to target for priority
-        if ((o1.getCost() + distances.get(o1)) > (o2.getCost() + distances.get(o2))) {
+        if ((o1.getCost()) > (o2.getCost())) {
           return 1;
         }
-        if ((o2.getCost() + distances.get(o2)) > (o1.getCost() + distances.get(o1))) {
+        if ((o2.getCost()) > (o1.getCost())) {
           return -1;
         }
         return 0;
@@ -76,91 +62,34 @@ public class Dijkstra {
     distances.replace(end, 0.0); //setting the distance of end node to 0
     pq.add(start);
     double minLon = 100000;
-      double maxLon = -100000;
+    double maxLon = -100000;
     for (AttractionNode node: nodes){
-      distances.put(node, distanceFormula(0.0,0.0,0.0,0.0));
+     // System.out.println(node.getLocation()[2]);
       visited.put(node, false);
       previous.put(node, null);
-      node.setCost(Double.POSITIVE_INFINITY); //Initialize all costs to infinity with the
-
-      //OK HERE THE BOUNDING BOX WAS SET IMPROPERLY SO MANUALLY GETTING THE COORDINATES OF THE
-      // SMALLEST AND LARGEST LONG VALUES FOR ATTRACTIONS
-      if (node.getCoordinates()[1] > maxLon){
-        maxLon = node.getCoordinates()[1];
-      }
-      if (node.getCoordinates()[1] < minLon){
-        minLon = node.getCoordinates()[1];
-
-      }
-    //  System.out.println(node.getCoordinates()[1]);
-      // starting cost being 0
-      //node.setCost(distances.get(node)); //Will need to add value to this !!
-      //node.setCost(node.generateValue() + distances.get(node)); //set the cost of the node based
-      // on it's calculated value and its distance to the target
+      node.setCost(Double.POSITIVE_INFINITY);
     }
     start.setCost(0.0);
-//    double sizeOfChunks = (Math.abs((ending[1])-(starting[1])))/numStops;
-    double sizeOfChunks = (Math.abs((maxLon)-(minLon)))/numStops;
-    System.out.println("Starting is " + minLon + " and ending is: "+ maxLon);
-    //getting the longitudinal difference of the start and end and dividing it by the number of
-    // stops to get the "size" of each chunk (a range of longitudes)
-    for(int i = 0; i < numStops; i ++){ //looping through the number of stops to create that many
-      // chunks
-      List<AttractionNode> currentChunk = new ArrayList<>(); //keep track of the nodes associated
-      // with each "chunk"
-      double minLong = minLon + i*sizeOfChunks;
-      double maxLong = minLon + (i+1)*sizeOfChunks;
-      System.out.println("minLong is: " + minLong + " and maxLong is: " + maxLong);
-      for(AttractionNode node: nodes){
-        //System.out.println("Node has long of:  "+ node.getCoordinates()[1]);
-        if (node.getCoordinates()[1] >= minLong && node.getCoordinates()[1] <= maxLong){
-          currentChunk.add(node);
-          if (node == start){
-            System.out.println("Start has been added");
-          }
-          if (!chunkLookup.containsKey(node)){
-            chunkLookup.put(node, i);
-          }
-        }
-      }
-      System.out.println("Chunk number: "+ i + " added with this many attraction nodes: "+ currentChunk.size());
-      connectionChunks.put(i, currentChunk);
-    }
-    List<AttractionNode> lastChunk = new ArrayList<>();
-    lastChunk.add(end);
-    connectionChunks.put(numStops, lastChunk); //making the last chunk only the end node
-    chunkLookup.replace(end, numStops);
+    System.out.println("Ideal Spacing is" + pathDistance/numStops);
+
     while (!(pq.isEmpty()) && !(visited.get(end))) {
       AttractionNode current = pq.poll();
       visited.replace(current,true); //mark the popped node as visited
-      if (chunkLookup.get(current) + 1 <= numStops){
-        List<AttractionNode> connectedNodes = connectionChunks.get(chunkLookup.get(current) + 1);
-        if (current == start){
-          connectedNodes = connectionChunks.get(0);
-        }
+      List<AttractionNode> connectedNodes = getConnectedNodes(current, end, pathDistance, numStops);
         for (AttractionNode node: connectedNodes) {
           //if the current nodes cost plus the distance between the current and the node you are
           // examining is less than the node you are examining's cost
           double edgeWeight = distanceFormula(current.getCoordinates()[0],
             current.getCoordinates()[1], node.getCoordinates()[0], node.getCoordinates()[1]);
-         // System.out.println("Edge WEight is: "+ edgeWeight);
-          if ((current.getCost() + edgeWeight) <= node.getCost()) {
+          if ((current.getCost() + edgeWeight) < node.getCost()) {
             node.setCost(current.getCost() + edgeWeight); //Will need to add value to this!!
-            //node.setCost(current.getCost() + edgeWeight + node.generateValue());
-           // System.out.println("Adding to queue");
             previous.replace(node, current);
             pq.add(node);
           }
         }
-      }
         }
     AttractionNode curr = end;
-//    for (AttractionNode n: nodes){
-//      if(previous.get(n)!= null){
-//        System.out.println("A previous");
-//      }
-//    }
-    System.out.println("Previous node to the end: " + previous.get(end));
+   // System.out.println("Previous node to the end: " + previous.get(end));
     //gets the shortest path by looking at previous
     //start with the end, while the previous node is not the start add to current path
     if(previous.get(curr)== start){
@@ -189,10 +118,61 @@ public class Dijkstra {
     double a = Math.pow(Math.sin(latDist / 2), 2) + Math.cos(la1) * Math.cos(la2)
       * Math.pow(Math.sin((longDist / 2)), 2);
     return (2.0 * Constants.EARTH_RADIUS * Math.asin(Math.sqrt(a)));
-
-
   }
 
+  private List<AttractionNode> getConnectedNodes(AttractionNode node,
+                                                 AttractionNode end, double distance,int numStops){
+    double spacing = distance/numStops;
+    List<AttractionNode> connects = nodes;
+    List<AttractionNode> toRemove = new ArrayList<>(); //To avoid concurrent modification error
+    for(AttractionNode n: connects){
+      if (distanceFormula(n.getCoordinates()[0],
+        n.getCoordinates()[1], end.getCoordinates()[0], end.getCoordinates()[1]) >=
+        distanceFormula(node.getCoordinates()[0], node.getCoordinates()[1],end.getCoordinates()[0],
+          end.getCoordinates()[1])
+      ){
+        toRemove.add(n); //remove the node from the list of possible connecting nodes if it is
+        // farther from the target than the current node
+      }
+    }
+    for(AttractionNode r: toRemove){
+      connects.remove(r);
+    }
+//    System.out.println("The node " + node.getName() + "has this many connections: " + connects
+//    .size());
+    Collections.sort(connects, new Comparator<AttractionNode>(){
+      @Override
+      //this comparator will sort the nodes based on HOW CLOSE THEY are to the target spacing,
+      // i.e. nodes that are spaced closest to the "spacing" metric will be considered connected
+      public int compare(AttractionNode o1, AttractionNode o2) {
+        double distance1 = distanceFormula(o1.getCoordinates()[0], o1.getCoordinates()[1],
+          node.getCoordinates()[0], node.getCoordinates()[1]);
+        double distance2 = distanceFormula(o2.getCoordinates()[0], o2.getCoordinates()[1],
+          node.getCoordinates()[0], node.getCoordinates()[1]);
+        if (Math.abs(distance1-spacing) > Math.abs(distance2-spacing)){
+          return 1;
+        }
+        if (Math.abs(distance2-spacing) > Math.abs(distance1-spacing)){
+          return -1;
+        }
+        else{
+          return 0;
+        }
+      }
+    });
+    if (node == end){
+      System.out.println("The connected nodes to the end re" + connects);
+    }
+    if(connects.size()>=2){
+      return connects.subList(0,2);
+    }
+   else if(connects.size() >= 1){
+     return connects;
+    }
+   else{
+     return new ArrayList<>();
+    }
+  }
 
   public void setPreferences(double[] prefStop, int costPref){
     preferredStop = prefStop;

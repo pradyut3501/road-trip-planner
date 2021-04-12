@@ -229,7 +229,7 @@ public final class Main {
          //HARD CODED START AND END FOR DIJKSTRA FOR NOW
          double[] boxBounds = BoundingBox.findBoundingBoxBounds(originCoords, destCoords);
          route = dijkstra.execute(new double[]{41.83108984050821,-71.40029245994668},
-           new double[]{41.819930960017274, -71.41042819577497}, numStops, boxBounds);
+           new double[]{41.819930960017274, -71.41042819577497}, numStops);
 
        } catch(Exception e){
          System.out.println("problem with dijkstras");

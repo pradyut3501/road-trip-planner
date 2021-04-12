@@ -35,7 +35,7 @@ public class BoundingBox {
 
     double[] boundingBoxBounds = findBoundingBoxBounds(coords1, coords2);
 
-    double[] expandedBoundingBoxBounds = expandBoundingBoxBounds(boundingBoxBounds, 4.0);
+    double[] expandedBoundingBoxBounds = expandBoundingBoxBounds(boundingBoxBounds, 2.0);
 
     try {
       return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories);
