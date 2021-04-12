@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
+//import { Link } from 'react-router-dom';
 
 /*global google*/
 
@@ -25,6 +26,8 @@ let shortestRouteDist = ""
 let distanceMessage = ["", ""]
 let logo = "https://i.ibb.co/drqk6c8/logo.png";
 let response_message = ""
+let originCoords = []
+let destCoords = []
 
 
 //const google = window.google;
@@ -76,8 +79,10 @@ function App() {
 
   function setOrigin(newOrigin){
     origin = newOrigin
+    originCoords =
     //direction_service = new DirectionsService
     //direction_service.origin = origin
+    console.log(origin)
     console.log(origin.value.place_id)
 
   }
@@ -134,8 +139,8 @@ function App() {
       let directionsData = result.routes[0].legs[0];
 
       steps = [];
-
-      for (var i = 0; i < directionsData.steps.length; i++) {
+      let tripLength = directionsData.steps.length
+      for (var i = 0; i < tripLength; i++) {
         let currStep = directionsData.steps[i]
         let startLat = currStep.start_location.lat()
         let startLon = currStep.start_location.lng()
@@ -145,6 +150,9 @@ function App() {
 
        }
        console.log(steps)
+
+       originCoords = [steps[0][0], steps[0][1]]
+       destCoords = [steps[tripLength-1][0], steps[tripLength-1][1]]
         } else {
           console.error(`error fetching directions ${result}`);
         }
@@ -160,6 +168,8 @@ function App() {
       console.log(restaurant)
       console.log(museum)
       console.log(park)
+      console.log(originCoords)
+      console.log(destCoords)
 
       // the source and destination of our desired route
       const toSend = {
@@ -167,8 +177,12 @@ function App() {
         route: steps,
         restValue: restaurant,
         musValue: museum,
-        parkValue: park,
-        shopValue: shop
+        parkValue: park ,
+        shopValue: shop,
+        originLat: originCoords[0],
+        originLon:originCoords[1],
+        destLat: destCoords[0],
+        destLon: destCoords[1]
       };
 
       let config = {
@@ -187,8 +201,29 @@ function App() {
           console.log(response.data);
           //console.log(response.data["stops"])
           // stops is a map of [business id, AttractionNode object]
-          const stops = response.data["route"]
-          //setAttractions()
+          //const stops = response.data["route"]
+          let stop1 = {
+            id: "tnhfDv5Il8EaGSXZGiuQGg",
+            name: "Garaje",
+            location: ["475 3rd St", "San Francisco", "CA", "94107"],
+            coordinates: [37.7817529521, -122.39612197],
+            price: 1.0,
+            rating: 4.5
+          }
+
+          let stop2 = {
+            id: "tnhfDv5Il8EaGSXZGiuQGh",
+            name: "Garaje",
+            location: ["475 3rd St", "San Francisco", "CA", "94107"],
+            coordinates: [37.7817529521, -122.39612197],
+            price: 1.0,
+            rating: 4.5
+          }
+
+          setAttractions([stop1, stop2])
+          console.log("in axios")
+
+
           /*console.log(stops)
           for (const id in stops) {
             console.log(stops[id].id)
@@ -209,6 +244,31 @@ function App() {
 
     }
 
+
+    /*const requestTrip2 = () => {
+
+      let stop1 = {
+        id: "tnhfDv5Il8EaGSXZGiuQGg",
+        name: "Garaje",
+        location: ["475 3rd St", "San Francisco", "CA", "94107"],
+        coordinates: [37.7817529521, -122.39612197],
+        price: 1.0,
+        rating: 4.5
+      }
+
+      let stop2 = {
+        id: "tnhfDv5Il8EaGSXZGiuQGh",
+        name: "Plant City",
+        location: ["475 3rd St", "Providence", "RI", "94107"],
+        coordinates: [41.8207975,-71.406356],
+        price: 1.0,
+        rating: 4.5
+      }
+
+      setAttractions([stop1, stop2])
+
+    }*/
+
     useEffect(()=> {
       console.log("in use effect")
       console.log(shortestRouteDist)
@@ -221,6 +281,11 @@ function App() {
       console.log("changing message")
       response_message = "Here's your route!"
     }, [submitted])
+
+    useEffect(()=> {
+      console.log("changing message")
+      console.log(attractions)
+    }, [attractions])
 
   return (
 
@@ -336,7 +401,30 @@ function App() {
         <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
         <div><p>{response_message}</p></div>
 
-        
+        Start:
+        <div>
+        <ul>
+          {attractions.map((x,i, elements) => (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
+          <br></br> stars: {x.rating}
+          <br></br> location: {x.location[1]}, {x.location[2]}
+          <br></br> directions to next stop: <a href={"https://www.google.com/maps/dir/" +
+          x.coordinates[0]+ "," + x.coordinates[1] + "/"
+           } target="_blank">directions {i}</a></li>))}
+       </ul>
+          </div>
+        End:
+
+        <div>
+        <ul>
+            {attractions.map((x,i, elements) => (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
+          <br></br> stars: {x.rating}
+          <br></br> location: {x.location[1]}, {x.location[2]}
+          <br></br> directions to next stop: <a href={"https://www.google.com/maps/dir/" +
+          x.coordinates[0]+ "," + x.coordinates[1] + "/"
+           } target="_blank">directions {i}</a></li>))}
+       </ul>
+          </div>
+
 
     </div>
     </div>
