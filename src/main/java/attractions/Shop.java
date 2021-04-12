@@ -1,6 +1,7 @@
 package attractions;
 
 import edu.brown.cs.student.termProject.AttractionNode;
+import edu.brown.cs.student.termProject.Constants;
 
 /**
  * The Shop class stores information of Shops and implements the attraction node interface
@@ -70,7 +71,9 @@ public class Shop implements AttractionNode {
 
   @Override
   public double generateValue(double PreferredPrice, double PreferredStop) {
-    return 0;
+    double shopValue = PreferredStop;
+    double value = (Constants.VALUE_BOUND- shopValue) * Constants.VALUE_SCALE_SHOPS;
+    return value;
   }
 
   @Override

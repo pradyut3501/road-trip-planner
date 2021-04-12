@@ -1,6 +1,7 @@
 package attractions;
 
 import edu.brown.cs.student.termProject.AttractionNode;
+import edu.brown.cs.student.termProject.Constants;
 
 /**
  * The park class stores information of parks and implements the attraction node interface for
@@ -71,7 +72,9 @@ public class Park implements AttractionNode {
 
   @Override
   public double generateValue(double PreferredPrice, double PreferredStop) {
-    return 0;
+    double parkValue = PreferredStop;
+    double value = (Constants.VALUE_BOUND- parkValue) * Constants.VALUE_SCALE_PARKS;
+    return value;
   }
 
   @Override

@@ -68,7 +68,9 @@ public class Restaurant implements AttractionNode {
 
   @Override
   public double generateValue(double PreferredPrice, double PreferredStop) {
-    return 0;
+    double restaurantValue = PreferredStop;
+    double value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
+    return value;
   }
 
   @Override
