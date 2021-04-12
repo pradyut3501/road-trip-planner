@@ -240,21 +240,21 @@ function App() {
           }
 
           // add the start and the end to the list of attractions
-          let originNode = {
-            id: "",
-            name: originText,
-            location:  ,
-            coordinates:
-          }
+          // let originNode = {
+          //   id: "",
+          //   name: originText,
+          //   location:  ,
+          //   coordinates:
+          // }
+          //
+          // let destNode = {
+          //   id: "",
+          //   name: destText,
+          //   location:  ,
+          //   coordinates:
+          // }
 
-          let destNode = {
-            id: "",
-            name: destText,
-            location:  ,
-            coordinates:
-          }
-
-          setAttractions(response.data)
+          setAttractions(response.data["route"])
           console.log("in axios")
 
           /*console.log(stops)

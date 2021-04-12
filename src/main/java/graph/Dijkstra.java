@@ -100,7 +100,8 @@ public class Dijkstra {
       curr = previous.get(curr);
       //System.out.println(curr);
     }
-    shortestPath.add(start);
+   // shortestPath.add(start);
+    Collections.reverse(shortestPath);
     return shortestPath;
   }
 
