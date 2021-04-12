@@ -17,7 +17,9 @@ import Slider from '@material-ui/core/Slider';
 /*global google*/
 
 let origin = null
+//let originText = ""
 let dest = null
+let destText = ""
 let direction_service = null
 let costPreference = 1
 let steps = []
@@ -40,6 +42,8 @@ function App() {
   const [shortestRouteTime, setShortestRouteTime] = useState("");
   const [submitted, setSubmitted] = useState(0)
   const [attractions, setAttractions] = useState([])
+  const [originText, setOriginText] = useState("")
+  const [destText, setDestText] = useState("")
 
   const [restaurant, setRestaurant] = useState(30);
   const [museum, setMuseum] = useState(30);
@@ -82,7 +86,6 @@ function App() {
 
   function setOrigin(newOrigin){
     origin = newOrigin
-    originCoords =
     //direction_service = new DirectionsService
     //direction_service.origin = origin
     console.log(origin)
@@ -128,7 +131,7 @@ function App() {
     //directions.origin = origin.location;
     //directions.destination = dest.location;
 
-    function getRouteInfo(){
+  function getRouteInfo(){
 
     let directions = new google.maps.DirectionsService()
     let directionsRenderer = new google.maps.DirectionsRenderer()
@@ -165,6 +168,9 @@ function App() {
 
        originCoords = [steps[0][0], steps[0][1]]
        destCoords = [steps[tripLength-1][0], steps[tripLength-1][1]]
+
+       //when axios is ready, move this into requestTrip
+
         } else {
           console.error(`error fetching directions ${result}`);
         }
@@ -233,9 +239,23 @@ function App() {
             rating: 4.5
           }
 
-          setAttractions([stop1, stop2])
-          console.log("in axios")
+          // add the start and the end to the list of attractions
+          let originNode = {
+            id: "",
+            name: originText,
+            location:  ,
+            coordinates:
+          }
 
+          let destNode = {
+            id: "",
+            name: destText,
+            location:  ,
+            coordinates:
+          }
+
+          setAttractions(response.data)
+          console.log("in axios")
 
           /*console.log(stops)
           for (const id in stops) {
@@ -246,7 +266,11 @@ function App() {
             console.log(stops[id].rating)
           }*/
 
+          setOriginText("Start: " + origin.label)
+          setDestText("End: " + dest.label)
+
           setSubmitted(1);
+
 
         })
 
@@ -293,12 +317,22 @@ function App() {
     useEffect(()=> {
       console.log("changing message")
       response_message = "Here's your route!"
+
     }, [submitted])
 
     useEffect(()=> {
       console.log("changing message")
       console.log(attractions)
+
     }, [attractions])
+
+    useEffect(()=> {
+      console.log("adding origin")
+      console.log(originText)
+
+    }, [originText])
+
+
 
   return (
 
@@ -414,7 +448,7 @@ function App() {
         <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
         <div><p>{response_message}</p></div>
 
-        Start:
+        {originText}
         <div>
         <ul>
           {attractions.map((x,i, elements) => (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
@@ -425,8 +459,9 @@ function App() {
            } target="_blank">directions {i}</a></li>))}
        </ul>
           </div>
-        End:
-
+          <div>
+        <p>{destText} </p>
+        </div>
         <div>
         <ul>
             {attractions.map((x,i, elements) => (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
