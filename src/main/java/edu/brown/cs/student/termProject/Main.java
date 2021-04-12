@@ -183,6 +183,11 @@ public final class Main {
          double parkValue = data.getDouble("parkValue");
          double shopValue = data.getDouble("shopValue");
          double[] preferredStop = {museumValue, parkValue, restaurantValue, shopValue};
+         double originLat = data.getDouble("originLat");
+         double originLon = data.getDouble("originLon");
+         double destLat = data.getDouble("destLat");
+         double destLon = data.getDouble("destLon");
+
 
          List<String> categories = new ArrayList<>();
          if (restaurantValue >= 0.3) {
@@ -199,8 +204,8 @@ public final class Main {
          }
          //NEED TO FIX SO THESE ARE NOT HARD SET START AND END
          List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
-             new double[]{41.83108984050821,-71.40029245994668},
-             new double[]{41.819930960017274, -71.41042819577497}, categories);
+             new double[]{originLat,originLon},
+             new double[]{destLat, destLon}, categories);
 
          //first get bounding box info
          List<AttractionNode> fakeList = new ArrayList<>();
@@ -221,31 +226,29 @@ public final class Main {
          System.out.println("CostPreference is: " + costPreference);
 
          //HARD CODED START AND END FOR DIJKSTRA FOR NOW
-       //  dijkstra.execute(new double[]{41.83108984050821,-71.40029245994668},
-        //   new double[]{41.819930960017274, -71.41042819577497}, numStops);
+       List<AttractionNode> route = dijkstra.execute(new double[]{41.83108984050821,-71.40029245994668},
+           new double[]{41.819930960017274, -71.41042819577497}, numStops);
 
-         //dijkstra.execute();
 
        } catch(Exception e){
          System.out.println("problem with data");
+         e.printStackTrace();
        }
        // creating filler stops for now to test with front-end
-       //AttractionNode[] stops = new AttractionNode[];
        System.out.println("here1");
 
-       Map <String, AttractionNode> route = new HashMap<>();
        List<AttractionNode> stops = new ArrayList<>();
        System.out.println("here2");
-       List<Double> stops2 = new ArrayList<>();
-       stops2.add(4.0);
+
 
        try{
          //Museum m = new Museum();
          //Park p = new Park();
          String[] rLoc = new String[]{"475 3rd St", "San Francisco", "CA", "94107"};
          double [] rCoords = new double[]{37.7817529521, -122.39612197};
-         Restaurant r = new Restaurant("tnhfDv5Il8EaGSXZGiuQGg", "Garaje", rLoc, rCoords, 1.0,  4.5);
-         Restaurant r2 = new Restaurant("tnhfDv5Il8EaGSXZGiuQGh", "Garaje", rLoc, rCoords, 1.0,  4.5);
+         double [] rCoords2 = new double[]{33.3, -123.3};
+         Restaurant r = new Restaurant("tnhfDv5Il8EaGSXZGiuQGg", "Garaje", rLoc, rCoords2, 1.0,  4.5);
+         Restaurant r2 = new Restaurant("tnhfDv5Il8EaGSXZGiuQGh", "Garaje", rLoc, rCoords2, 1.0,  4.5);
 
          //Shop s = new Shop();
 
@@ -269,7 +272,14 @@ public final class Main {
 
        Map<String, Object> variables = ImmutableMap.of("route", stops);
        System.out.println("here4");
-
+       System.out.println(stops);
+       System.out.println(variables);
+       try{
+         System.out.println(new Gson().toJson(variables));
+       } catch(Exception e) {
+         System.out.println("something went wrong here");
+         e.printStackTrace();
+       }
        return new Gson().toJson(variables);
        //return new Gson().toJson("stirng");
      }
