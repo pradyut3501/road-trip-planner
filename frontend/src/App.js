@@ -17,8 +17,8 @@ import Slider from '@material-ui/core/Slider';
 /*global google*/
 
 let origin = null
-//let originText = ""
 let dest = null
+let middle = null
 let destText = ""
 let direction_service = null
 let costPreference = 1
@@ -86,11 +86,12 @@ function App() {
 
   function setOrigin(newOrigin){
     origin = newOrigin
-    //direction_service = new DirectionsService
-    //direction_service.origin = origin
-    console.log(origin)
-    console.log(origin.value.place_id)
+  }
 
+  function setMiddle(newMiddle){
+    middle = newMiddle
+    console.log(middle.geometry)
+    //console.log(middle.geometry.location.lat())
   }
 
   function setDollar1(){
@@ -195,14 +196,18 @@ function App() {
         route: steps,
         restValue: restaurant,
         musValue: museum,
-        parkValue: park ,
+        parkValue: park,
         shopValue: shop,
         stopPref: stops,
         originLat: originCoords[0],
         originLon:originCoords[1],
         destLat: destCoords[0],
-        destLon: destCoords[1]
-      };
+        destLon: destCoords[1],
+        maxTime: time,
+        maxDist: dist,
+        middleLat: middle
+
+      }
 
       let config = {
         headers: {
@@ -221,7 +226,7 @@ function App() {
           //console.log(response.data["stops"])
           // stops is a map of [business id, AttractionNode object]
           //const stops = response.data["route"]
-          let stop1 = {
+        /*  let stop1 = {
             id: "tnhfDv5Il8EaGSXZGiuQGg",
             name: "Garaje",
             location: ["475 3rd St", "San Francisco", "CA", "94107"],
@@ -237,34 +242,26 @@ function App() {
             coordinates: [37.7817529521, -122.39612197],
             price: 1.0,
             rating: 4.5
-          }
+          } */
 
-          // add the start and the end to the list of attractions
-          // let originNode = {
-          //   id: "",
-          //   name: originText,
-          //   location:  ,
-          //   coordinates:
-          // }
-          //
-          // let destNode = {
-          //   id: "",
-          //   name: destText,
-          //   location:  ,
-          //   coordinates:
-          // }
+           // add the start and the end to the list of attractions
+           let originNode = {
+             id: "",
+             name: originText,
+             location:  "",
+             coordinates: [originCoords[0], originCoords[1]]
+           }
+
+           let destNode = {
+             id: "",
+             name: destText,
+             location:  "",
+             coordinates: [destCoords[0], destCoords[1]]
+           }
 
           setAttractions(response.data["route"])
           console.log("in axios")
 
-          /*console.log(stops)
-          for (const id in stops) {
-            console.log(stops[id].id)
-            console.log(stops[id].name)
-            console.log(stops[id].location)
-            console.log(stops[id].price)
-            console.log(stops[id].rating)
-          }*/
 
           setOriginText("Start: " + origin.label)
           setDestText("End: " + dest.label)
@@ -399,8 +396,8 @@ function App() {
       Any stops you need to make on the way?
       <GooglePlacesAutocomplete id = "destination" apiKey="AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c"
       selectProps={{
-            dest,
-            onChange: setDest,
+            middle,
+            onChange: setMiddle,
           }}/>
 
       <br></br>
@@ -447,31 +444,24 @@ function App() {
         </div>
         <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
         <div><p>{response_message}</p></div>
-
-        {originText}
+        <div>
+        {originText} </div>
         <div>
         <ul>
-          {attractions.map((x,i, elements) => (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
+          {attractions.map(function (x,i, elements){ if(i < elements.length - 1 ){
+            return (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
           <br></br> stars: {x.rating}
           <br></br> location: {x.location[1]}, {x.location[2]}
           <br></br> directions to next stop: <a href={"https://www.google.com/maps/dir/" +
           x.coordinates[0]+ "," + x.coordinates[1] + "/"
-           } target="_blank">directions {i}</a></li>))}
+        } target="_blank">directions to stop {i + 2}</a></li>)}}
+      )}
        </ul>
           </div>
           <div>
         <p>{destText} </p>
         </div>
-        <div>
-        <ul>
-            {attractions.map((x,i, elements) => (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
-          <br></br> stars: {x.rating}
-          <br></br> location: {x.location[1]}, {x.location[2]}
-          <br></br> directions to next stop: <a href={"https://www.google.com/maps/dir/" +
-          x.coordinates[0]+ "," + x.coordinates[1] + "/"
-           } target="_blank">directions {i}</a></li>))}
-       </ul>
-          </div>
+
 
 
     </div>
