@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import database.BoundingBox;
 import database.Database;
+import graph.Dijkstra;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import spark.*;
@@ -158,6 +160,31 @@ public final class Main {
          double parkValue = data.getDouble("parkValue");
          double shopValue = data.getDouble("shopValue");
          double[] preferredStop = {museumValue, parkValue, restaurantValue, shopValue};
+
+         List<String> categories = new ArrayList<>();
+         if (restaurantValue >= 0.3) {
+           categories.add("Restaurant");
+         }
+         if (parkValue >= 0.3) {
+           categories.add("Park");
+         }
+         if (museumValue >= 0.3) {
+           categories.add("Museum");
+         }
+         if (shopValue >= 0.3){
+           categories.add("Shop");
+         }
+         //NEED TO FIX SO THESE ARE NOT HARD SET START AND END
+         List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
+             new double[]{41.83108984050821,-71.40029245994668},
+             new double[]{41.819930960017274, -71.41042819577497}, categories);
+
+         //first get bounding box info
+         List<AttractionNode> fakeList = new ArrayList<>();
+         Dijkstra dijkstra = new Dijkstra(fakeList);
+         dijkstra.setPreferences(preferredStop, costPreference);
+         //dijkstra.execute();
+
        } catch(Exception e){
          System.out.println("problem with data");
        }

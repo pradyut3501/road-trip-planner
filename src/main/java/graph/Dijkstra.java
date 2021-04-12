@@ -15,6 +15,9 @@ public class Dijkstra {
   private HashMap<AttractionNode, Double> distances; //keep track of distances between node and end
   private HashMap<AttractionNode,AttractionNode> previous; //keep track of previous pointers
 
+  private double[] preferredStop;
+  private int costPreference;
+
   public Dijkstra(List<AttractionNode> n){
     nodes = n;
     visited = new HashMap<>();
@@ -87,6 +90,13 @@ public class Dijkstra {
    */
   private Double distanceFormula(double la1,double lo1, double la2, double lo2){
     return 0.0;
+
+  }
+
+
+  public void setPreferences(double[] prefStop, int costPref){
+    preferredStop = prefStop;
+    costPreference = costPref;
 
   }
 }
