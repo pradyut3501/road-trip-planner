@@ -151,6 +151,13 @@ public final class Main {
        System.out.println("here");
        try{
          JSONObject data = new JSONObject(request.body());
+         //preferences which will be used for value heuristic
+         int costPreference = data.getInt("costPref");
+         double restaurantValue = data.getDouble("restValue");
+         double museumValue = data.getDouble("musValue");
+         double parkValue = data.getDouble("parkValue");
+         double shopValue = data.getDouble("shopValue");
+         double[] preferredStop = {museumValue, parkValue, restaurantValue, shopValue};
        } catch(Exception e){
          System.out.println("problem with data");
        }
@@ -189,6 +196,7 @@ public final class Main {
          System.out.println("something went wrong");
        }
        System.out.println("here3");
+
        String status = "success";
 
        Map<String, Object> variables = ImmutableMap.of("route", stops);

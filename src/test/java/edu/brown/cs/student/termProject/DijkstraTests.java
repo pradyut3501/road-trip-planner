@@ -1,6 +1,5 @@
 package edu.brown.cs.student.termProject;
 
-import graph.AttractionNode;
 import org.junit.Test;
 import database.BoundingBox;
 import database.Database;

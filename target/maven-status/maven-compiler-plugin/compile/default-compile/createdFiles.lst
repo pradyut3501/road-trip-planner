@@ -1,5 +1,6 @@
 edu/brown/cs/student/termProject/Main$RouteHandler.class
 database/BoundingBox.class
+graph/AttractionsComparator.class
 edu/brown/cs/student/termProject/Restaurant.class
 edu/brown/cs/student/termProject/Main.class
 database/Database.class

@@ -23,7 +23,8 @@ public class Dijkstra {
     for (AttractionNode node: nodes){
       visited.put(node, false);
       distances.put(node, distanceFormula(0.0,0.0,0.0,0.0));
-      node.setCost(node.generateValue() + distances.get(node)); //set the cost of the node based off
+      node.setCost(distances.get(node)); //will need to add value to this!
+//      node.setCost(node.generateValue() + distances.get(node)); //set the cost of the node based off
       // of
       // its
       // calculated
@@ -33,7 +34,8 @@ public class Dijkstra {
   public List<AttractionNode> execute(double[] starting, double[] ending){
     for (AttractionNode node: nodes){
       distances.put(node, distanceFormula(0.0,0.0,0.0,0.0));
-      node.setCost(node.generateValue() + distances.get(node)); //set the cost of the node based
+      node.setCost(distances.get(node)); //Will need to add value to this !!
+      //node.setCost(node.generateValue() + distances.get(node)); //set the cost of the node based
       // on it's calculated value and its distance to the target
     }
     List <AttractionNode> shortestPath = new ArrayList<>();
@@ -69,7 +71,8 @@ public class Dijkstra {
           double edgeWeight = distanceFormula(current.getCoordinates()[0],
             current.getCoordinates()[1], node.getCoordinates()[0], node.getCoordinates()[1]);
             if ((current.getCost() + edgeWeight) <= node.getCost()) {
-              node.setCost(current.getCost() + edgeWeight + node.generateValue());
+              node.setCost(current.getCost() + edgeWeight); //Will need to add value to this!!
+              //node.setCost(current.getCost() + edgeWeight + node.generateValue());
               previous.put(node, current);
               pq.add(node);
             }

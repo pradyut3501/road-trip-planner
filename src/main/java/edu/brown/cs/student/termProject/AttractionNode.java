@@ -78,10 +78,24 @@ public interface AttractionNode {
 
   void setNumPrev(int c);
 
+  /**
+   * Get's number of previous stops
+   * will be used in value heuristic
+   * @return integer of number of prev
+   */
   int getNumPrev();
 
+  //not sure if this is necessary
   void reset();
 
+  /**
+   * integer associated with Attraction type
+   * 0 = Museum
+   * 1 = Park
+   * 2 = Restaurant
+   * 3 = Shop
+   * @return integer
+   */
   int getType();
 
 

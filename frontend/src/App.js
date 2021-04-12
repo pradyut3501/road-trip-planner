@@ -167,7 +167,8 @@ function App() {
         route: steps,
         restValue: restaurant,
         musValue: museum,
-        parkValue: park
+        parkValue: park,
+        shopValue: shop
       };
 
       let config = {
