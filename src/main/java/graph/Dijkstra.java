@@ -62,7 +62,6 @@ public class Dijkstra {
     if (starting == ending) { //stop if the start and end node are the same
       return null;
     }
-
     //Make a dumby attraction node to represent start and end? may be a better way to handle this
     AttractionNode start = new Park("0", "", new String[0], starting,0.0,0.0 );
     nodes.add(start);
@@ -70,12 +69,23 @@ public class Dijkstra {
     nodes.add(end);
     distances.replace(end, 0.0); //setting the distance of end node to 0
     pq.add(start);
-
+    double minLon = 100000;
+      double maxLon = -100000;
     for (AttractionNode node: nodes){
       distances.put(node, distanceFormula(0.0,0.0,0.0,0.0));
       visited.put(node, false);
       previous.put(node, null);
       node.setCost(Double.POSITIVE_INFINITY); //Initialize all costs to infinity with the
+
+      //OK HERE THE BOUNDING BOX WAS SET IMPROPERLY SO MANUALLY GETTING THE COORDINATES OF THE
+      // SMALLEST AND LARGEST LONG VALUES FOR ATTRACTIONS
+      if (node.getCoordinates()[1] > maxLon){
+        maxLon = node.getCoordinates()[1];
+      }
+      if (node.getCoordinates()[1] < minLon){
+        minLon = node.getCoordinates()[1];
+
+      }
     //  System.out.println(node.getCoordinates()[1]);
       // starting cost being 0
       //node.setCost(distances.get(node)); //Will need to add value to this !!
@@ -84,16 +94,16 @@ public class Dijkstra {
     }
     start.setCost(0.0);
 //    double sizeOfChunks = (Math.abs((ending[1])-(starting[1])))/numStops;
-    double sizeOfChunks = (Math.abs((boundBox[2])-(boundBox[3])))/numStops;
-    System.out.println("Starting is " + boundBox[2] + " and ending is: "+ boundBox[3]);
+    double sizeOfChunks = (Math.abs((maxLon)-(minLon)))/numStops;
+    System.out.println("Starting is " + minLon + " and ending is: "+ maxLon);
     //getting the longitudinal difference of the start and end and dividing it by the number of
     // stops to get the "size" of each chunk (a range of longitudes)
     for(int i = 0; i < numStops; i ++){ //looping through the number of stops to create that many
       // chunks
       List<AttractionNode> currentChunk = new ArrayList<>(); //keep track of the nodes associated
       // with each "chunk"
-      double minLong = boundBox[2] + i*sizeOfChunks;
-      double maxLong = boundBox[2] + (i+1)*sizeOfChunks;
+      double minLong = minLon + i*sizeOfChunks;
+      double maxLong = minLon + (i+1)*sizeOfChunks;
       System.out.println("minLong is: " + minLong + " and maxLong is: " + maxLong);
       for(AttractionNode node: nodes){
         //System.out.println("Node has long of:  "+ node.getCoordinates()[1]);
@@ -113,7 +123,7 @@ public class Dijkstra {
     List<AttractionNode> lastChunk = new ArrayList<>();
     lastChunk.add(end);
     connectionChunks.put(numStops, lastChunk); //making the last chunk only the end node
-
+    chunkLookup.replace(end, numStops);
     while (!(pq.isEmpty()) && !(visited.get(end))) {
       AttractionNode current = pq.poll();
       visited.replace(current,true); //mark the popped node as visited
@@ -124,11 +134,11 @@ public class Dijkstra {
           // examining is less than the node you are examining's cost
           double edgeWeight = distanceFormula(current.getCoordinates()[0],
             current.getCoordinates()[1], node.getCoordinates()[0], node.getCoordinates()[1]);
-          System.out.println("Edge WEight is: "+ edgeWeight);
+         // System.out.println("Edge WEight is: "+ edgeWeight);
           if ((current.getCost() + edgeWeight) <= node.getCost()) {
             node.setCost(current.getCost() + edgeWeight); //Will need to add value to this!!
             //node.setCost(current.getCost() + edgeWeight + node.generateValue());
-            System.out.println("Adding to queue");
+           // System.out.println("Adding to queue");
             previous.replace(node, current);
             pq.add(node);
           }
@@ -136,23 +146,23 @@ public class Dijkstra {
       }
         }
     AttractionNode curr = end;
-    for (AttractionNode n: nodes){
-      if(previous.get(n)!= null){
-        System.out.println("A previous");
-      }
-    }
+//    for (AttractionNode n: nodes){
+//      if(previous.get(n)!= null){
+//        System.out.println("A previous");
+//      }
+//    }
     System.out.println("Previous node to the end: " + previous.get(end));
     //gets the shortest path by looking at previous
     //start with the end, while the previous node is not the start add to current path
     if(previous.get(curr)== start){
       System.out.println("shortest path is direct one :(");
     }
-//    while(previous.get(curr)!= start){
-//      shortestPath.add(previous.get(curr));
-//      curr = previous.get(curr);
-//      System.out.println(curr);
-//    }
-//    shortestPath.add(start);
+    while(previous.get(curr)!= start){
+      shortestPath.add(previous.get(curr));
+      curr = previous.get(curr);
+      //System.out.println(curr);
+    }
+    shortestPath.add(start);
     return shortestPath;
   }
 

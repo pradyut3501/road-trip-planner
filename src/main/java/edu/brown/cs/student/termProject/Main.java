@@ -65,22 +65,23 @@ public final class Main {
     categories.add("Restaurant");
     categories.add("Park");
     categories.add("Museum");
-    List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(new double[]{40.67708,
-        -74.078168},
+    List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(new double[]{34.136181, -118.432375},
       new double[]{41.856898,
         -71.385573}, categories);
-    double[] boundBox = BoundingBox.findBoundingBoxBounds(new double[]{40.67708,
-        -74.078168},
+    double[] boundBox = BoundingBox.findBoundingBoxBounds(new double[]{34.136181, -118.432375},
       new double[]{41.856898,
         -71.385573});
     System.out.println(boundBox);
 
     System.out.println(attractions.size());
     Dijkstra dij = new Dijkstra(attractions);
-    dij.execute(new double[]{40.67708,
-        -74.078168},
+    List<AttractionNode> path = dij.execute(new double[]{34.136181, -118.432375},
       new double[]{41.856898,
         -71.385573}, 4, boundBox);
+    for (AttractionNode n: path){
+      System.out.println(n.getName());
+    }
+
 
     // Parse command line arguments
     OptionParser parser = new OptionParser();
