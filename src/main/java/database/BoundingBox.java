@@ -106,7 +106,9 @@ public class BoundingBox {
 
     String query = "SELECT * FROM yelp_business " +
             "WHERE (latitude BETWEEN ? and ?) " +
-            "AND (longitude BETWEEN ? AND ?)";
+            "AND (longitude BETWEEN ? AND ?)" +
+            "AND (stars > 3.0)" +
+            "AND (review_count > 10)";
 
     PreparedStatement prep = conn.prepareStatement(query);
     prep.setDouble(1, boundingBoxBounds[0]);
@@ -119,6 +121,7 @@ public class BoundingBox {
     List<AttractionNode> attractionsWithinBox = new ArrayList<>();
 
     while (rs.next()) {
+
       String id = rs.getString("business_id");
       String name = rs.getString("name");
 
@@ -133,6 +136,11 @@ public class BoundingBox {
       double[] coords = new double[]{lat, lon};
 
       double price = 0; //TODO: Decide on what to do for price
+//      String attributesList = rs.getString("attributes");
+//      if (attributesList.contains("RestaurantsPriceRange2")) {
+//        System.out.println("HERE");
+//        System.out.println(attributesList);
+//      }
 
       double rating = rs.getDouble("stars");
 
