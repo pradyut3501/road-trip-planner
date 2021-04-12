@@ -77,9 +77,10 @@ public final class Main {
     Dijkstra dij = new Dijkstra(attractions);
     List<AttractionNode> path = dij.execute(new double[]{34.136181, -118.432375},
       new double[]{41.856898,
-        -71.385573}, 4, boundBox);
+        -71.385573}, 5, boundBox);
     for (AttractionNode n: path){
       System.out.println(n.getName());
+      System.out.println(n.getLocation()[0] + " " + n.getLocation()[1]);
     }
 
 

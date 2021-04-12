@@ -41,6 +41,12 @@ public class Dijkstra {
   }
   public List<AttractionNode> execute(double[] starting, double[] ending, int numStops,
                                       double[] boundBox){
+    for (AttractionNode n: nodes){
+      if (n.getName() == null){
+        System.out.println("Node with null name");
+        nodes.remove(n);
+      }
+    }
     visited = new HashMap<>();
     distances = new HashMap<>();
     previous = new HashMap<>();
@@ -63,9 +69,9 @@ public class Dijkstra {
       return null;
     }
     //Make a dumby attraction node to represent start and end? may be a better way to handle this
-    AttractionNode start = new Park("0", "", new String[0], starting,0.0,0.0 );
+    AttractionNode start = new Park("0", "starting Node", new String[0], starting,0.0,0.0 );
     nodes.add(start);
-    AttractionNode end = new Park("0", "", new String[0], target,0.0,0.0 );
+    AttractionNode end = new Park("0", "ending Node", new String[0], target,0.0,0.0 );
     nodes.add(end);
     distances.replace(end, 0.0); //setting the distance of end node to 0
     pq.add(start);
@@ -129,6 +135,9 @@ public class Dijkstra {
       visited.replace(current,true); //mark the popped node as visited
       if (chunkLookup.get(current) + 1 <= numStops){
         List<AttractionNode> connectedNodes = connectionChunks.get(chunkLookup.get(current) + 1);
+        if (current == start){
+          connectedNodes = connectionChunks.get(0);
+        }
         for (AttractionNode node: connectedNodes) {
           //if the current nodes cost plus the distance between the current and the node you are
           // examining is less than the node you are examining's cost
