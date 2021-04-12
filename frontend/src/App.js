@@ -461,16 +461,16 @@ function App() {
           <div>
         <p>{destText} </p>
         </div>
-       {/* <div>*/}
-       {/* <ul>*/}
-       {/*     {attractions.map((x,i, elements) => (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>*/}
-       {/*   <br></br> stars: {x.rating}*/}
-       {/*   <br></br> location: {x.location[1]}, {x.location[2]}*/}
-       {/*   <br></br> directions to next stop: <a href={"https://www.google.com/maps/dir/" +*/}
-       {/*   x.coordinates[0]+ "," + x.coordinates[1] + "/"*/}
-       {/*    } target="_blank">directions {i}</a></li>))}*/}
-       {/*</ul>*/}
-       {/*   </div>*/}
+        <div>
+        <ul>
+            {attractions.map((x,i, elements) => (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
+          <br></br> stars: {x.rating}
+          <br></br> location: {x.location[1]}, {x.location[2]}
+          <br></br> directions to next stop: <a href={"https://www.google.com/maps/dir/" +
+          x.coordinates[0]+ "," + x.coordinates[1] + "/"
+           } target="_blank">directions {i}</a></li>))}
+       </ul>
+          </div>
 
 
     </div>

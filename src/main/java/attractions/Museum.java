@@ -74,6 +74,7 @@ public class Museum implements AttractionNode {
   public double generateValue(double PreferredPrice, double PreferredStop) {
     double museumValue = PreferredStop;
     double value = (Constants.VALUE_BOUND- museumValue) * Constants.VALUE_SCALE_MUSEUMS;
+    value = value * (1 - rating *.1);
     return value;
   }
 

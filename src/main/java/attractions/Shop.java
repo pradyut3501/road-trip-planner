@@ -73,6 +73,7 @@ public class Shop implements AttractionNode {
   public double generateValue(double PreferredPrice, double PreferredStop) {
     double shopValue = PreferredStop;
     double value = (Constants.VALUE_BOUND- shopValue) * Constants.VALUE_SCALE_SHOPS;
+    value = value * (1 - rating *.1);
     return value;
   }
 

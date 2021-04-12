@@ -70,6 +70,7 @@ public class Restaurant implements AttractionNode {
   public double generateValue(double PreferredPrice, double PreferredStop) {
     double restaurantValue = PreferredStop;
     double value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
+    value = value * (1 - rating *.1);
     return value;
   }
 

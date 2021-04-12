@@ -74,6 +74,7 @@ public class Park implements AttractionNode {
   public double generateValue(double PreferredPrice, double PreferredStop) {
     double parkValue = PreferredStop;
     double value = (Constants.VALUE_BOUND- parkValue) * Constants.VALUE_SCALE_PARKS;
+    value = value * (1 - rating *.1);
     return value;
   }
 

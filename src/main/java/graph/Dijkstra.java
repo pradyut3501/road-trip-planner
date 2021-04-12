@@ -164,8 +164,8 @@ public class Dijkstra {
     if (node == end){
       System.out.println("The connected nodes to the end re" + connects);
     }
-    if(connects.size()>=2){
-      return connects.subList(0,2);
+    if(connects.size()>=Constants.NUM_CONNECTIONS){
+      return connects.subList(0,Constants.NUM_CONNECTIONS);
     }
    else if(connects.size() >= 1){
      return connects;
