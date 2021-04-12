@@ -38,12 +38,12 @@ public class Dijkstra {
     previous = new HashMap<>();
     PriorityQueue<AttractionNode> pq = new PriorityQueue(new Comparator<AttractionNode>() {
       public int compare(AttractionNode o1, AttractionNode o2) {
-        //The comparator implements the A* extension as it considers both path cost and
-        // distance to target for priority
-        if ((o1.getCost()) > (o2.getCost())) {
+        if ((o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()])) >
+          (o2.getCost()) + o2.generateValue(costPreference, preferredStop[o2.getType()])) {
           return 1;
         }
-        if ((o2.getCost()) > (o1.getCost())) {
+        if ((o2.getCost() + o2.generateValue(costPreference, preferredStop[o2.getType()])) >
+          (o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()]))) {
           return -1;
         }
         return 0;

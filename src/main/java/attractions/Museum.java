@@ -1,6 +1,7 @@
 package attractions;
 
 import edu.brown.cs.student.termProject.AttractionNode;
+import edu.brown.cs.student.termProject.Constants;
 
 /**
  * The Museum class stores information of Museums and implements the attraction node interface
@@ -71,7 +72,9 @@ public class Museum implements AttractionNode {
 
   @Override
   public double generateValue(double PreferredPrice, double PreferredStop) {
-    return 0;
+    double museumValue = PreferredStop;
+    double value = (Constants.VALUE_BOUND- museumValue) * Constants.VALUE_SCALE_MUSEUMS;
+    return value;
   }
 
   @Override
