@@ -28,6 +28,9 @@ let logo = "https://i.ibb.co/drqk6c8/logo.png";
 let response_message = ""
 let originCoords = []
 let destCoords = []
+let stops = 0
+let time = 0
+let dist = 0
 
 
 //const google = window.google;
@@ -99,8 +102,17 @@ function App() {
     costPreference = 3
   }
 
-  function setStops(){
+  function setStops(value){
+    stops = value
+    console.log(stops)
+  }
 
+  function setDist(value){
+    dist = value
+  }
+
+  function setTime(value){
+    time = value
   }
 
   function setDest(newDest){
@@ -179,6 +191,7 @@ function App() {
         musValue: museum,
         parkValue: park ,
         shopValue: shop,
+        stopPref: stops,
         originLat: originCoords[0],
         originLon:originCoords[1],
         destLat: destCoords[0],
@@ -322,8 +335,8 @@ function App() {
       Based on this, how much long would you like to spend on the road?
       &nbsp;
       <br></br>
-      <TextBox label = {"Maximum time (hours): "} change = {setStops} />
-      <TextBox label = {"Maximum distance (miles): "} change = {setStops} />
+      <TextBox label = {"Maximum time (hours): "} change = {setTime} />
+      <TextBox label = {"Maximum distance (miles): "} change = {setDist} />
 
       <br></br>
       &nbsp;
@@ -345,7 +358,7 @@ function App() {
       <br></br>
       <br></br>
 
-      <TextBox label = {"Maximum # of stops: "}
+      <TextBox label = {"Preferred # of stops: "}
       change = {setStops} />
 
       <br></br>

@@ -61,6 +61,7 @@ public final class Main {
     System.out.println("You good");
     Database.setYelpDatabaseConnection();
 
+    /*
     List<String> categories = new ArrayList<>();
     categories.add("Restaurant");
     categories.add("Park");
@@ -77,11 +78,10 @@ public final class Main {
     Dijkstra dij = new Dijkstra(attractions);
     List<AttractionNode> path = dij.execute(new double[]{34.136181, -118.432375},
       new double[]{41.856898,
-        -71.385573}, 5, boundBox);
+        -71.385573}, 4, boundBox);
     for (AttractionNode n: path){
       System.out.println(n.getName());
-      System.out.println(n.getLocation()[0] + " " + n.getLocation()[1]);
-    }
+    }*/
 
 
     // Parse command line arguments
@@ -173,7 +173,7 @@ public final class Main {
      @Override
      public Object handle(Request request, Response response) throws Exception {
 
-       System.out.println("here");
+       List<AttractionNode> route = new ArrayList<>();
        try{
          JSONObject data = new JSONObject(request.body());
          //preferences which will be used for value heuristic
@@ -187,7 +187,9 @@ public final class Main {
          double originLon = data.getDouble("originLon");
          double destLat = data.getDouble("destLat");
          double destLon = data.getDouble("destLon");
-
+         double[] originCoords = new double[]{originLat, originLon};
+         double[] destCoords = new double[]{destLat, destLon};
+         int numStops = data.getInt("stopPref");
 
          List<String> categories = new ArrayList<>();
          if (restaurantValue >= 0.3) {
@@ -212,7 +214,6 @@ public final class Main {
         // Dijkstra dijkstra = new Dijkstra(fakeList);
          System.out.println("number of nodes: " + attractions.size());
          //HARD CODE NUMBER OF STOPS FOR NOW
-         int numStops = 4;
          Dijkstra dijkstra = new Dijkstra(attractions);
          dijkstra.setPreferences(preferredStop, costPreference);
          System.out.println("Categories");
@@ -226,53 +227,17 @@ public final class Main {
          System.out.println("CostPreference is: " + costPreference);
 
          //HARD CODED START AND END FOR DIJKSTRA FOR NOW
-       List<AttractionNode> route = dijkstra.execute(new double[]{41.83108984050821,-71.40029245994668},
-           new double[]{41.819930960017274, -71.41042819577497}, numStops);
-
+         double[] boxBounds = BoundingBox.findBoundingBoxBounds(originCoords, destCoords);
+         route = dijkstra.execute(new double[]{41.83108984050821,-71.40029245994668},
+           new double[]{41.819930960017274, -71.41042819577497}, numStops, boxBounds);
 
        } catch(Exception e){
-         System.out.println("problem with data");
+         System.out.println("problem with dijkstras");
          e.printStackTrace();
        }
-       // creating filler stops for now to test with front-end
-       System.out.println("here1");
 
-       List<AttractionNode> stops = new ArrayList<>();
-       System.out.println("here2");
+       Map<String, Object> variables = ImmutableMap.of("route", route);
 
-
-       try{
-         //Museum m = new Museum();
-         //Park p = new Park();
-         String[] rLoc = new String[]{"475 3rd St", "San Francisco", "CA", "94107"};
-         double [] rCoords = new double[]{37.7817529521, -122.39612197};
-         double [] rCoords2 = new double[]{33.3, -123.3};
-         Restaurant r = new Restaurant("tnhfDv5Il8EaGSXZGiuQGg", "Garaje", rLoc, rCoords2, 1.0,  4.5);
-         Restaurant r2 = new Restaurant("tnhfDv5Il8EaGSXZGiuQGh", "Garaje", rLoc, rCoords2, 1.0,  4.5);
-
-         //Shop s = new Shop();
-
-         //stops.put(m.getId(), m);
-         //stops.put(p.getId(), p);
-         //route.put(r.getId(), r);
-         //route.put(r2.getId(), r2);
-          stops.add(r);
-          stops.add(r2);
-         //Test t = new Test();
-         //stops.add(t);
-
-         //stops.put(s.getId(), s);
-
-       } catch(Exception e){
-         System.out.println("something went wrong");
-       }
-       System.out.println("here3");
-
-       String status = "success";
-
-       Map<String, Object> variables = ImmutableMap.of("route", stops);
-       System.out.println("here4");
-       System.out.println(stops);
        System.out.println(variables);
        try{
          System.out.println(new Gson().toJson(variables));
@@ -281,7 +246,6 @@ public final class Main {
          e.printStackTrace();
        }
        return new Gson().toJson(variables);
-       //return new Gson().toJson("stirng");
      }
    }
 
