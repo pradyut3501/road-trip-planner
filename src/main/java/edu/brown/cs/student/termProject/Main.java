@@ -61,6 +61,27 @@ public final class Main {
     System.out.println("You good");
     Database.setYelpDatabaseConnection();
 
+    List<String> categories = new ArrayList<>();
+    categories.add("Restaurant");
+    categories.add("Park");
+    categories.add("Museum");
+    List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(new double[]{40.67708,
+        -74.078168},
+      new double[]{41.856898,
+        -71.385573}, categories);
+    double[] boundBox = BoundingBox.findBoundingBoxBounds(new double[]{40.67708,
+        -74.078168},
+      new double[]{41.856898,
+        -71.385573});
+    System.out.println(boundBox);
+
+    System.out.println(attractions.size());
+    Dijkstra dij = new Dijkstra(attractions);
+    dij.execute(new double[]{40.67708,
+        -74.078168},
+      new double[]{41.856898,
+        -71.385573}, 4, boundBox);
+
     // Parse command line arguments
     OptionParser parser = new OptionParser();
     parser.accepts("gui");
@@ -181,8 +202,26 @@ public final class Main {
 
          //first get bounding box info
          List<AttractionNode> fakeList = new ArrayList<>();
-         Dijkstra dijkstra = new Dijkstra(fakeList);
+        // Dijkstra dijkstra = new Dijkstra(fakeList);
+         System.out.println("number of nodes: " + attractions.size());
+         //HARD CODE NUMBER OF STOPS FOR NOW
+         int numStops = 4;
+         Dijkstra dijkstra = new Dijkstra(attractions);
          dijkstra.setPreferences(preferredStop, costPreference);
+         System.out.println("Categories");
+         for(String s: categories){
+           System.out.println(s);
+         }
+         System.out.println("PreferedStop is: " + preferredStop);
+         for(double d: preferredStop){
+           System.out.println(d);
+         }
+         System.out.println("CostPreference is: " + costPreference);
+
+         //HARD CODED START AND END FOR DIJKSTRA FOR NOW
+       //  dijkstra.execute(new double[]{41.83108984050821,-71.40029245994668},
+        //   new double[]{41.819930960017274, -71.41042819577497}, numStops);
+
          //dijkstra.execute();
 
        } catch(Exception e){
@@ -230,6 +269,7 @@ public final class Main {
        System.out.println("here4");
 
        return new Gson().toJson(variables);
+       //return new Gson().toJson("stirng");
      }
    }
 
