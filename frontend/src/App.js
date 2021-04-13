@@ -1,7 +1,9 @@
 import './App.css';
 import './index.js'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import { DirectionsRenderer, DirectionsService, TravelMode, DirectionsStatus } from "react-google-maps";
+import { GoogleMap, DirectionsRenderer, DirectionsService, TravelMode, DirectionsStatus } from "react-google-maps";
+import { Map, Marker, GoogleApiWrapper, InfoWindow } from "google-maps-react"
+
 import {useState, useEffect} from 'react'
 import { AwesomeButton } from "react-awesome-button";
 import TextBox from './TextBox.js';
@@ -33,7 +35,10 @@ let destCoords = []
 let stops = 0
 let time = 0
 let dist = 0
-
+let directions = null
+let directionsRenderer = null
+let map = null
+let markerList = []
 
 //const google = window.google;
 
@@ -91,7 +96,6 @@ function App() {
   function setMiddle(newMiddle){
     middle = newMiddle
     console.log(middle.geometry)
-    //console.log(middle.geometry.location.lat())
   }
 
   function setDollar1(){
@@ -128,14 +132,24 @@ function App() {
 
     getRouteInfo();
   }
-    //console.log(dest.value.formatted_address)
-    //directions.origin = origin.location;
-    //directions.destination = dest.location;
+
+    function initMap(){
+      //var directionsService = new google.maps.DirectionsService();
+      //var directionsRenderer = new google.maps.DirectionsRenderer();
+      let initialView = new google.maps.LatLng(41.850033, -87.6500523);
+      var mapOptions = {
+        zoom:7,
+        center: initialView
+      }
+      map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      directionsRenderer.setMap(map);
+      directionsRenderer.setPanel(document.getElementById('directionsPanel'));
+    }
 
   function getRouteInfo(){
 
-    let directions = new google.maps.DirectionsService()
-    let directionsRenderer = new google.maps.DirectionsRenderer()
+    directions = new google.maps.DirectionsService()
+    directionsRenderer = new google.maps.DirectionsRenderer()
 
 
     directions.route({
@@ -147,6 +161,7 @@ function App() {
           console.log(result)
 
       directionsRenderer.setDirections(result);
+      initMap()
 
       shortestRouteDist = result.routes[0].legs[0].distance.text
       setShortestRouteTime(result.routes[0].legs[0].duration.text)
@@ -223,9 +238,7 @@ function App() {
         )
         .then(response => {
           console.log(response.data);
-          //console.log(response.data["stops"])
-          // stops is a map of [business id, AttractionNode object]
-          //const stops = response.data["route"]
+
         /*  let stop1 = {
             id: "tnhfDv5Il8EaGSXZGiuQGg",
             name: "Garaje",
@@ -258,9 +271,26 @@ function App() {
              location:  "",
              coordinates: [destCoords[0], destCoords[1]]
            }
+           markerList = []
+          let newAttractions = response.data["route"]
+          setAttractions(newAttractions)
+          for (let i = 0; i < newAttractions.length; i++){
+            let marker = new google.maps.Marker({
+              position: {lat: newAttractions[i].coordinates[0], lng:newAttractions[i].coordinates[1] },
+              map: map,
+              icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+            })
+          let infoWindow = new google.maps.InfoWindow({
+            content: newAttractions[i].name
+          })
+            marker.addListener('click', function(){
+            infoWindow.open(map, marker)
+            })
+            markerList.push(marker)
 
-          setAttractions(response.data["route"])
+          }
           console.log("in axios")
+          console.log(response.data["route"])
 
 
           setOriginText("Start: " + origin.label)
@@ -328,6 +358,8 @@ function App() {
       console.log(originText)
 
     }, [originText])
+
+
 
 
 
@@ -461,16 +493,10 @@ function App() {
           <div>
         <p>{destText} </p>
         </div>
-        <div>
-        <ul>
-            {attractions.map((x,i, elements) => (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
-          <br></br> stars: {x.rating}
-          <br></br> location: {x.location[1]}, {x.location[2]}
-          <br></br> directions to next stop: <a href={"https://www.google.com/maps/dir/" +
-          x.coordinates[0]+ "," + x.coordinates[1] + "/"
-           } target="_blank">directions {i}</a></li>))}
-       </ul>
-          </div>
+
+        <div id="map" style={{float: "center", width: 600, height: 400}}></div>
+        <div id="directionsPanel" style={{float: "right", width: 30, height: 100}}></div>
+
 
 
     </div>
