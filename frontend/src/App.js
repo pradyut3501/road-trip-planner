@@ -281,7 +281,7 @@ function App() {
               icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
             })
           let infoWindow = new google.maps.InfoWindow({
-            content: newAttractions[i].name
+            content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
           })
             marker.addListener('click', function(){
             infoWindow.open(map, marker)
@@ -495,7 +495,6 @@ function App() {
         </div>
 
         <div id="map" style={{float: "center", width: 600, height: 400}}></div>
-        <div id="directionsPanel" style={{float: "right", width: 30, height: 100}}></div>
 
 
 
