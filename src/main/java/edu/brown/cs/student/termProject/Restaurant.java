@@ -15,6 +15,7 @@ public class Restaurant implements AttractionNode {
   private boolean visit = false;
   private double distance = 0;
   private int numPrev = 0;
+  private String nodeType = "restaurant";
 
   /**
    * The constructor sets the fields

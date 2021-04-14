@@ -14,6 +14,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
+import fork from './fork.png'
+import park from './park.png'
+import museum from './museum.png'
+import shop from './shop.png'
+
+
 //import { Link } from 'react-router-dom';
 
 /*global google*/
@@ -29,6 +35,7 @@ let shortestRouteDist = ""
 //let shortestRouteTime = null
 let distanceMessage = ["", ""]
 let logo = "https://i.ibb.co/drqk6c8/logo.png";
+let restaurantLogo = "fork.png"
 let response_message = ""
 let originCoords = []
 let destCoords = []
@@ -273,7 +280,7 @@ function App() {
            }
            markerList = []
           let newAttractions = response.data["route"]
-          setAttractions(newAttractions)
+          setAttractions(response.data["route"])
           for (let i = 0; i < newAttractions.length; i++){
             let marker = new google.maps.Marker({
               position: {lat: newAttractions[i].coordinates[0], lng:newAttractions[i].coordinates[1] },
@@ -367,7 +374,7 @@ function App() {
 
     <div>
     &nbsp;
-      <div className={"center"}><img src={logo} alt={"RhodeTrip logo"} style={{width: '300px'}}></img></div>
+      <div className={"center"}><img src={logo} alt={"RhodeTrip logo"} style={{width: '500px'}}></img></div>
     <div>
     &nbsp;
 
@@ -479,16 +486,21 @@ function App() {
         <div>
         {originText} </div>
         <div>
-        <ul>
-          {attractions.map(function (x,i, elements){ if(i < elements.length - 1 ){
-            return (<li> <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
-          <br></br> stars: {x.rating}
-          <br></br> location: {x.location[1]}, {x.location[2]}
+
+          {attractions.map(function (x,i, elements){
+          if (x.nodeType == "restaurant"){
+            return (<p><img src="museum.png" alt={"shop icon"} style={{width: '50px'}}/></p>)
+          }
+          if(i < elements.length - 1 ){
+            return (<p><img src={fork} alt={"restaurant"} style={{width: '100px'}}/>
+            <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
+          <br></br> {x.rating} stars
+          <br></br> {x.location[1]}, {x.location[2]}
           <br></br> <a href={"https://www.google.com/maps/dir/" +
-          x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]
-        } target="_blank">take me to stop {i + 2}!</a></li>)}}
-      )}
-       </ul>
+          x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]}
+          target="_blank">take me to stop {i + 2}!</a>
+        </p>)}})}
+
           </div>
           <div>
         <p>{destText} </p>

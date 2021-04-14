@@ -18,6 +18,8 @@ public class Park implements AttractionNode {
   private boolean visit = false;
   private double distance = 0;
   private int numPrev = 0;
+  private String nodeType = "park";
+
 
   /**
    * The constructor sets the fields
