@@ -47,6 +47,25 @@
   padding: 50px;
 }
 
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
+.text{
+  padding-left:20px
+}
+
+.rectangle {
+  /*height: 25px;
+  width: 800px;*/
+  background-color: #555;
+  display: flex;
+  justify-content:center;
+  align-items: center;
+}
+
 .scroll-box1{
   height:500px;
   width:600px;
@@ -60,6 +79,15 @@
   border:1px solid #ccc;
   font:16px/26px Georgia, Garamond, Serif;
   overflow:auto;
+}
+
+
+.left{
+  float:left
+}
+
+.right{
+  float:right
 }
 
 body {
