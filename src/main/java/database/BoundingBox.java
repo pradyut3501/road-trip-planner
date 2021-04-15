@@ -2,7 +2,7 @@ package database;
 
 import attractions.Museum;
 import attractions.Park;
-import edu.brown.cs.student.termProject.Restaurant;
+import attractions.Restaurant;
 import attractions.Shop;
 import edu.brown.cs.student.termProject.AttractionNode;
 import org.json.JSONException;
@@ -12,8 +12,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -219,10 +217,39 @@ public class BoundingBox {
         JSONObject json = new JSONObject(sb.toString());
         System.out.println("buffered reader");
         System.out.println(json.getInt("total"));
+        System.out.println(json.getJSONArray("businesses").toString());
+        System.out.println("Now Looping");
         if (json.getInt("total") != 0) {
           for (int j = 0; j < json.getInt("total"); j++) {
-//            System.out.println(json.getJSONArray("businesses"));
+            //for each business create a json object to parse
+            JSONObject businessJson = json.getJSONArray("businesses").getJSONObject(j);
+            System.out.println(json.getJSONArray("businesses").getString(j));
 
+            String name = businessJson.get("name").toString();
+            String id = businessJson.get("id").toString();
+            JSONObject locationJson = businessJson.getJSONObject("location");
+            //location field is its own json object
+            String[] loc = new String[]{locationJson.get("address1").toString(),locationJson.get(
+              "city").toString(), locationJson.get("state").toString(),
+              locationJson.get("zip_code").toString()  };
+            double[] coords = new double[]{businessJson.getJSONObject("coordinates").getDouble(
+              "latitude"),businessJson.getJSONObject("coordinates").getDouble(
+              "longitude")};
+            double price;
+            try{ //try catch for price because sometimes it isnt a field
+            price = businessJson.get("price").toString().toCharArray().length;}
+            catch(JSONException e){
+              System.out.println("no price");
+            price = 0.0;
+            }
+            double rating = businessJson.getDouble("rating");
+           System.out.println("the name is : " + name + " id is: " + id + " location is: " + loc[0] + " "+ loc[1]
+           + " coordinates are: " + coords[0] + " and " + coords[1] + " price is: " + price + " " +
+             "and" +
+             " rating " +
+             "is: "+ rating);
+          String category = businessJson.getJSONArray("categories").getJSONObject(0).getString("title");
+          System.out.println("The category is: "+ category); //This is a specific category
           }
         }
 

@@ -1,4 +1,7 @@
-package edu.brown.cs.student.termProject;
+package attractions;
+
+import edu.brown.cs.student.termProject.AttractionNode;
+import edu.brown.cs.student.termProject.Constants;
 
 /**
  * The Restaurant class stores information of Restaurants and implements the attraction node

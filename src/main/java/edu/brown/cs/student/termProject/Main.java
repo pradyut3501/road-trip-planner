@@ -61,30 +61,29 @@ public final class Main {
    *
    */
   private void run() {
-    System.out.println("You good");
     Database.setYelpDatabaseConnection();
 
-    /*
+
     List<String> categories = new ArrayList<>();
     categories.add("Restaurant");
     categories.add("Park");
     categories.add("Museum");
     List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(new double[]{34.136181, -118.432375},
       new double[]{41.856898,
-        -71.385573}, categories);
+        -71.385573}, categories, 5);
     double[] boundBox = BoundingBox.findBoundingBoxBounds(new double[]{34.136181, -118.432375},
       new double[]{41.856898,
         -71.385573});
     System.out.println(boundBox);
 
     System.out.println(attractions.size());
-    Dijkstra dij = new Dijkstra(attractions);
-    List<AttractionNode> path = dij.execute(new double[]{34.136181, -118.432375},
-      new double[]{41.856898,
-        -71.385573}, 4, boundBox);
-    for (AttractionNode n: path){
-      System.out.println(n.getName());
-    }*/
+//    Dijkstra dij = new Dijkstra(attractions);
+//    List<AttractionNode> path = dij.execute(new double[]{34.136181, -118.432375},
+//      new double[]{41.856898,
+//        -71.385573}, 4, boundBox);
+//    for (AttractionNode n: path){
+//      System.out.println(n.getName());
+//    }
 
 
     // Parse command line arguments
