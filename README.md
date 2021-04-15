@@ -55,12 +55,6 @@ categorization of stop types, etc.)
 
 **Mentor TA:** Ben Silverman, benjamin_silverman1@brown.edu
 
-## Meetings
-
-**4-Way Checkpoint:** _(Schedule for on or before April 5)_
-
-**Adversary Checkpoint:** _(Schedule for on or before April 12 once you are assigned an adversary TA)_
-
 ## How to Build and Run
 _A necessary part of any README!_
 

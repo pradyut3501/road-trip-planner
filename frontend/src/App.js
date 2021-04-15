@@ -18,9 +18,9 @@ import fork from './fork.png'
 import park from './park.png'
 import museum from './museum.png'
 import shop from './shop.png'
-
-
-//import { Link } from 'react-router-dom';
+import start from './start.png'
+import finish from './finish.png'
+import road from './road.png'
 
 import 'semantic-ui-css/semantic.min.css';
 import { Icon } from 'semantic-ui-react';
@@ -286,8 +286,12 @@ function App() {
            }
            markerList = []
           let newAttractions = response.data["route"]
-          setAttractions(response.data["route"])
-          for (let i = 0; i < newAttractions.length; i++){
+          // add start/end points to the attraction list
+          newAttractions.unshift(originNode)
+          newAttractions.push(destNode)
+
+          setAttractions(newAttractions)
+          for (let i = 1; i < newAttractions.length - 1; i++){
             let marker = new google.maps.Marker({
               position: {lat: newAttractions[i].coordinates[0], lng:newAttractions[i].coordinates[1] },
               map: map,
@@ -302,12 +306,10 @@ function App() {
             markerList.push(marker)
 
           }
-          console.log("in axios")
           console.log(response.data["route"])
 
-
-          setOriginText("Start: " + origin.label)
-          setDestText("End: " + dest.label)
+          setOriginText(origin.label)
+          setDestText(dest.label)
 
           setSubmitted(1);
 
@@ -321,31 +323,6 @@ function App() {
 
     }
 
-
-    /*const requestTrip2 = () => {
-
-      let stop1 = {
-        id: "tnhfDv5Il8EaGSXZGiuQGg",
-        name: "Garaje",
-        location: ["475 3rd St", "San Francisco", "CA", "94107"],
-        coordinates: [37.7817529521, -122.39612197],
-        price: 1.0,
-        rating: 4.5
-      }
-
-      let stop2 = {
-        id: "tnhfDv5Il8EaGSXZGiuQGh",
-        name: "Plant City",
-        location: ["475 3rd St", "Providence", "RI", "94107"],
-        coordinates: [41.8207975,-71.406356],
-        price: 1.0,
-        rating: 4.5
-      }
-
-      setAttractions([stop1, stop2])
-
-    }*/
-
     useEffect(()=> {
       console.log("in use effect")
       console.log(shortestRouteDist)
@@ -356,7 +333,7 @@ function App() {
 
     useEffect(()=> {
       console.log("changing message")
-      response_message = "Here's your route!"
+      response_message = "Trip Itinerary"
 
     }, [submitted])
 
@@ -508,32 +485,84 @@ function App() {
 
         </div>
         <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
-        <div><p>{response_message}</p></div>
-        <div>
-        {originText} </div>
-        <div>
+        <div><h1>{response_message}</h1></div>
+
+        <div class = "left">
 
           {attractions.map(function (x,i, elements){
-          if (x.nodeType == "restaurant"){
-            return (<p><img src="museum.png" alt={"shop icon"} style={{width: '50px'}}/></p>)
+
+          //displaying the start
+          if (i == 0){
+            return (<p><div class = "container"><img src={start} alt={"start icon"} style={{width: '100px'}}/>
+          <h2 class = "text"> {originText} </h2></div>
+          <br></br>
+          <a href={"https://www.google.com/maps/dir/" +
+          x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
+          <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}}/></a>
+          <br></br>
+        </p>)
           }
-          if(i < elements.length - 1 ){
-            return (<p><img src={fork} alt={"restaurant"} style={{width: '100px'}}/>
+          //displaying the end
+          if (i == elements.length - 1){
+            return (<p><div class = "container"><img src={finish} alt={"finish icon"} style={{width: '100px'}}/>
+            <h2 class = "text"> {destText} </h2></div>
+            </p>)
+          }
+          if (x.nodeType == "restaurant"){
+            return (<div><p class = "rectangle"><img src={fork} alt={"restaurant"} style={{width: '100px'}}/>
+          <h2> {x.name}</h2>
+          <br></br> {x.rating} stars
+          <br></br> {x.location[1]}, {x.location[2]}
+          <br></br>
+          <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a>
+        </p>
+        <br></br>
+        <a href={"https://www.google.com/maps/dir/" +
+        x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
+        <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}} /></a>
+        </div>)
+          } else if (x.nodeType == "museum"){
+            return (<p><img src={museum} alt={"museum icon"} style={{width: '100px'}}/>
             <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
           <br></br> {x.rating} stars
           <br></br> {x.location[1]}, {x.location[2]}
-          <br></br> <a href={"https://www.google.com/maps/dir/" +
-          x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]}
-          target="_blank">take me to stop {i + 2}!</a>
-        </p>)}})}
+          <br></br>
+          <a href={"https://www.google.com/maps/dir/" +
+          x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
+          <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}}/></a>
+          <br></br>
+        </p>)
+          } else if(x.nodeType == "shop"){
+            return (<p><img src={shop} alt={"shop icon"} style={{width: '100px'}}/>
+            <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
+          <br></br> {x.rating} stars
+          <br></br> {x.location[1]}, {x.location[2]}
+          <br></br>
+          <a href={"https://www.google.com/maps/dir/" +
+          x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
+          <img src={road} class = "center" alt={"road icon"} style={{width: '100px'}}/></a>
+          <br></br>
+        </p>)
+          } else {
+            return (<p><img src={park} alt={"park icon"} style={{width: '100px'}}/>
+            <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
+          <br></br> {x.rating} stars
+          <br></br> {x.location[1]}, {x.location[2]}
+          <br></br>
+          <a href={"https://www.google.com/maps/dir/" +
+          x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
+          <img src={road} class = "center" alt={"road icon"} style={{width: '100px'}}/></a>
+          <br></br>
+        </p>)
+          }})}
 
           </div>
-          <div>
-        <p>{destText} </p>
+
+        <div class = "left">
+        <h1>Route Map</h1>
+        <div id="map" class = "left" style={{float: "left", width: 600, height: 400}}></div>
+        <h1>Trip Summary</h1>
         </div>
-
-        <div id="map" style={{float: "center", width: 600, height: 400}}></div>
-
 
 
     </div>
