@@ -160,14 +160,7 @@ public final class Main {
       return new ModelAndView(variables, "query.ftl");
     }
   }
-
-  private static class Test{
-    public Test(){
-
-    }
-  }
-
-
+  
   /**
    * Class that handles getting nearest traversable node for maps3 frontend.
    */
@@ -213,7 +206,6 @@ public final class Main {
 
          //first get bounding box info
          System.out.println("number of nodes: " + attractions.size());
-         //HARD CODE NUMBER OF STOPS FOR NOW
          Dijkstra dijkstra = new Dijkstra(attractions, APICONNECTION);
          dijkstra.setPreferences(preferredStop, costPreference);
          System.out.println("Categories");

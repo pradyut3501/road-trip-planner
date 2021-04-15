@@ -179,10 +179,6 @@ public class BoundingBox {
     }
     prep.close();
     rs.close();
-    System.out.println(boundingBoxBounds[0]);
-    System.out.println(boundingBoxBounds[1]);
-    System.out.println(boundingBoxBounds[2]);
-    System.out.println(boundingBoxBounds[3]);
 
     for (int i = 0; i < (prefNumStops + 2); i++) {
       System.out.println(i);
@@ -242,6 +238,15 @@ public class BoundingBox {
     return attractionsWithinBox;
   }
 
+  /**
+   * Helper class that takes in yelp url,
+   * makes an API request,
+   * and creates an attraction node accordingly.
+   * @param yelpUrl yelp url to make API request from
+   * @param attraction type of attraction we are making request for
+   * @return list of attraction nodes, created from data from API call
+   * @throws IOException occurs when failure from API call.
+   */
   public static List<AttractionNode> yelpUrlToAttractions(URL yelpUrl, String attraction) throws IOException {
 
     HttpURLConnection con = (HttpURLConnection) yelpUrl.openConnection();
