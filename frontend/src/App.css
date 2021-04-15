@@ -54,7 +54,15 @@
 }
 
 .text{
-  padding-left:20px
+  padding-left:20px;
+}
+
+.description{
+  color: #FFFFF0
+}
+
+.pad {
+  padding-left: 10px
 }
 
 .rectangle {

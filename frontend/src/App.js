@@ -270,7 +270,9 @@ function App() {
              location:  "",
              coordinates: [destCoords[0], destCoords[1]]
            }
-           markerList = []
+
+
+          markerList = []
           let newAttractions = response.data["route"]
           // add start/end points to the attraction list
           newAttractions.unshift(originNode)
@@ -306,6 +308,70 @@ function App() {
           console.log(error);
 
         });
+
+    }
+
+    const requestTrip2 = () => {
+
+      let originNode = {
+        id: "",
+        name: originText,
+        location:  "",
+        coordinates: [originCoords[0], originCoords[1]]
+      }
+
+      let destNode = {
+        id: "",
+        name: destText,
+        location:  "",
+        coordinates: [destCoords[0], destCoords[1]]
+      }
+
+      let stop1 = {
+        id: "tnhfDv5Il8EaGSXZGiuQGg",
+        name: "Garaje",
+        location:  ["", "San Francisco", "CA"],
+        rating: 4.2,
+        nodeType: "restaurant",
+        coordinates: [37.7817529521, -122.39612197]
+      }
+
+      let stop2 = {
+        id: "tnhfDv5Il8EaGSXZGiuQGg",
+        name: "Garaje",
+        location:  ["", "San Francisco", "CA"],
+        rating: 4.5,
+        nodeType: "restaurant",
+        coordinates: [37.7817529521, -122.39612197]
+      }
+
+      markerList = []
+      let newAttractions = [stop1, stop2]
+      // add start/end points to the attraction list
+      newAttractions.unshift(originNode)
+      newAttractions.push(destNode)
+
+      setAttractions(newAttractions)
+      for (let i = 1; i < newAttractions.length - 1; i++){
+        let marker = new google.maps.Marker({
+          position: {lat: newAttractions[i].coordinates[0], lng:newAttractions[i].coordinates[1] },
+          map: map,
+          icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+        })
+      let infoWindow = new google.maps.InfoWindow({
+        content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
+      })
+        marker.addListener('click', function(){
+        infoWindow.open(map, marker)
+        })
+        markerList.push(marker)
+
+      }
+
+      setOriginText(origin.value.structured_formatting)
+      setDestText(dest.label)
+
+      setSubmitted(1);
 
     }
 
@@ -471,7 +537,7 @@ function App() {
             </Grid>
 
         </div>
-        <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! < /AwesomeButton>
+        <AwesomeButton type = "secondary" onPress = {requestTrip2} > Get my trip! < /AwesomeButton>
         <div><h1>{response_message}</h1></div>
 
         <div class = "left">
@@ -481,7 +547,7 @@ function App() {
           //displaying the start
           if (i == 0){
             return (<p><div class = "container"><img src={start} alt={"start icon"} style={{width: '100px'}}/>
-          <h2 class = "text"> {originText} </h2></div>
+          <h2 class = "text"> {originText.main_text} </h2><p><br/> <h3> {originText.secondary_text}</h3></p></div>
           <br></br>
           <a href={"https://www.google.com/maps/dir/" +
           x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
@@ -497,11 +563,11 @@ function App() {
           }
           if (x.nodeType == "restaurant"){
             return (<div><p class = "rectangle"><img src={fork} alt={"restaurant"} style={{width: '100px'}}/>
-          <h2> {x.name}</h2>
+          <p class = "pad"><h2> {x.name}</h2>
+          <p class = "description"><br></br> {x.location[1]}, {x.location[2]}
           <br></br> {x.rating} stars
-          <br></br> {x.location[1]}, {x.location[2]}
           <br></br>
-          <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a>
+          <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a></p></p>
         </p>
         <br></br>
         <a href={"https://www.google.com/maps/dir/" +
