@@ -18,6 +18,8 @@ public class Shop implements AttractionNode {
   private double distance = 0;
   private boolean visit = false;
   private int numPrev = 0;
+  private String nodeType = "shop";
+
 
   /**
    * The constructor sets the fields
