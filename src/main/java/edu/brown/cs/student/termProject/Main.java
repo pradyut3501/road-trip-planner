@@ -70,7 +70,7 @@ public final class Main {
     categories.add("Museum");
     List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(new double[]{34.136181, -118.432375},
       new double[]{41.856898,
-        -71.385573}, categories, 5);
+        -71.385573}, categories, 5, 3);
     double[] boundBox = BoundingBox.findBoundingBoxBounds(new double[]{34.136181, -118.432375},
       new double[]{41.856898,
         -71.385573});
@@ -209,7 +209,7 @@ public final class Main {
          //NEED TO FIX SO THESE ARE NOT HARD SET START AND END
          List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
              new double[]{originLat,originLon},
-             new double[]{destLat, destLon}, categories, numStops);
+             new double[]{destLat, destLon}, categories, numStops, costPreference);
 
          //first get bounding box info
          System.out.println("number of nodes: " + attractions.size());

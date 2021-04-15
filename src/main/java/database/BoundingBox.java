@@ -39,14 +39,14 @@ public class BoundingBox {
    * box around the given positions
    */
   public static List<AttractionNode> findAttractionsBetween(
-          double[] coords1, double[] coords2, List<String> categories, int prefNumStops) {
+          double[] coords1, double[] coords2, List<String> categories, int prefNumStops, int costPref) {
 
     double[] boundingBoxBounds = findBoundingBoxBounds(coords1, coords2);
 
     double[] expandedBoundingBoxBounds = expandBoundingBoxBounds(boundingBoxBounds, 2.0);
 
     try {
-      return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories, prefNumStops);
+      return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories, prefNumStops, costPref);
     } catch (SQLException | IOException e) {
       throw new IllegalArgumentException("ERROR: Error while connecting to SQL database");
     }
@@ -109,7 +109,7 @@ public class BoundingBox {
    * @throws SQLException - if yelp database cannot be successfully queried
    */
   public static List<AttractionNode> findAttractionsWithinBoundingBox(
-          double[] boundingBoxBounds, List<String> categories, int prefNumStops)
+          double[] boundingBoxBounds, List<String> categories, int prefNumStops, int costPref)
       throws SQLException, IOException {
     Connection conn = Database.getYelpDatabaseConnection();
 
@@ -212,7 +212,7 @@ public class BoundingBox {
         URL url = new URL(
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" +
                 reqLon +
-                "&categories=" + "\"restaurant\",\"food\",\"bars\"");
+                "&categories=" + "\"restaurant\",\"food\",\"bars\"" + "&price=" + costPref);
         List<AttractionNode> nodes = yelpUrlToAttractions(url, "Restaurant");
         attractionsWithinBox.addAll(nodes);
       }
