@@ -210,11 +210,9 @@ public final class Main {
          //NEED TO FIX SO THESE ARE NOT HARD SET START AND END
          List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
              new double[]{originLat,originLon},
-             new double[]{destLat, destLon}, categories);
+             new double[]{destLat, destLon}, categories, numStops);
 
          //first get bounding box info
-         List<AttractionNode> fakeList = new ArrayList<>();
-        // Dijkstra dijkstra = new Dijkstra(fakeList);
          System.out.println("number of nodes: " + attractions.size());
          //HARD CODE NUMBER OF STOPS FOR NOW
          Dijkstra dijkstra = new Dijkstra(attractions, APICONNECTION);

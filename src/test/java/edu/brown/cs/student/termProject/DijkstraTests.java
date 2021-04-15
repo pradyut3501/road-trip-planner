@@ -17,7 +17,7 @@ public class DijkstraTests {
     categories.add("Restaurant");
     List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
         new double[]{41.83108984050821,-71.40029245994668},
-        new double[]{41.819930960017274, -71.41042819577497}, categories);
+        new double[]{41.819930960017274, -71.41042819577497}, categories, 4);
     System.out.println(attractions.size());
     System.out.println("^size");
     System.out.println(attractions.get(0).getName());

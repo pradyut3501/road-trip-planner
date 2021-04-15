@@ -40,14 +40,14 @@ public class BoundingBox {
    * box around the given positions
    */
   public static List<AttractionNode> findAttractionsBetween(
-          double[] coords1, double[] coords2, List<String> categories) {
+          double[] coords1, double[] coords2, List<String> categories, int prefNumStops) {
 
     double[] boundingBoxBounds = findBoundingBoxBounds(coords1, coords2);
 
     double[] expandedBoundingBoxBounds = expandBoundingBoxBounds(boundingBoxBounds, 2.0);
 
     try {
-      return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories);
+      return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories, prefNumStops);
     } catch (SQLException | IOException e) {
       throw new IllegalArgumentException("ERROR: Error while connecting to SQL database");
     }
@@ -110,7 +110,7 @@ public class BoundingBox {
    * @throws SQLException - if yelp database cannot be successfully queried
    */
   public static List<AttractionNode> findAttractionsWithinBoundingBox(
-          double[] boundingBoxBounds, List<String> categories)
+          double[] boundingBoxBounds, List<String> categories, int prefNumStops)
       throws SQLException, IOException {
     Connection conn = Database.getYelpDatabaseConnection();
 
@@ -179,55 +179,28 @@ public class BoundingBox {
     }
     prep.close();
     rs.close();
+    System.out.println(boundingBoxBounds[0]);
+    System.out.println(boundingBoxBounds[1]);
+    System.out.println(boundingBoxBounds[2]);
+    System.out.println(boundingBoxBounds[3]);
 
-    double startLat = boundingBoxBounds[0];
-    //[start lat, end lat, start lon, end lon]
-    int min = 1;
-    double latDist = 0;
-    double lonDist = 0;
-    //start lat > end lat
-    if (boundingBoxBounds[0] > boundingBoxBounds[1]) {
-      min = (int) Math.floor(boundingBoxBounds[0] - boundingBoxBounds[1]);
-      latDist = boundingBoxBounds[0] - boundingBoxBounds[1];
-    } else { //end lat >= start lat
-      min = (int) Math.floor(boundingBoxBounds[1] - boundingBoxBounds[0]);
-      latDist = boundingBoxBounds[1] - boundingBoxBounds[0];
-    }
-    //start lon > end lon
-    if (boundingBoxBounds[2] > boundingBoxBounds[3]) {
-      lonDist = boundingBoxBounds[2] - boundingBoxBounds[3];
-      if (min > (int) Math.floor(boundingBoxBounds[2] - boundingBoxBounds[3])) {
-        min = (int) Math.floor(boundingBoxBounds[2] - boundingBoxBounds[3]);
-      }
-    } else { //end lon > start lon
-      lonDist = boundingBoxBounds[3] - boundingBoxBounds[2];
-      if (min > (int) Math.floor(boundingBoxBounds[3] - boundingBoxBounds[2])) {
-          min = (int) Math.floor(boundingBoxBounds[3] - boundingBoxBounds[2]);
-        }
-    }
-
-    for (int i = 0; i < min; i++) {
+    for (int i = 0; i < (prefNumStops + 2); i++) {
+      System.out.println(i);
       double reqLat = 0;
       double reqLon = 0;
       //start lat > end lat
       if (boundingBoxBounds[0] > boundingBoxBounds[1]) {
-        reqLat = (latDist / min )*i + boundingBoxBounds[1];
+        reqLat = ((boundingBoxBounds[0] - boundingBoxBounds[1]) / (prefNumStops +2) )*i + boundingBoxBounds[1];
       } else {
-        reqLat = (latDist / min )*i + boundingBoxBounds[0];
+        reqLat = ((boundingBoxBounds[1] - boundingBoxBounds[0]) / (prefNumStops +2) )*i + boundingBoxBounds[0];
       }
       //start lon > end lon
       if (boundingBoxBounds[2] > boundingBoxBounds[3]) {
-        reqLon = (lonDist / min )*i + boundingBoxBounds[3];
+        reqLon = ((boundingBoxBounds[2] - boundingBoxBounds[3]) / (prefNumStops +2))*i + boundingBoxBounds[3];
       } else {
-        reqLon = (lonDist / min )*i + boundingBoxBounds[2];
+        reqLon = ((boundingBoxBounds[3] - boundingBoxBounds[2]) / (prefNumStops +2) )*i + boundingBoxBounds[2];
       }
-      System.out.println(boundingBoxBounds[0]);
-      System.out.println(boundingBoxBounds[1]);
-      System.out.println(boundingBoxBounds[2]);
-      System.out.println(boundingBoxBounds[3]);
-      System.out.println(reqLat);
-      System.out.println(reqLon);
-      System.out.println("--");
+
       URL url = new URL(
           "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon);
       HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -241,15 +214,14 @@ public class BoundingBox {
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = in.readLine()) != null) {
-          System.out.println(line);
           sb.append(line);
         }
         JSONObject json = new JSONObject(sb.toString());
         System.out.println("buffered reader");
         System.out.println(json.getInt("total"));
         if (json.getInt("total") != 0) {
-          for (int j = 0; i < json.getInt("total"); i++) {
-            System.out.println(json.getJSONArray("businesses"));
+          for (int j = 0; j < json.getInt("total"); j++) {
+//            System.out.println(json.getJSONArray("businesses"));
 
           }
         }
@@ -258,7 +230,7 @@ public class BoundingBox {
           System.out.println("ERROR: failed to open input stream");
           e.printStackTrace();
         }
-      }
+    }
 
 
     return attractionsWithinBox;
