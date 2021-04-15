@@ -5,7 +5,16 @@ import attractions.Park;
 import edu.brown.cs.student.termProject.Restaurant;
 import attractions.Shop;
 import edu.brown.cs.student.termProject.AttractionNode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,7 +48,7 @@ public class BoundingBox {
 
     try {
       return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories);
-    } catch (SQLException e) {
+    } catch (SQLException | IOException e) {
       throw new IllegalArgumentException("ERROR: Error while connecting to SQL database");
     }
   }
@@ -101,7 +110,8 @@ public class BoundingBox {
    * @throws SQLException - if yelp database cannot be successfully queried
    */
   public static List<AttractionNode> findAttractionsWithinBoundingBox(
-          double[] boundingBoxBounds, List<String> categories) throws SQLException {
+          double[] boundingBoxBounds, List<String> categories)
+      throws SQLException, IOException {
     Connection conn = Database.getYelpDatabaseConnection();
 
     String query = "SELECT * FROM yelp_business " +
@@ -169,6 +179,87 @@ public class BoundingBox {
     }
     prep.close();
     rs.close();
+
+    double startLat = boundingBoxBounds[0];
+    //[start lat, end lat, start lon, end lon]
+    int min = 1;
+    double latDist = 0;
+    double lonDist = 0;
+    //start lat > end lat
+    if (boundingBoxBounds[0] > boundingBoxBounds[1]) {
+      min = (int) Math.floor(boundingBoxBounds[0] - boundingBoxBounds[1]);
+      latDist = boundingBoxBounds[0] - boundingBoxBounds[1];
+    } else { //end lat >= start lat
+      min = (int) Math.floor(boundingBoxBounds[1] - boundingBoxBounds[0]);
+      latDist = boundingBoxBounds[1] - boundingBoxBounds[0];
+    }
+    //start lon > end lon
+    if (boundingBoxBounds[2] > boundingBoxBounds[3]) {
+      lonDist = boundingBoxBounds[2] - boundingBoxBounds[3];
+      if (min > (int) Math.floor(boundingBoxBounds[2] - boundingBoxBounds[3])) {
+        min = (int) Math.floor(boundingBoxBounds[2] - boundingBoxBounds[3]);
+      }
+    } else { //end lon > start lon
+      lonDist = boundingBoxBounds[3] - boundingBoxBounds[2];
+      if (min > (int) Math.floor(boundingBoxBounds[3] - boundingBoxBounds[2])) {
+          min = (int) Math.floor(boundingBoxBounds[3] - boundingBoxBounds[2]);
+        }
+    }
+
+    for (int i = 0; i < min; i++) {
+      double reqLat = 0;
+      double reqLon = 0;
+      //start lat > end lat
+      if (boundingBoxBounds[0] > boundingBoxBounds[1]) {
+        reqLat = (latDist / min )*i + boundingBoxBounds[1];
+      } else {
+        reqLat = (latDist / min )*i + boundingBoxBounds[0];
+      }
+      //start lon > end lon
+      if (boundingBoxBounds[2] > boundingBoxBounds[3]) {
+        reqLon = (lonDist / min )*i + boundingBoxBounds[3];
+      } else {
+        reqLon = (lonDist / min )*i + boundingBoxBounds[2];
+      }
+      System.out.println(boundingBoxBounds[0]);
+      System.out.println(boundingBoxBounds[1]);
+      System.out.println(boundingBoxBounds[2]);
+      System.out.println(boundingBoxBounds[3]);
+      System.out.println(reqLat);
+      System.out.println(reqLon);
+      System.out.println("--");
+      URL url = new URL(
+          "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon);
+      HttpURLConnection con = (HttpURLConnection) url.openConnection();
+      con.setRequestMethod("GET");
+      String yelpKey =
+          "PlFxZHha-zmiQvrMQUb12P0uD9s_GZRJzzGZqVSJFKgR4iDXj1aBwOBuMc2DBFYkZODPw2V5PaJBMapJ5WA9PA3Lx2cGXq9FkzzT45m9t9I9gsXDdGCwQnuYu6J3YHYx";
+      con.setRequestProperty("Authorization", "Bearer " + yelpKey);
+      BufferedReader in = null;
+      try {
+        in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = in.readLine()) != null) {
+          System.out.println(line);
+          sb.append(line);
+        }
+        JSONObject json = new JSONObject(sb.toString());
+        System.out.println("buffered reader");
+        System.out.println(json.getInt("total"));
+        if (json.getInt("total") != 0) {
+          for (int j = 0; i < json.getInt("total"); i++) {
+            System.out.println(json.getJSONArray("businesses"));
+
+          }
+        }
+
+      } catch (IOException | JSONException e) {
+          System.out.println("ERROR: failed to open input stream");
+          e.printStackTrace();
+        }
+      }
+
 
     return attractionsWithinBox;
   }
