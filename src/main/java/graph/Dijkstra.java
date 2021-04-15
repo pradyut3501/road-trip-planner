@@ -2,11 +2,19 @@ package graph;
 
 
 import attractions.Park;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.LatLng;
 import edu.brown.cs.student.termProject.AttractionNode;
 import edu.brown.cs.student.termProject.Constants;
-import org.w3c.dom.Attr;
 
+import java.io.IOException;
 import java.util.*;
+
 
 /**
  * Th Dijkstra class performs Dijkstra's algorithm on a list of attraction nodes
@@ -22,8 +30,10 @@ public class Dijkstra {
 
   private double[] preferredStop;
   private int costPreference;
+  private GeoApiContext connection;
 
-  public Dijkstra(List<AttractionNode> n){
+  public Dijkstra(List<AttractionNode> n, GeoApiContext Apiconnection) {
+    connection = Apiconnection;
     nodes = n;
     visited = new HashMap<>();
     distances = new HashMap<>();
@@ -31,7 +41,7 @@ public class Dijkstra {
     connectionChunks = new HashMap<>();
     chunkLookup = new HashMap<>();
   }
-  public List<AttractionNode> execute(double[] starting, double[] ending, int numStops){
+  public List<AttractionNode> execute(double[] starting, double[] ending, int numStops) {
     double pathDistance = distanceFormula(starting[0], starting[1], ending[0], ending[1]);
     visited = new HashMap<>();
     distances = new HashMap<>();
@@ -108,18 +118,37 @@ public class Dijkstra {
   /**
    * The distance formula will use the google maps API to compute the distance between a node and
    * the path
+   * @return driving distance in Meters
    */
-  private Double distanceFormula(double lat1,double long1, double lat2, double long2){
-    double latDist = lat2 - lat1;
-    double longDist = long2 - long1;
-    latDist = Math.toRadians(latDist);
-    longDist = Math.toRadians(longDist);
-    double la1 = Math.toRadians(lat1);
-    double la2 = Math.toRadians(lat2);
-    double a = Math.pow(Math.sin(latDist / 2), 2) + Math.cos(la1) * Math.cos(la2)
-      * Math.pow(Math.sin((longDist / 2)), 2);
-    return (2.0 * Constants.EARTH_RADIUS * Math.asin(Math.sqrt(a)));
-  }
+  private double distanceFormula(double lat1, double long1, double lat2, double long2) {
+//    double latDist = lat2 - lat1;
+//    double longDist = long2 - long1;
+//    latDist = Math.toRadians(latDist);
+//    longDist = Math.toRadians(longDist);
+//    double la1 = Math.toRadians(lat1);
+//    double la2 = Math.toRadians(lat2);
+//    double a = Math.pow(Math.sin(latDist / 2), 2) + Math.cos(la1) * Math.cos(la2)
+//      * Math.pow(Math.sin((longDist / 2)), 2);
+//    return (2.0 * Constants.EARTH_RADIUS * Math.asin(Math.sqrt(a)));
+    try {
+      LatLng start = new LatLng(lat1,long1);
+      LatLng end = new LatLng(lat2, long2);
+      DirectionsApiRequest req = DirectionsApi.newRequest(connection)
+          .origin(start).destination(end).language("en");
+
+      DirectionsResult response = req.await();
+      if (response.routes.length > 0) {
+        double dist = 0;
+        for (int i =0; i < response.routes[0].legs.length; i++) {
+          dist += response.routes[0].legs[i].distance.inMeters;
+        }
+        return dist;
+      }
+    } catch (ApiException | InterruptedException | IOException e) {
+      e.printStackTrace();
+    }
+    return 0.0;
+   }
 
   private List<AttractionNode> getConnectedNodes(AttractionNode node,
                                                  AttractionNode end, double distance,int numStops){
@@ -150,10 +179,10 @@ public class Dijkstra {
           node.getCoordinates()[0], node.getCoordinates()[1]);
         double distance2 = distanceFormula(o2.getCoordinates()[0], o2.getCoordinates()[1],
           node.getCoordinates()[0], node.getCoordinates()[1]);
-        if (Math.abs(distance1-spacing) > Math.abs(distance2-spacing)){
+        if (Math.abs(distance1-spacing) > Math.abs(distance2-spacing)) {
           return 1;
         }
-        if (Math.abs(distance2-spacing) > Math.abs(distance1-spacing)){
+        if (Math.abs(distance2-spacing) > Math.abs(distance1-spacing)) {
           return -1;
         }
         else{
@@ -164,10 +193,10 @@ public class Dijkstra {
     if (node == end){
       System.out.println("The connected nodes to the end re" + connects);
     }
-    if(connects.size()>=Constants.NUM_CONNECTIONS){
+    if(connects.size()>=Constants.NUM_CONNECTIONS) {
       return connects.subList(0,Constants.NUM_CONNECTIONS);
     }
-   else if(connects.size() >= 1){
+   else if(connects.size() >= 1) {
      return connects;
     }
    else{
@@ -175,9 +204,14 @@ public class Dijkstra {
     }
   }
 
+  /**
+   * Public method to set the user's preferences of stop types, as indicated in the front end.
+   * Called in Main.java from the routeHandler.
+   * @param prefStop list of how much each type of stop is preferred
+   * @param costPref user's preference between $, $$, $$$
+   */
   public void setPreferences(double[] prefStop, int costPref){
     preferredStop = prefStop;
     costPreference = costPref;
-
   }
 }

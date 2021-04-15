@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.maps.GeoApiContext;
 import database.BoundingBox;
 import database.Database;
 import graph.Dijkstra;
@@ -33,6 +34,8 @@ public final class Main {
 
   private static final int DEFAULT_PORT = 4567;
   private static final int TIMER_DELAY = 2000;
+  private static final GeoApiContext
+      APICONNECTION = new GeoApiContext.Builder().apiKey("AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c").build();
 
   // map of latest checkins: maps user id to their latest checkins
 
@@ -214,7 +217,7 @@ public final class Main {
         // Dijkstra dijkstra = new Dijkstra(fakeList);
          System.out.println("number of nodes: " + attractions.size());
          //HARD CODE NUMBER OF STOPS FOR NOW
-         Dijkstra dijkstra = new Dijkstra(attractions);
+         Dijkstra dijkstra = new Dijkstra(attractions, APICONNECTION);
          dijkstra.setPreferences(preferredStop, costPreference);
          System.out.println("Categories");
          for(String s: categories){

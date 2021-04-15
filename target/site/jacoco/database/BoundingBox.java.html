@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BoundingBox.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">termProject</a> &gt; <a href="index.source.html" class="el_package">database</a> &gt; <span class="el_source">BoundingBox.java</span></div><h1>BoundingBox.java</h1><pre class="source lang-java linenums">package database;
+
+import attractions.Museum;
+import attractions.Park;
+import edu.brown.cs.student.termProject.Restaurant;
+import attractions.Shop;
+import edu.brown.cs.student.termProject.AttractionNode;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Class with static functions to find all the attractions within a bounding box
+ * around two sets of coordinates.
+ */
+<span class="nc" id="L20">public class BoundingBox {</span>
+
+  /**
+   * Creates a bounding box around the given starting and end positions,
+   * and returns a list of the AttractionNodes from the yelp-database within
+   * this box that are of the given categories.
+   *
+   * @param coords1 - [lat, lon] of the start position
+   * @param coords2 - [lat, lon] of the end position
+   * @param categories - list of acceptable attraction categories
+   * @return list of attraction nodes of the given categories within a
+   * box around the given positions
+   */
+  public static List&lt;AttractionNode&gt; findAttractionsBetween(
+          double[] coords1, double[] coords2, List&lt;String&gt; categories) {
+
+<span class="fc" id="L36">    double[] boundingBoxBounds = findBoundingBoxBounds(coords1, coords2);</span>
+
+<span class="fc" id="L38">    double[] expandedBoundingBoxBounds = expandBoundingBoxBounds(boundingBoxBounds, 2.0);</span>
+
+    try {
+<span class="fc" id="L41">      return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories);</span>
+<span class="nc" id="L42">    } catch (SQLException e) {</span>
+<span class="nc" id="L43">      throw new IllegalArgumentException(&quot;ERROR: Error while connecting to SQL database&quot;);</span>
+    }
+  }
+
+  /**
+   * Finds the bounds for a bounding box to be created around the given coordinates.
+   *
+   * @param coords1 - [lat, lon] of the first position
+   * @param coords2 - [lat, lon] of the second position
+   * @return [start lat, end lat, start lon, end lon] of the bounding box
+   */
+  public static double[] findBoundingBoxBounds(double[] coords1, double[] coords2) {
+<span class="fc" id="L55">    double[] bounds = new double[4];</span>
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (coords1[0] &lt; coords2[0]) {</span>
+<span class="fc" id="L58">      bounds[0] = coords1[0];</span>
+<span class="fc" id="L59">      bounds[1] = coords2[0];</span>
+    } else {
+<span class="fc" id="L61">      bounds[0] = coords2[0];</span>
+<span class="fc" id="L62">      bounds[1] = coords1[0];</span>
+    }
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (coords1[1] &lt; coords2[1]) {</span>
+<span class="fc" id="L66">      bounds[2] = coords1[1];</span>
+<span class="fc" id="L67">      bounds[3] = coords2[1];</span>
+    } else {
+<span class="fc" id="L69">      bounds[2] = coords2[1];</span>
+<span class="fc" id="L70">      bounds[3] = coords1[1];</span>
+    }
+
+<span class="fc" id="L73">    return bounds;</span>
+  }
+
+  /**
+   * Extends the given bounding box expansionFactor units in every direction.
+   *
+   * @param boundingBoxBounds - original bounding box to be expanded
+   * @param expansionFactor - number of units to expand the bounding box by in every direction
+   * @return [start lat, end lat, start lon, end lon] of the expanded bounding box
+   */
+  public static double[] expandBoundingBoxBounds(double[] boundingBoxBounds, double expansionFactor) {
+<span class="fc" id="L84">    double[] expandedBoundingBoxBounds = new double[4];</span>
+
+<span class="fc" id="L86">    expandedBoundingBoxBounds[0] = boundingBoxBounds[0] - expansionFactor;</span>
+<span class="fc" id="L87">    expandedBoundingBoxBounds[1] = boundingBoxBounds[1] + expansionFactor;</span>
+<span class="fc" id="L88">    expandedBoundingBoxBounds[2] = boundingBoxBounds[2] - expansionFactor;</span>
+<span class="fc" id="L89">    expandedBoundingBoxBounds[3] = boundingBoxBounds[3] + expansionFactor;</span>
+
+<span class="fc" id="L91">    return expandedBoundingBoxBounds;</span>
+  }
+
+  /**
+   * Returns a list of all the attractions in the yelp database within the given
+   * bounding box that are of the given categories.
+   *
+   * @param boundingBoxBounds - [start lat, end lat, start lon, end lon] of the bounding box
+   * @param categories - list of acceptable attraction categories
+   * @return list of attraction nodes of the given categories within the given bounding box
+   * @throws SQLException - if yelp database cannot be successfully queried
+   */
+  public static List&lt;AttractionNode&gt; findAttractionsWithinBoundingBox(
+          double[] boundingBoxBounds, List&lt;String&gt; categories) throws SQLException {
+<span class="fc" id="L105">    Connection conn = Database.getYelpDatabaseConnection();</span>
+
+<span class="fc" id="L107">    String query = &quot;SELECT * FROM yelp_business &quot; +</span>
+            &quot;WHERE (latitude BETWEEN ? and ?) &quot; +
+            &quot;AND (longitude BETWEEN ? AND ?)&quot; +
+            &quot;AND (stars &gt; 3.0)&quot; +
+            &quot;AND (review_count &gt; 10)&quot;;
+
+<span class="fc" id="L113">    PreparedStatement prep = conn.prepareStatement(query);</span>
+<span class="fc" id="L114">    prep.setDouble(1, boundingBoxBounds[0]);</span>
+<span class="fc" id="L115">    prep.setDouble(2, boundingBoxBounds[1]);</span>
+<span class="fc" id="L116">    prep.setDouble(3, boundingBoxBounds[2]);</span>
+<span class="fc" id="L117">    prep.setDouble(4, boundingBoxBounds[3]);</span>
+
+<span class="fc" id="L119">    ResultSet rs = prep.executeQuery();</span>
+
+<span class="fc" id="L121">    List&lt;AttractionNode&gt; attractionsWithinBox = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L123" title="All 2 branches covered.">    while (rs.next()) {</span>
+
+<span class="fc" id="L125">      String id = rs.getString(&quot;business_id&quot;);</span>
+<span class="fc" id="L126">      String name = rs.getString(&quot;name&quot;);</span>
+
+<span class="fc" id="L128">      String address = rs.getString(&quot;address&quot;);</span>
+<span class="fc" id="L129">      String city = rs.getString(&quot;city&quot;);</span>
+<span class="fc" id="L130">      String state = rs.getString(&quot;state&quot;);</span>
+<span class="fc" id="L131">      String postalCode = rs.getString(&quot;postal_code&quot;);</span>
+<span class="fc" id="L132">      String[] location = new String[]{address, city, state, postalCode};</span>
+
+<span class="fc" id="L134">      double lat = rs.getDouble(&quot;latitude&quot;);</span>
+<span class="fc" id="L135">      double lon = rs.getDouble(&quot;longitude&quot;);</span>
+<span class="fc" id="L136">      double[] coords = new double[]{lat, lon};</span>
+
+<span class="fc" id="L138">      double price = 0; //TODO: Decide on what to do for price</span>
+//      String attributesList = rs.getString(&quot;attributes&quot;);
+//      if (attributesList.contains(&quot;RestaurantsPriceRange2&quot;)) {
+//        System.out.println(&quot;HERE&quot;);
+//        System.out.println(attributesList);
+//      }
+
+<span class="fc" id="L145">      double rating = rs.getDouble(&quot;stars&quot;);</span>
+
+<span class="fc" id="L147">      String categoriesList = rs.getString(&quot;categories&quot;);</span>
+
+<span class="fc bfc" id="L149" title="All 2 branches covered.">      if ((categoriesList.contains(&quot;Restaurants&quot;)</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">              || categoriesList.contains(&quot;Food&quot;)</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">              || categoriesList.contains(&quot;Bars&quot;))</span>
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">              &amp;&amp; categories.contains(&quot;Restaurant&quot;)) {</span>
+<span class="fc" id="L153">        AttractionNode nextAttraction = new Restaurant(</span>
+<span class="fc" id="L154">                id, name, location, coords, price, rating);</span>
+<span class="fc" id="L155">        attractionsWithinBox.add(nextAttraction);</span>
+<span class="pc bpc" id="L156" title="1 of 4 branches missed.">      } else if (categoriesList.contains(&quot;Museums&quot;) &amp;&amp; categories.contains(&quot;Museum&quot;)) {</span>
+<span class="nc" id="L157">        AttractionNode nextAttraction = new Museum(</span>
+<span class="nc" id="L158">                id, name, location, coords, price, rating);</span>
+<span class="nc" id="L159">        attractionsWithinBox.add(nextAttraction);</span>
+<span class="pc bpc" id="L160" title="1 of 4 branches missed.">      } else if (categoriesList.contains(&quot;Parks&quot;) &amp;&amp; categories.contains(&quot;Park&quot;)) {</span>
+<span class="fc" id="L161">        AttractionNode nextAttraction = new Park(</span>
+<span class="fc" id="L162">                id, name, location, coords, price, rating);</span>
+<span class="fc" id="L163">        attractionsWithinBox.add(nextAttraction);</span>
+<span class="pc bpc" id="L164" title="1 of 4 branches missed.">      } else if (categoriesList.contains(&quot;Shopping&quot;) &amp;&amp; categories.contains(&quot;Shop&quot;)) {</span>
+<span class="nc" id="L165">        AttractionNode nextAttraction = new Shop(</span>
+<span class="nc" id="L166">                id, name, location, coords, price, rating);</span>
+<span class="nc" id="L167">        attractionsWithinBox.add(nextAttraction);</span>
+      }
+<span class="fc" id="L169">    }</span>
+<span class="fc" id="L170">    prep.close();</span>
+<span class="fc" id="L171">    rs.close();</span>
+
+<span class="fc" id="L173">    return attractionsWithinBox;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
