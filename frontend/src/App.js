@@ -123,6 +123,10 @@ function App() {
     costPreference = 3
   }
 
+  function setDollar4(){
+    costPreference = 4
+  }
+
   function setStops(value){
     stops = value
     console.log(stops)
@@ -406,6 +410,7 @@ function App() {
           <input type="radio" value="$" name="budget" onChange={setDollar1} checked/> $
           <input type="radio" value="$$" name="budget" onChange={setDollar2}/> $$
           <input type="radio" value="$$$" name="budget" onChange={setDollar3}/> $$$
+          <input type="radio" value="$$$$" name="budget" onChange={setDollar4}/> $$$$
         </div>
 
       <br></br>
