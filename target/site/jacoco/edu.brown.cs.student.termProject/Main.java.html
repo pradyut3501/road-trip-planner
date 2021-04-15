@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">termProject</a> &gt; <a href="index.source.html" class="el_package">edu.brown.cs.student.termProject</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">package edu.brown.cs.student.termProject;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import database.BoundingBox;
+import database.Database;
+import graph.Dijkstra;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import spark.*;
+
+import spark.template.freemarker.FreeMarkerEngine;
+
+import com.google.common.collect.ImmutableMap;
+
+import freemarker.template.Configuration;
+
+import org.json.JSONObject;
+import com.google.gson.Gson;
+
+
+/**
+ * The Main class of our project. This is where execution begins.
+ */
+public final class Main {
+
+  private static final int DEFAULT_PORT = 4567;
+  private static final int TIMER_DELAY = 2000;
+
+  // map of latest checkins: maps user id to their latest checkins
+
+  /**
+   * The initial method called when execution begins.
+   * @param args An array of command line arguments
+   */
+  public static void main(String[] args) {
+<span class="nc" id="L44">    new Main(args).run();</span>
+<span class="nc" id="L45">  }</span>
+
+  private final String[] args;
+
+  /**
+   * main constructor.
+   * @param args args.
+   */
+<span class="nc" id="L53">  private Main(String[] args) {</span>
+<span class="nc" id="L54">    this.args = args;</span>
+<span class="nc" id="L55">  }</span>
+
+  /**
+   *
+   */
+  private void run() {
+<span class="nc" id="L61">    System.out.println(&quot;You good&quot;);</span>
+<span class="nc" id="L62">    Database.setYelpDatabaseConnection();</span>
+
+    /*
+    List&lt;String&gt; categories = new ArrayList&lt;&gt;();
+    categories.add(&quot;Restaurant&quot;);
+    categories.add(&quot;Park&quot;);
+    categories.add(&quot;Museum&quot;);
+    List&lt;AttractionNode&gt; attractions = BoundingBox.findAttractionsBetween(new double[]{34.136181, -118.432375},
+      new double[]{41.856898,
+        -71.385573}, categories);
+    double[] boundBox = BoundingBox.findBoundingBoxBounds(new double[]{34.136181, -118.432375},
+      new double[]{41.856898,
+        -71.385573});
+    System.out.println(boundBox);
+
+    System.out.println(attractions.size());
+    Dijkstra dij = new Dijkstra(attractions);
+    List&lt;AttractionNode&gt; path = dij.execute(new double[]{34.136181, -118.432375},
+      new double[]{41.856898,
+        -71.385573}, 4, boundBox);
+    for (AttractionNode n: path){
+      System.out.println(n.getName());
+    }*/
+
+
+    // Parse command line arguments
+<span class="nc" id="L88">    OptionParser parser = new OptionParser();</span>
+<span class="nc" id="L89">    parser.accepts(&quot;gui&quot;);</span>
+<span class="nc" id="L90">    parser.accepts(&quot;port&quot;).withRequiredArg().ofType(Integer.class)</span>
+<span class="nc" id="L91">        .defaultsTo(DEFAULT_PORT);</span>
+<span class="nc" id="L92">    OptionSet options = parser.parse(args);</span>
+
+<span class="nc bnc" id="L94" title="All 2 branches missed.">    if (options.has(&quot;gui&quot;)) {</span>
+<span class="nc" id="L95">      runSparkServer((int) options.valueOf(&quot;port&quot;));</span>
+    }
+
+<span class="nc" id="L98">  }</span>
+
+  /**
+   * creates free marker engine.
+   * @return free marker engine
+   */
+  private static FreeMarkerEngine createEngine() {
+<span class="nc" id="L105">    Configuration config = new Configuration();</span>
+<span class="nc" id="L106">    File templates = new File(&quot;src/main/resources/spark/template/freemarker&quot;);</span>
+    try {
+<span class="nc" id="L108">      config.setDirectoryForTemplateLoading(templates);</span>
+<span class="nc" id="L109">    } catch (IOException ioe) {</span>
+<span class="nc" id="L110">      System.out.printf(&quot;ERROR: Unable use %s for template loading.%n&quot;,</span>
+          templates);
+<span class="nc" id="L112">      System.exit(1);</span>
+<span class="nc" id="L113">    }</span>
+<span class="nc" id="L114">    return new FreeMarkerEngine(config);</span>
+  }
+
+  /**
+   * runs the spark server.
+   * @param port given number
+   */
+  private void runSparkServer(int port) {
+<span class="nc" id="L122">    Spark.port(port);</span>
+<span class="nc" id="L123">    Spark.externalStaticFileLocation(&quot;src/main/resources/static&quot;);</span>
+<span class="nc" id="L124">    Spark.exception(Exception.class, new ExceptionPrinter());</span>
+
+
+<span class="nc" id="L127">    Spark.options(&quot;/*&quot;, (request, response) -&gt; {</span>
+<span class="nc" id="L128">      String accessControlRequestHeaders = request.headers(&quot;Access-Control-Request-Headers&quot;);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">      if (accessControlRequestHeaders != null) {</span>
+<span class="nc" id="L130">        response.header(&quot;Access-Control-Allow-Headers&quot;, accessControlRequestHeaders);</span>
+      }
+
+<span class="nc" id="L133">      String accessControlRequestMethod = request.headers(&quot;Access-Control-Request-Method&quot;);</span>
+
+<span class="nc bnc" id="L135" title="All 2 branches missed.">      if (accessControlRequestMethod != null) {</span>
+<span class="nc" id="L136">        response.header(&quot;Access-Control-Allow-Methods&quot;, accessControlRequestMethod);</span>
+      }
+
+<span class="nc" id="L139">      return &quot;OK&quot;;</span>
+    });
+
+<span class="nc" id="L142">    FreeMarkerEngine freeMarker = createEngine();</span>
+
+    // Setup Spark Routes
+<span class="nc" id="L145">    Spark.before((request, response) -&gt; response.header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;));</span>
+<span class="nc" id="L146">    Spark.exception(Exception.class, new ExceptionPrinter());</span>
+<span class="nc" id="L147">    Spark.post(&quot;/route&quot;, new RouteHandler());</span>
+<span class="nc" id="L148">  }</span>
+
+  /**
+   * Handle requests to the front page of our Stars website.
+   */
+  private static class FrontHandler implements TemplateViewRoute {
+    @Override
+    public ModelAndView handle(Request req, Response res) {
+<span class="nc" id="L156">      Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;title&quot;,</span>
+          &quot;Stars: Query the database&quot;, &quot;answer&quot;, &quot; &quot;);
+<span class="nc" id="L158">      return new ModelAndView(variables, &quot;query.ftl&quot;);</span>
+    }
+  }
+
+  private static class Test{
+<span class="nc" id="L163">    public Test(){</span>
+
+<span class="nc" id="L165">    }</span>
+  }
+
+
+  /**
+   * Class that handles getting nearest traversable node for maps3 frontend.
+   */
+   private static class RouteHandler implements Route {
+     @Override
+     public Object handle(Request request, Response response) throws Exception {
+
+<span class="nc" id="L176">       List&lt;AttractionNode&gt; route = new ArrayList&lt;&gt;();</span>
+       try{
+<span class="nc" id="L178">         JSONObject data = new JSONObject(request.body());</span>
+         //preferences which will be used for value heuristic
+<span class="nc" id="L180">         int costPreference = data.getInt(&quot;costPref&quot;);</span>
+<span class="nc" id="L181">         double restaurantValue = data.getDouble(&quot;restValue&quot;);</span>
+<span class="nc" id="L182">         double museumValue = data.getDouble(&quot;musValue&quot;);</span>
+<span class="nc" id="L183">         double parkValue = data.getDouble(&quot;parkValue&quot;);</span>
+<span class="nc" id="L184">         double shopValue = data.getDouble(&quot;shopValue&quot;);</span>
+<span class="nc" id="L185">         double[] preferredStop = {museumValue, parkValue, restaurantValue, shopValue};</span>
+<span class="nc" id="L186">         double originLat = data.getDouble(&quot;originLat&quot;);</span>
+<span class="nc" id="L187">         double originLon = data.getDouble(&quot;originLon&quot;);</span>
+<span class="nc" id="L188">         double destLat = data.getDouble(&quot;destLat&quot;);</span>
+<span class="nc" id="L189">         double destLon = data.getDouble(&quot;destLon&quot;);</span>
+<span class="nc" id="L190">         double[] originCoords = new double[]{originLat, originLon};</span>
+<span class="nc" id="L191">         double[] destCoords = new double[]{destLat, destLon};</span>
+<span class="nc" id="L192">         int numStops = data.getInt(&quot;stopPref&quot;);</span>
+
+<span class="nc" id="L194">         List&lt;String&gt; categories = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">         if (restaurantValue &gt;= 0.3) {</span>
+<span class="nc" id="L196">           categories.add(&quot;Restaurant&quot;);</span>
+         }
+<span class="nc bnc" id="L198" title="All 2 branches missed.">         if (parkValue &gt;= 0.3) {</span>
+<span class="nc" id="L199">           categories.add(&quot;Park&quot;);</span>
+         }
+<span class="nc bnc" id="L201" title="All 2 branches missed.">         if (museumValue &gt;= 0.3) {</span>
+<span class="nc" id="L202">           categories.add(&quot;Museum&quot;);</span>
+         }
+<span class="nc bnc" id="L204" title="All 2 branches missed.">         if (shopValue &gt;= 0.3){</span>
+<span class="nc" id="L205">           categories.add(&quot;Shop&quot;);</span>
+         }
+         //NEED TO FIX SO THESE ARE NOT HARD SET START AND END
+<span class="nc" id="L208">         List&lt;AttractionNode&gt; attractions = BoundingBox.findAttractionsBetween(</span>
+             new double[]{originLat,originLon},
+             new double[]{destLat, destLon}, categories);
+
+         //first get bounding box info
+<span class="nc" id="L213">         List&lt;AttractionNode&gt; fakeList = new ArrayList&lt;&gt;();</span>
+        // Dijkstra dijkstra = new Dijkstra(fakeList);
+<span class="nc" id="L215">         System.out.println(&quot;number of nodes: &quot; + attractions.size());</span>
+         //HARD CODE NUMBER OF STOPS FOR NOW
+<span class="nc" id="L217">         Dijkstra dijkstra = new Dijkstra(attractions);</span>
+<span class="nc" id="L218">         dijkstra.setPreferences(preferredStop, costPreference);</span>
+<span class="nc" id="L219">         System.out.println(&quot;Categories&quot;);</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">         for(String s: categories){</span>
+<span class="nc" id="L221">           System.out.println(s);</span>
+<span class="nc" id="L222">         }</span>
+<span class="nc" id="L223">         System.out.println(&quot;PreferedStop is: &quot; + preferredStop);</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">         for(double d: preferredStop){</span>
+<span class="nc" id="L225">           System.out.println(d);</span>
+         }
+<span class="nc" id="L227">         System.out.println(&quot;CostPreference is: &quot; + costPreference);</span>
+
+         //HARD CODED START AND END FOR DIJKSTRA FOR NOW
+<span class="nc" id="L230">         double[] boxBounds = BoundingBox.findBoundingBoxBounds(originCoords, destCoords);</span>
+<span class="nc" id="L231">         route = dijkstra.execute(new double[]{originLat, originLon},</span>
+           new double[]{destLat, destLon}, numStops);
+<span class="nc" id="L233">         System.out.println(&quot;Dijkstra's Route&quot;);</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">         for (AttractionNode r: route){</span>
+<span class="nc" id="L235">           System.out.println(r.getName() + &quot; &quot; + r.getLocation()[0] + &quot; &quot;+ r.getLocation()[2]);</span>
+<span class="nc" id="L236">         }</span>
+
+<span class="nc" id="L238">       } catch(Exception e){</span>
+<span class="nc" id="L239">         System.out.println(&quot;problem with dijkstras&quot;);</span>
+<span class="nc" id="L240">         e.printStackTrace();</span>
+<span class="nc" id="L241">       }</span>
+
+<span class="nc" id="L243">       Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;route&quot;, route);</span>
+
+<span class="nc" id="L245">       System.out.println(variables);</span>
+       try{
+<span class="nc" id="L247">         System.out.println(new Gson().toJson(variables));</span>
+<span class="nc" id="L248">       } catch(Exception e) {</span>
+<span class="nc" id="L249">         System.out.println(&quot;something went wrong here&quot;);</span>
+<span class="nc" id="L250">         e.printStackTrace();</span>
+<span class="nc" id="L251">       }</span>
+<span class="nc" id="L252">       return new Gson().toJson(variables);</span>
+     }
+   }
+
+  /**
+   * Display an error page when an exception occurs in the server.
+   */
+  private static class ExceptionPrinter implements ExceptionHandler {
+    @Override
+    public void handle(Exception e, Request req, Response res) {
+<span class="nc" id="L262">      res.status(500);</span>
+<span class="nc" id="L263">      StringWriter stacktrace = new StringWriter();</span>
+<span class="nc" id="L264">      try (PrintWriter pw = new PrintWriter(stacktrace)) {</span>
+<span class="nc" id="L265">        pw.println(&quot;&lt;pre&gt;&quot;);</span>
+<span class="nc" id="L266">        e.printStackTrace(pw);</span>
+<span class="nc" id="L267">        pw.println(&quot;&lt;/pre&gt;&quot;);</span>
+      }
+<span class="nc" id="L269">      res.body(stacktrace.toString());</span>
+<span class="nc" id="L270">    }</span>
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

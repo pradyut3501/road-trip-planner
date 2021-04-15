@@ -22,6 +22,12 @@ import start from './start.png'
 import finish from './finish.png'
 import road from './road.png'
 
+import 'semantic-ui-css/semantic.min.css';
+import { Icon } from 'semantic-ui-react';
+
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
+
 /*global google*/
 
 let origin = null
@@ -425,26 +431,44 @@ function App() {
               Restaurants
             </Typography>
             <Grid container spacing={2}>
+              <Grid item>
+                <Icon name='thumbs up' size='small' />
+              </Grid>
               <Grid item xs>
                 <Slider value={restaurant} onChange={handleChangeRestaurant} aria-labelledby="continuous-slider" />
+              </Grid>
+              <Grid item>
+                <Icon name='thumbs down' size='small' />
               </Grid>
             </Grid>
 
             <Typography id="continuous-slider" gutterBottom>
               Museums
             </Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
+              <Grid item>
+                <Icon name='thumbs up' size='small' />
+              </Grid>
               <Grid item xs>
                 <Slider value={museum} onChange={handleChangeMuseum} aria-labelledby="continuous-slider" />
+              </Grid>
+              <Grid item>
+                <Icon name='thumbs down' size='small' />
               </Grid>
             </Grid>
 
             <Typography id="continuous-slider" gutterBottom>
               Parks
             </Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
+              <Grid item>
+                <ThumbDownAltIcon />
+              </Grid>
               <Grid item xs>
                 <Slider value={park} onChange={handleChangePark} aria-labelledby="continuous-slider" />
+              </Grid>
+              <Grid item>
+                <ThumbUpAltIcon />
               </Grid>
             </Grid>
 
@@ -453,7 +477,9 @@ function App() {
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs>
+                <Icon name='thumbs up' size='small' />
                 <Slider value={shop} onChange={handleChangeShop} aria-labelledby="continuous-slider" />
+                <Icon name='thumbs down' size='small' />
               </Grid>
             </Grid>
 
