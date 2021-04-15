@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: edu.brown.cs.student.termProject.DijkstraTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.198 s - in edu.brown.cs.student.termProject.DijkstraTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.022 s - in edu.brown.cs.student.termProject.DijkstraTests

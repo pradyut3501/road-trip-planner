@@ -9,7 +9,6 @@ edu/brown/cs/student/termProject/Main$Test.class
 edu/brown/cs/student/termProject/Constants.class
 edu/brown/cs/student/termProject/AttractionNode.class
 graph/AttractionsComparator.class
-edu/brown/cs/student/termProject/Restaurant.class
 edu/brown/cs/student/termProject/Main.class
 graph/Dijkstra$1.class
 graph/Dijkstra.class
