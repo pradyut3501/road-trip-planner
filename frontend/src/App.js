@@ -22,7 +22,7 @@ import start from './start.png'
 import finish from './finish.png'
 import road from './road.png'
 
-import 'semantic-ui-css/semantic.min.css';
+//import 'semantic-ui-css/semantic.min.css';
 import { Icon } from 'semantic-ui-react';
 
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
@@ -251,24 +251,6 @@ function App() {
         )
         .then(response => {
           console.log(response.data);
-
-        /*  let stop1 = {
-            id: "tnhfDv5Il8EaGSXZGiuQGg",
-            name: "Garaje",
-            location: ["475 3rd St", "San Francisco", "CA", "94107"],
-            coordinates: [37.7817529521, -122.39612197],
-            price: 1.0,
-            rating: 4.5
-          }
-
-          let stop2 = {
-            id: "tnhfDv5Il8EaGSXZGiuQGh",
-            name: "Garaje",
-            location: ["475 3rd St", "San Francisco", "CA", "94107"],
-            coordinates: [37.7817529521, -122.39612197],
-            price: 1.0,
-            rating: 4.5
-          } */
 
            // add the start and the end to the list of attractions
            let originNode = {
