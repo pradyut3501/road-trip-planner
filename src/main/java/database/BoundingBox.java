@@ -111,130 +111,129 @@ public class BoundingBox {
   public static List<AttractionNode> findAttractionsWithinBoundingBox(
           double[] boundingBoxBounds, List<String> categories, int prefNumStops, int costPref)
       throws SQLException, IOException {
-//    Connection conn = Database.getYelpDatabaseConnection();
-//
-//    String query = "SELECT * FROM yelp_business " +
-//            "WHERE (latitude BETWEEN ? and ?) " +
-//            "AND (longitude BETWEEN ? AND ?)" +
-//            "AND (stars > 3.0)" +
-//            "AND (review_count > 10)";
-//
-//    PreparedStatement prep = conn.prepareStatement(query);
-//    prep.setDouble(1, boundingBoxBounds[0]);
-//    prep.setDouble(2, boundingBoxBounds[1]);
-//    prep.setDouble(3, boundingBoxBounds[2]);
-//    prep.setDouble(4, boundingBoxBounds[3]);
-//
-//    ResultSet rs = prep.executeQuery();
+    Connection conn = Database.getYelpDatabaseConnection();
 
+    String query = "SELECT * FROM yelp_business " +
+            "WHERE (latitude BETWEEN ? and ?) " +
+            "AND (longitude BETWEEN ? AND ?)" +
+            "AND (stars > 3.0)" +
+            "AND (review_count > 10)";
+
+    PreparedStatement prep = conn.prepareStatement(query);
+    prep.setDouble(1, boundingBoxBounds[0]);
+    prep.setDouble(2, boundingBoxBounds[1]);
+    prep.setDouble(3, boundingBoxBounds[2]);
+    prep.setDouble(4, boundingBoxBounds[3]);
+
+    ResultSet rs = prep.executeQuery();
     List<AttractionNode> attractionsWithinBox = new ArrayList<>();
 
-//    while (rs.next()) {
-//
-//      String id = rs.getString("business_id");
-//      String name = rs.getString("name");
-//
-//      String address = rs.getString("address");
-//      String city = rs.getString("city");
-//      String state = rs.getString("state");
-//      String postalCode = rs.getString("postal_code");
-//      String[] location = new String[]{address, city, state, postalCode};
-//
-//      double lat = rs.getDouble("latitude");
-//      double lon = rs.getDouble("longitude");
-//      double[] coords = new double[]{lat, lon};
-//
-//      double price = 0; //TODO: Decide on what to do for price
-//      double rating = rs.getDouble("stars");
-//
-//      String categoriesList = rs.getString("categories");
-//
-//      if ((categoriesList.contains("Restaurants")
-//              || categoriesList.contains("Food")
-//              || categoriesList.contains("Bars"))
-//              && categories.contains("Restaurant")) {
-//        AttractionNode nextAttraction = new Restaurant(
-//                id, name, location, coords, price, rating);
-//        attractionsWithinBox.add(nextAttraction);
-//      } else if (categoriesList.contains("Museums") && categories.contains("Museum")) {
-//        AttractionNode nextAttraction = new Museum(
-//                id, name, location, coords, price, rating);
-//        attractionsWithinBox.add(nextAttraction);
-//      } else if (categoriesList.contains("Parks") && categories.contains("Park")) {
-//        AttractionNode nextAttraction = new Park(
-//            id, name, location, coords, price, rating);
-//        attractionsWithinBox.add(nextAttraction);
-//      }
-////      } else if (categoriesList.contains("Shopping") && categories.contains("Shop")) {
-////        AttractionNode nextAttraction = new Shop(
-////                id, name, location, coords, price, rating);
-////        attractionsWithinBox.add(nextAttraction);
-////      }
-//    }
-//    prep.close();
-//    rs.close();
-//    System.out.println("Length of attractions within bounding box is: " + attractionsWithinBox.size());
+    while (rs.next()) {
+      String id = rs.getString("business_id");
+      String name = rs.getString("name");
 
-    for (int i = 0; i < (prefNumStops + 2); i++) {
-      //System.out.println(i);
-      double reqLat = 0;
-      double reqLon = 0;
-      //start lat > end lat
-      if (boundingBoxBounds[0] > boundingBoxBounds[1]) {
-        reqLat = ((boundingBoxBounds[0] - boundingBoxBounds[1]) / (prefNumStops + 2)) * i +
-            boundingBoxBounds[1];
-      } else {
-        reqLat = ((boundingBoxBounds[1] - boundingBoxBounds[0]) / (prefNumStops + 2)) * i +
-            boundingBoxBounds[0];
-      }
-      //start lon > end lon
-      if (boundingBoxBounds[2] > boundingBoxBounds[3]) {
-        reqLon = ((boundingBoxBounds[2] - boundingBoxBounds[3]) / (prefNumStops + 2)) * i +
-            boundingBoxBounds[3];
-      } else {
-        reqLon = ((boundingBoxBounds[3] - boundingBoxBounds[2]) / (prefNumStops + 2)) * i +
-            boundingBoxBounds[2];
-      }
-      if (categories.contains("Restaurant")) {
-        List<String> param = new ArrayList<>();
-        param.add("restaurant");
-        param.add("food");
-        param.add("bars");
-        URL url = new URL(
-            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" +
-                reqLon +
-                "&categories=" + "\"restaurant\",\"food\",\"bars\"" + "&price=" + costPref);
-        List<AttractionNode> nodes = yelpUrlToAttractions(url, "Restaurant");
-       // System.out.println(nodes.size() + " many restaurants");
-        attractionsWithinBox.addAll(nodes);
-      }
-      if (categories.contains("Shop")) {
-        URL url = new URL(
-            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
-                "&categories=shoppingcenters");
-        List<AttractionNode> nodes = yelpUrlToAttractions(url, "Shop");
-       // System.out.println(nodes.size() + " many shops");
-        attractionsWithinBox.addAll(nodes);
+      String address = rs.getString("address");
+      String city = rs.getString("city");
+      String state = rs.getString("state");
+      String postalCode = rs.getString("postal_code");
+      String[] location = new String[]{address, city, state, postalCode};
 
-      }
-      if (categories.contains("Museum")) {
-        URL url = new URL(
-            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
-                "&categories=museums");
-        List<AttractionNode> nodes = yelpUrlToAttractions(url, "Museum");
-       // System.out.println(nodes.size() + " many museums");
-        attractionsWithinBox.addAll(nodes);
-      }
-      if (categories.contains("Park")) {
-        URL url = new URL(
-            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
-                "&categories=parks");
-        List<AttractionNode> nodes = yelpUrlToAttractions(url, "Park");
-       // System.out.println(nodes.size() + " many parks");
-        attractionsWithinBox.addAll(nodes);
+      double lat = rs.getDouble("latitude");
+      double lon = rs.getDouble("longitude");
+      double[] coords = new double[]{lat, lon};
+
+      double price = 0.0; //TODO: Decide on what to do for price
+      double rating = rs.getDouble("stars");
+
+      double reviewCount = rs.getDouble("review_count");
+
+      String categoriesList = rs.getString("categories");
+
+      if ((categoriesList.contains("Restaurants")
+              || categoriesList.contains("Food")
+              || categoriesList.contains("Bars"))
+              && categories.contains("Restaurant")) {
+        AttractionNode nextAttraction = new Restaurant(
+                id, name, location, coords, price, rating, reviewCount);
+        attractionsWithinBox.add(nextAttraction);
+      } else if (categoriesList.contains("Museums") && categories.contains("Museum")) {
+        AttractionNode nextAttraction = new Museum(
+                id, name, location, coords, price, rating, reviewCount);
+        attractionsWithinBox.add(nextAttraction);
+      } else if (categoriesList.contains("Parks") && categories.contains("Park")) {
+        AttractionNode nextAttraction = new Park(
+            id, name, location, coords, price, rating, reviewCount);
+        attractionsWithinBox.add(nextAttraction);
+      } else if (categoriesList.contains("Shopping") && categories.contains("Shop")) {
+        AttractionNode nextAttraction = new Shop(
+                id, name, location, coords, price, rating, reviewCount);
+        attractionsWithinBox.add(nextAttraction);
       }
     }
-    System.out.println("The length of the list of attractions returned is: " + attractionsWithinBox.size());
+    prep.close();
+    rs.close();
+    System.out.println("Length of attractions within bounding box is: " + attractionsWithinBox.size());
+//
+//    for (int i = 0; i < (prefNumStops + 2); i++) {
+//      //System.out.println(i);
+//      double reqLat = 0;
+//      double reqLon = 0;
+//      //start lat > end lat
+//      if (boundingBoxBounds[0] > boundingBoxBounds[1]) {
+//        reqLat = ((boundingBoxBounds[0] - boundingBoxBounds[1]) / (prefNumStops + 2)) * i +
+//            boundingBoxBounds[1];
+//      } else {
+//        reqLat = ((boundingBoxBounds[1] - boundingBoxBounds[0]) / (prefNumStops + 2)) * i +
+//            boundingBoxBounds[0];
+//      }
+//      //start lon > end lon
+//      if (boundingBoxBounds[2] > boundingBoxBounds[3]) {
+//        reqLon = ((boundingBoxBounds[2] - boundingBoxBounds[3]) / (prefNumStops + 2)) * i +
+//            boundingBoxBounds[3];
+//      } else {
+//        reqLon = ((boundingBoxBounds[3] - boundingBoxBounds[2]) / (prefNumStops + 2)) * i +
+//            boundingBoxBounds[2];
+//      }
+//      if (categories.contains("Restaurant")) {
+//        List<String> param = new ArrayList<>();
+//        param.add("restaurant");
+//        param.add("food");
+//        param.add("bars");
+//        URL url = new URL(
+//            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" +
+//                reqLon +
+//                "&categories=" + "\"restaurant\",\"food\",\"bars\"" + "&price=" + costPref);
+//        List<AttractionNode> nodes = yelpUrlToAttractions(url, "Restaurant");
+//       // System.out.println(nodes.size() + " many restaurants");
+//        attractionsWithinBox.addAll(nodes);
+//      }
+//      if (categories.contains("Shop")) {
+//        URL url = new URL(
+//            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
+//                "&categories=shoppingcenters");
+//        List<AttractionNode> nodes = yelpUrlToAttractions(url, "Shop");
+//       // System.out.println(nodes.size() + " many shops");
+//        attractionsWithinBox.addAll(nodes);
+//
+//      }
+//      if (categories.contains("Museum")) {
+//        URL url = new URL(
+//            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
+//                "&categories=museums");
+//        List<AttractionNode> nodes = yelpUrlToAttractions(url, "Museum");
+//       // System.out.println(nodes.size() + " many museums");
+//        attractionsWithinBox.addAll(nodes);
+//      }
+//      if (categories.contains("Park")) {
+//        URL url = new URL(
+//            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
+//                "&categories=parks");
+//        List<AttractionNode> nodes = yelpUrlToAttractions(url, "Park");
+//       // System.out.println(nodes.size() + " many parks");
+//        attractionsWithinBox.addAll(nodes);
+//      }
+//    }
+//    System.out.println("The length of the list of attractions returned is: " + attractionsWithinBox.size());
     return attractionsWithinBox;
   }
 

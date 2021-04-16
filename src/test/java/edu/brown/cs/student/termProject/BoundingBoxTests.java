@@ -2,7 +2,11 @@ package edu.brown.cs.student.termProject;
 
 import database.BoundingBox;
 
+import database.Database;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -76,6 +80,19 @@ public class BoundingBoxTests {
     assertArrayEquals(BoundingBox.expandBoundingBoxBounds(
             new double[]{-1, 5, 2, 4}, -3),
             new double[]{2, 2, 5, 1}, 0);
+  }
+
+  @Test
+  public void randomTests() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsWithinBoundingBox(
+              new double[]{40, 41, -106, -105},
+      Arrays.asList("Restaurant", "Museum", "Park", "Shop"), 0, 0);
+      System.out.println(attractions.size());
+    } catch (Exception e) {
+      System.out.println("SQL query failed");
+    }
   }
 
 }
