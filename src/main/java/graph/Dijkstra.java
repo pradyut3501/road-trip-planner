@@ -102,6 +102,31 @@ public class Dijkstra {
     Collections.reverse(shortestPath); //want path to be in order from start to end
     return shortestPath;
   }
+  /**
+   * The distance formula will use the google maps API to compute the distance between a node and
+   * the path
+   * @return driving distance in Meters
+   */
+  public double distanceFormulaAPI(double lat1, double long1, double lat2, double long2) {
+    try {
+      LatLng start = new LatLng(lat1,long1);
+      LatLng end = new LatLng(lat2, long2);
+      DirectionsApiRequest req = DirectionsApi.newRequest(connection)
+          .origin(start).destination(end).language("en");
+
+      DirectionsResult response = req.await();
+      if (response.routes.length > 0) {
+        double dist = 0;
+        for (int i =0; i < response.routes[0].legs.length; i++) {
+          dist += response.routes[0].legs[i].distance.inMeters;
+        }
+        return dist;
+      }
+    } catch (ApiException | InterruptedException | IOException e) {
+      e.printStackTrace();
+    }
+    return 0.0;
+  }
 
   /**
    * The distance formula will use the google maps API to compute the distance between a node and

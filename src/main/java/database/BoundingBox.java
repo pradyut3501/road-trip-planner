@@ -205,7 +205,7 @@ public class BoundingBox {
                 reqLon +
                 "&categories=" + "\"restaurant\",\"food\",\"bars\"" + "&price=" + costPref);
         List<AttractionNode> nodes = yelpUrlToAttractions(url, "Restaurant");
-        System.out.println(nodes.size() + " many restaurants");
+       // System.out.println(nodes.size() + " many restaurants");
         attractionsWithinBox.addAll(nodes);
       }
       if (categories.contains("Shop")) {
@@ -213,7 +213,7 @@ public class BoundingBox {
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
                 "&categories=shoppingcenters");
         List<AttractionNode> nodes = yelpUrlToAttractions(url, "Shop");
-        System.out.println(nodes.size() + " many shops");
+       // System.out.println(nodes.size() + " many shops");
         attractionsWithinBox.addAll(nodes);
 
       }
@@ -222,7 +222,7 @@ public class BoundingBox {
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
                 "&categories=museums");
         List<AttractionNode> nodes = yelpUrlToAttractions(url, "Museum");
-        System.out.println(nodes.size() + " many museums");
+       // System.out.println(nodes.size() + " many museums");
         attractionsWithinBox.addAll(nodes);
       }
       if (categories.contains("Park")) {
@@ -230,7 +230,7 @@ public class BoundingBox {
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
                 "&categories=parks");
         List<AttractionNode> nodes = yelpUrlToAttractions(url, "Park");
-        System.out.println(nodes.size() + " many parks");
+       // System.out.println(nodes.size() + " many parks");
         attractionsWithinBox.addAll(nodes);
       }
     }
