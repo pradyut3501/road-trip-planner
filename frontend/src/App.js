@@ -57,6 +57,7 @@ let directions = null
 let directionsRenderer = null
 let map = null
 let markerList = []
+let middlePhotoURL = ""
 
 //const google = window.google;
 
@@ -118,6 +119,7 @@ function App() {
           console.log(result)
           console.log(result.geometry.location.lat())
           middleCoords = [result.geometry.location.lat(), result.geometry.location.lng()]
+          middlePhotoURL = result.photos[0].getUrl()
         }
       })
     }
@@ -577,6 +579,7 @@ function App() {
         <h1>{route_message}</h1>
         <div id="map" style={{float: "left", width: 600, height: 400}}></div>
         <h1>{trip_message}</h1>
+        <img src = {middlePhotoURL} style={{width: '250px'}}></img>
 
         </Col>
         </Row>
