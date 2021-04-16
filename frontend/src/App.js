@@ -68,10 +68,10 @@ function App() {
   const [originText, setOriginText] = useState("")
   const [destText, setDestText] = useState("")
 
-  const [restaurant, setRestaurant] = useState(30);
-  const [museum, setMuseum] = useState(30);
-  const [park, setPark] = useState(30);
-  const [shop, setShop] = useState(30);
+  const [restaurant, setRestaurant] = useState(50);
+  const [museum, setMuseum] = useState(50);
+  const [park, setPark] = useState(50);
+  const [shop, setShop] = useState(50);
 
   const handleChangeRestaurant = (event, newValue) => {
     setRestaurant(newValue);
@@ -91,7 +91,7 @@ function App() {
 
   const useStyles = makeStyles({
     root: {
-      width: 100,
+      width: 150,
     },
   });
 
@@ -434,15 +434,15 @@ function App() {
             <Typography id="continuous-slider" gutterBottom>
               Restaurants
             </Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
               <Grid item>
-                <Icon name='thumbs up' size='small' />
+                <ThumbDownAltIcon />
               </Grid>
               <Grid item xs>
                 <Slider value={restaurant} onChange={handleChangeRestaurant} aria-labelledby="continuous-slider" />
               </Grid>
               <Grid item>
-                <Icon name='thumbs down' size='small' />
+                <ThumbUpAltIcon />
               </Grid>
             </Grid>
 
@@ -451,13 +451,13 @@ function App() {
             </Typography>
             <Grid container spacing={1}>
               <Grid item>
-                <Icon name='thumbs up' size='small' />
+                <ThumbDownAltIcon />
               </Grid>
               <Grid item xs>
                 <Slider value={museum} onChange={handleChangeMuseum} aria-labelledby="continuous-slider" />
               </Grid>
               <Grid item>
-                <Icon name='thumbs down' size='small' />
+                <ThumbUpAltIcon />
               </Grid>
             </Grid>
 
@@ -479,11 +479,15 @@ function App() {
             <Typography id="continuous-slider" gutterBottom>
               Shops
             </Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
+              <Grid item>
+                <ThumbDownAltIcon />
+              </Grid>
               <Grid item xs>
-                <Icon name='thumbs up' size='small' />
                 <Slider value={shop} onChange={handleChangeShop} aria-labelledby="continuous-slider" />
-                <Icon name='thumbs down' size='small' />
+              </Grid>
+              <Grid item>
+                <ThumbUpAltIcon />
               </Grid>
             </Grid>
 
