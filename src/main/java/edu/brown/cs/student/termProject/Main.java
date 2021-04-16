@@ -15,6 +15,7 @@ import database.Database;
 import graph.Dijkstra;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import org.json.JSONException;
 import spark.*;
 
 import spark.template.freemarker.FreeMarkerEngine;
@@ -214,7 +215,17 @@ public final class Main {
          double destLat = data.getDouble("destLat");
          double destLon = data.getDouble("destLon");
          double maxDist = data.getDouble("maxDist");
+         double middleLat = 0.0;
+         double middleLong = 0.0;
+         try{
+         middleLat = data.getDouble("middleLat");
+         middleLong = data.getDouble("middleLong");
+         
+         }
+         catch(JSONException e){
+         }
 
+         System.out.println("Middle Lat " + middleLat + " and middle long " + middleLong);
          int numStops = 0;
          try{ numStops = data.getInt("stopPref");}
          catch(Exception e){
@@ -222,7 +233,6 @@ public final class Main {
              " 0";
            return new Gson().toJson(ImmutableMap.of("route", route, "error_message", error));
          }
-
          List<String> categories = new ArrayList<>();
          if (restaurantValue >= 0.3) {
            categories.add("Restaurant");
