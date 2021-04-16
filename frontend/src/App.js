@@ -49,6 +49,7 @@ let trip_message = ""
 let route_message = ""
 let originCoords = []
 let destCoords = []
+let middleCoords = []
 let stops = 0
 let time = 0
 let dist = 0
@@ -107,8 +108,19 @@ function App() {
 
   function setMiddle(newMiddle){
     middle = newMiddle
-    console.log(middle.geometry)
-  }
+    let service = new google.maps.places.PlacesService(document.getElementById('map'));
+
+    service.getDetails({
+        placeId: middle.value.place_id
+      }, (result, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+
+          console.log(result)
+          console.log(result.geometry.location.lat())
+          middleCoords = [result.geometry.location.lat(), result.geometry.location.lng()]
+        }
+      })
+    }
 
   function setDollar1(){
     costPreference = 1
@@ -212,14 +224,7 @@ function App() {
     // make axios post request to the backend
     const requestTrip = () => {
 
-      console.log(costPreference)
-      console.log(steps)
-      console.log(restaurant)
-      console.log(museum)
-      console.log(park)
-      console.log(originCoords)
-      console.log(destCoords)
-
+      console.log(middle)
       // the source and destination of our desired route
       const toSend = {
         costPref: costPreference,
@@ -235,7 +240,8 @@ function App() {
         destLon: destCoords[1],
         maxTime: time,
         maxDist: dist,
-        middleLat: middle
+        middleLat: middleCoords[0],
+        middleLon: middleCoords[1]
 
       }
 
@@ -278,11 +284,14 @@ function App() {
 
           setAttractions(newAttractions)
           for (let i = 1; i < newAttractions.length - 1; i++){
+            console.log("in loop")
             let marker = new google.maps.Marker({
               position: {lat: newAttractions[i].coordinates[0], lng:newAttractions[i].coordinates[1] },
               map: map,
               icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
             })
+
+            console.log(marker.position.lat())
           let infoWindow = new google.maps.InfoWindow({
             content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
           })
