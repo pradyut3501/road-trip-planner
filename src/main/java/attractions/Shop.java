@@ -18,7 +18,9 @@ public class Shop implements AttractionNode {
   private double distance = 0;
   private boolean visit = false;
   private int numPrev = 0;
+  private double value = 0;
   private String nodeType = "shop";
+  private double numReviews;
 
 
   /**
@@ -31,7 +33,7 @@ public class Shop implements AttractionNode {
    * @param rate the five star rating
    */
   public Shop(String ShopId, String ShopName, String[] loc, double[] coords, Double p,
-                Double rate){
+                Double rate,  double reviewCount){
     id = ShopId;
     name = ShopName;
     location = loc;
@@ -39,6 +41,8 @@ public class Shop implements AttractionNode {
     price = p;
     rating = rate;
     cost = Double.POSITIVE_INFINITY;
+    numReviews = reviewCount;
+
   }
 
   @Override
@@ -72,10 +76,15 @@ public class Shop implements AttractionNode {
   }
 
   @Override
-  public double generateValue(double PreferredPrice, double PreferredStop) {
+  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
     double shopValue = PreferredStop;
-    double value = (Constants.VALUE_BOUND- shopValue) * Constants.VALUE_SCALE_SHOPS;
-    value = value * (1 - rating *.1);
+    value = (1- shopValue/Constants.VALUE_BOUND) * distance;
+ //   value = (Constants.VALUE_BOUND- shopValue) * Constants.VALUE_SCALE_SHOPS;
+    //value = value * (1 - rating *.1);
+    value = value + (1 - rating/Constants.MAX_RATING) * distance;
+    value = value + (Math.abs(price-PreferredPrice)) * distance;
+    value = value * Constants.VALUE_SCALE;
+    System.out.println("shop value is: " + value);
     return value;
   }
 
@@ -116,5 +125,15 @@ public class Shop implements AttractionNode {
 
   @Override
   public int getType() {return 3;}
+
+  @Override
+  public double getValue() {
+    return value;
+  }
+
+  @Override
+  public double getNumReviews() {
+    return numReviews;
+  }
 }
 

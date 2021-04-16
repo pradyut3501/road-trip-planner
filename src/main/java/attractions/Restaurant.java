@@ -14,11 +14,13 @@ public class Restaurant implements AttractionNode {
   private double[] coordinates;
   private double price;
   private double rating;
+  private double value;
   private double cost;
   private boolean visit = false;
   private double distance = 0;
   private int numPrev = 0;
   private String nodeType = "restaurant";
+  private double numReviews;
 
   /**
    * The constructor sets the fields
@@ -30,7 +32,7 @@ public class Restaurant implements AttractionNode {
    * @param rate the five star rating
    */
   public Restaurant(String RestaurantId, String RestaurantName, String[] loc, double[] coords,
-                   Double p, Double rate){
+                   Double p, Double rate,  double reviewCount){
     id = RestaurantId;
     name = RestaurantName;
     location = loc;
@@ -38,6 +40,9 @@ public class Restaurant implements AttractionNode {
     price = p;
     rating = rate;
     cost = Double.POSITIVE_INFINITY;
+    value = 0;
+    numReviews = reviewCount;
+
   }
 
   @Override
@@ -71,10 +76,16 @@ public class Restaurant implements AttractionNode {
   }
 
   @Override
-  public double generateValue(double PreferredPrice, double PreferredStop) {
+  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
     double restaurantValue = PreferredStop;
-    double value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
-    value = value * (1 - rating *.1);
+    value = (1- restaurantValue/Constants.VALUE_BOUND) * distance;
+    value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_RESTAURANTS) * distance;
+   //value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
+    //value = value * (1 - rating *.1);
+    value = value + (1 - rating/Constants.MAX_RATING) * distance;
+    value = value + (Math.abs(price-PreferredPrice)) * distance;
+    value = value * Constants.VALUE_SCALE;
+    System.out.println("restaurant value is: " + value);
     return value;
   }
 
@@ -115,4 +126,14 @@ public class Restaurant implements AttractionNode {
 
   @Override
   public int getType() {return 2;}
+
+  @Override
+  public double getValue() {
+    return value;
+  }
+
+  @Override
+  public double getNumReviews() {
+    return numReviews;
+  }
 }

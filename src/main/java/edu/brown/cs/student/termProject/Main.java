@@ -71,19 +71,50 @@ public final class Main {
     List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(new double[]{34.136181, -118.432375},
       new double[]{41.856898,
         -71.385573}, categories, 5, 3);
-    double[] boundBox = BoundingBox.findBoundingBoxBounds(new double[]{34.136181, -118.432375},
-      new double[]{41.856898,
-        -71.385573});
-    System.out.println(boundBox);
-
+    double reviewRest = 0.0;
+    double numRest = 0.0;
+    double reviewPark = 0.0;
+    double numPark = 0.0;
+    double reviewMus = 0.0;
+    double numMus = 0.0;
+    double reviewShop = 0.0;
+    double numShops = 0.0;
+    for (AttractionNode a: attractions){
+      switch(a.getType()){
+        case 0:
+          reviewMus = reviewMus + a.getNumReviews();
+          numMus ++;
+          break;
+        case 1:
+          reviewPark = reviewPark + a.getNumReviews();
+          numPark++;
+          break;
+        case 2:
+          reviewRest = reviewRest + a.getNumReviews();
+          numRest++;
+          break;
+        case 3:
+          reviewShop = reviewShop + a.getNumReviews();
+          numShops++;
+          break;
+        default:
+          break;
+      }
+    }
+    System.out.println("Average Number of Reviews for Shop: " + reviewShop/numShops);
+    System.out.println("Average Number of Reviews for Restaurant: " + reviewRest/numRest);
+    System.out.println("Average Number of Reviews for Museum: " + reviewMus/numMus);
+    System.out.println("Average Number of Reviews for Park: " + reviewPark/numPark);
     System.out.println(attractions.size());
-//    Dijkstra dij = new Dijkstra(attractions);
-//    List<AttractionNode> path = dij.execute(new double[]{34.136181, -118.432375},
-//      new double[]{41.856898,
-//        -71.385573}, 4, boundBox);
-//    for (AttractionNode n: path){
-//      System.out.println(n.getName());
-//    }
+    Dijkstra dij = new Dijkstra(attractions, APICONNECTION);
+    dij.setPreferences(new double[] {10, 30, 100, 10}, 3);
+    List<AttractionNode> path = dij.execute(new double[]{34.136181, -118.432375},
+      new double[]{41.856898,
+        -71.385573}, 4);
+    for (AttractionNode r: path){
+      System.out.println(r.getName() + " " + r.getLocation()[0] + " "+ r.getLocation()[2] +
+        " and a cost of " + r.getCost() + " and a value of " + r.getValue());
+    }
 
 
     // Parse command line arguments
@@ -219,12 +250,12 @@ public final class Main {
          System.out.println("CostPreference is: " + costPreference);
 
          //HARD CODED START AND END FOR DIJKSTRA FOR NOW
-         double[] boxBounds = BoundingBox.findBoundingBoxBounds(originCoords, destCoords);
          route = dijkstra.execute(new double[]{originLat, originLon},
            new double[]{destLat, destLon}, numStops);
-         System.out.println("Dijkstra's Route");
+         System.out.println("Dijkstra's Route is this length " + route.size());
          for (AttractionNode r: route){
-           System.out.println(r.getName() + " " + r.getLocation()[0] + " "+ r.getLocation()[2]);
+           System.out.println(r.getName() + " " + r.getLocation()[0] + " "+ r.getLocation()[2] +
+             " and a cost of " + r.getCost() + " and a value of " + r.getValue());
          }
 
        } catch(Exception e){
@@ -234,9 +265,9 @@ public final class Main {
 
        Map<String, Object> variables = ImmutableMap.of("route", route);
 
-       System.out.println(variables);
+     //  System.out.println(variables);
        try{
-         System.out.println(new Gson().toJson(variables));
+        // System.out.println(new Gson().toJson(variables));
        } catch(Exception e) {
          System.out.println("something went wrong here");
          e.printStackTrace();
