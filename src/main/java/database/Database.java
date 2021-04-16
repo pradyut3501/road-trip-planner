@@ -41,7 +41,7 @@ public class Database {
    */
   public static void setYelpDatabaseConnection() {
     try {
-      yelpConn = connectToDatabase("data/yelp_business_database.sqlite3");
+      yelpConn = connectToDatabase("data/yelp_business_database_w_attributes.sqlite3");
     } catch (SQLException | ClassNotFoundException e) {
       System.out.println("ERROR: Connection to Yelp Database could not be established");
     }

@@ -84,9 +84,9 @@ public class Museum implements AttractionNode {
     value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_MUSEUMS) * distance;
    // value = value * (1 - rating *.1);
     value = value + (1 - rating/Constants.MAX_RATING) * distance;
-    value = value + (Math.abs(price-PreferredPrice)) * distance;
+  //  value = value + (Math.abs(price-PreferredPrice)) * distance;
     value = value * Constants.VALUE_SCALE;
-    System.out.println("museum value is: " + value);
+  //  System.out.println("museum value is: " + value);
     return value;
   }
 
