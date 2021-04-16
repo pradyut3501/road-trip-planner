@@ -165,6 +165,7 @@ public class BoundingBox {
             id, name, location, coords, price, rating, reviewCount);
         attractionsWithinBox.add(nextAttraction);
       } else if (categoriesList.contains("Shopping") && categories.contains("Shop")) {
+        System.out.println(rs.getString("attributes"));
         AttractionNode nextAttraction = new Shop(
                 id, name, location, coords, price, rating, reviewCount);
         attractionsWithinBox.add(nextAttraction);
@@ -338,5 +339,18 @@ public class BoundingBox {
       e.printStackTrace();
     }
   return attractions;
+  }
+
+  /**
+   *
+   * @param attributes
+   * @return
+   */
+  public static String findPriceField(String attributes) {
+    String price = null;
+    if (attributes.contains("RestaurantsPriceRange2")) {
+      System.out.println("has price");
+    }
+    return price;
   }
 }

@@ -1,5 +1,6 @@
 package edu.brown.cs.student.termProject;
 
+import attractions.Park;
 import database.BoundingBox;
 
 import database.Database;
@@ -90,6 +91,13 @@ public class BoundingBoxTests {
               new double[]{40, 41, -106, -105},
       Arrays.asList("Restaurant", "Museum", "Park", "Shop"), 0, 0);
       System.out.println(attractions.size());
+      for (AttractionNode a: attractions) {
+        try {
+          Park x = (Park) a;
+        } catch (Exception e) {
+
+        }
+      }
     } catch (Exception e) {
       System.out.println("SQL query failed");
     }
