@@ -21,6 +21,8 @@ import shop from './shop.png'
 import start from './start.png'
 import finish from './finish.png'
 import road from './road.png'
+import {Container, Row, Col} from "react-bootstrap"
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 //import 'semantic-ui-css/semantic.min.css';
 import { Icon } from 'semantic-ui-react';
@@ -43,6 +45,8 @@ let distanceMessage = ["", ""]
 let logo = "https://i.ibb.co/drqk6c8/logo.png";
 let restaurantLogo = "fork.png"
 let response_message = ""
+let trip_message = ""
+let route_message = ""
 let originCoords = []
 let destCoords = []
 let stops = 0
@@ -91,11 +95,6 @@ function App() {
   });
 
   const classes = useStyles();
-
-
-  //const [value, setValue] = useState(null);
-
-  //<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c"></script>
 
   const script = document.createElement("script");
   script.async = true;
@@ -178,7 +177,6 @@ function App() {
           console.log(result)
 
       directionsRenderer.setDirections(result);
-      initMap()
 
       shortestRouteDist = result.routes[0].legs[0].distance.text
       setShortestRouteTime(result.routes[0].legs[0].duration.text)
@@ -296,10 +294,14 @@ function App() {
           }
           console.log(response.data["route"])
 
-          setOriginText(origin.label)
-          setDestText(dest.label)
+          setOriginText(origin.value.structured_formatting)
+          setDestText(dest.value.structured_formatting)
 
           setSubmitted(1);
+          response_message = "Trip Itinerary"
+          trip_message = "Trip Summary"
+          route_message = "Route Map"
+          initMap()
 
 
         })
@@ -311,69 +313,6 @@ function App() {
 
     }
 
-    const requestTrip2 = () => {
-
-      let originNode = {
-        id: "",
-        name: originText,
-        location:  "",
-        coordinates: [originCoords[0], originCoords[1]]
-      }
-
-      let destNode = {
-        id: "",
-        name: destText,
-        location:  "",
-        coordinates: [destCoords[0], destCoords[1]]
-      }
-
-      let stop1 = {
-        id: "tnhfDv5Il8EaGSXZGiuQGg",
-        name: "Garaje",
-        location:  ["", "San Francisco", "CA"],
-        rating: 4.2,
-        nodeType: "restaurant",
-        coordinates: [37.7817529521, -122.39612197]
-      }
-
-      let stop2 = {
-        id: "tnhfDv5Il8EaGSXZGiuQGg",
-        name: "Garaje",
-        location:  ["", "San Francisco", "CA"],
-        rating: 4.5,
-        nodeType: "restaurant",
-        coordinates: [37.7817529521, -122.39612197]
-      }
-
-      markerList = []
-      let newAttractions = [stop1, stop2]
-      // add start/end points to the attraction list
-      newAttractions.unshift(originNode)
-      newAttractions.push(destNode)
-
-      setAttractions(newAttractions)
-      for (let i = 1; i < newAttractions.length - 1; i++){
-        let marker = new google.maps.Marker({
-          position: {lat: newAttractions[i].coordinates[0], lng:newAttractions[i].coordinates[1] },
-          map: map,
-          icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
-        })
-      let infoWindow = new google.maps.InfoWindow({
-        content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
-      })
-        marker.addListener('click', function(){
-        infoWindow.open(map, marker)
-        })
-        markerList.push(marker)
-
-      }
-
-      setOriginText(origin.value.structured_formatting)
-      setDestText(dest.label)
-
-      setSubmitted(1);
-
-    }
 
     useEffect(()=> {
       console.log("in use effect")
@@ -385,7 +324,6 @@ function App() {
 
     useEffect(()=> {
       console.log("changing message")
-      response_message = "Trip Itinerary"
 
     }, [submitted])
 
@@ -406,11 +344,15 @@ function App() {
 
 
   return (
+  <div className = "App">
+    <Container>
+    <div className = "w-75 p-3">
+    <Row >
+    <Col >
 
-    <div>
     &nbsp;
-      <div className={"center"}><img src={logo} alt={"RhodeTrip logo"} style={{width: '500px'}}></img></div>
-    <div>
+      <div ><img src={logo} alt={"RhodeTrip logo"} style={{width: '500px'}}></img></div>
+
     &nbsp;
 
     Where do you want to start?
@@ -433,9 +375,9 @@ function App() {
 
       <br></br>
 
-      <div>
+
       <p>{distanceMessage[0]} {shortestRouteDist} {distanceMessage[1]} {shortestRouteTime}</p>
-      </div>
+
       <br></br>
       Based on this, how much long would you like to spend on the road?
       &nbsp;
@@ -479,7 +421,7 @@ function App() {
 
       How much do you prefer the following types of stops?
 
-          <div className={classes.root}>
+      <div className={classes.root}>
             <Typography id="continuous-slider" gutterBottom>
               Restaurants
             </Typography>
@@ -537,10 +479,19 @@ function App() {
             </Grid>
 
         </div>
-        <AwesomeButton type = "secondary" onPress = {requestTrip2} > Get my trip! < /AwesomeButton>
-        <div><h1>{response_message}</h1></div>
 
-        <div class = "left">
+        <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! </AwesomeButton>
+        </Col>
+
+        </Row>
+        </div>
+
+        <Row>
+        <Col>
+        <h1>{response_message}</h1>
+
+
+
 
           {attractions.map(function (x,i, elements){
 
@@ -555,14 +506,14 @@ function App() {
           <br></br>
         </p>)
           }
-          //displaying the end
+          //displaying the destination
           if (i == elements.length - 1){
             return (<p><div class = "container"><img src={finish} alt={"finish icon"} style={{width: '100px'}}/>
-            <h2 class = "text"> {destText} </h2></div>
+            <h2 class = "text"> {destText.main_text} </h2><p><br/> <h3> {destText.secondary_text}</h3></p></div>
             </p>)
           }
           if (x.nodeType == "restaurant"){
-            return (<div><p class = "rectangle"><img src={fork} alt={"restaurant"} style={{width: '100px'}}/>
+            return (<div><p class = "rectangle"><img class = "left" src={fork} alt={"restaurant"} style={{width: '100px'}}/>
           <p class = "pad"><h2> {x.name}</h2>
           <p class = "description"><br></br> {x.location[1]}, {x.location[2]}
           <br></br> {x.rating} stars
@@ -609,17 +560,19 @@ function App() {
         </p>)
           }})}
 
-          </div>
 
-        <div class = "left">
-        <h1>Route Map</h1>
-        <div id="map" class = "left" style={{float: "left", width: 600, height: 400}}></div>
-        <h1>Trip Summary</h1>
-        </div>
+        </Col>
 
+        <Col>
 
-    </div>
-    </div>
+        <h1>{route_message}</h1>
+        <div id="map" style={{float: "left", width: 600, height: 400}}></div>
+        <h1>{trip_message}</h1>
+
+        </Col>
+        </Row>
+        </Container>
+      </div>
 
 
   );

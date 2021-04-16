@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: #f5ffcf;
 }
 
 .App-logo {
@@ -47,11 +48,16 @@
   padding: 50px;
 }
 
-.container {
+/*.container {
   display: flex;
   align-items: center;
   justify-content: center
+}*/
+
+.topCol{
+  width:10%
 }
+
 
 .text{
   padding-left:20px;
@@ -68,11 +74,13 @@
 .rectangle {
   /*height: 25px;
   width: 800px;*/
-  background-color: #555;
+  background-color: #B0B0B0;
+  border-radius: 25px;
   display: flex;
   justify-content:center;
   align-items: center;
 }
+
 
 .scroll-box1{
   height:500px;
@@ -90,13 +98,18 @@
 }
 
 
-.left{
-  float:left
+/*.left{
+  float:left;
+  padding: 20px
+}
+
+.left2{
+  float:left;
 }
 
 .right{
   float:right
-}
+}*/
 
 body {
   background-color: #f5ffcf;
