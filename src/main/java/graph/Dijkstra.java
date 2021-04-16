@@ -24,10 +24,6 @@ public class Dijkstra {
   private HashMap<AttractionNode, Boolean> visited; //keep track of visited nodes
   private HashMap<AttractionNode, Double> distances; //keep track of distances between node and end
   private HashMap<AttractionNode,AttractionNode> previous; //keep track of previous pointers
-  private HashMap<Integer, List<AttractionNode>> connectionChunks; //split the nodes into chunks
-  private HashMap<AttractionNode, Integer> chunkLookup; //lookup by node for which chunk you
-  // belong to
-
   private double[] preferredStop;
   private int costPreference;
   private GeoApiContext connection;
@@ -38,8 +34,7 @@ public class Dijkstra {
     visited = new HashMap<>();
     distances = new HashMap<>();
     previous = new HashMap<>();
-    connectionChunks = new HashMap<>();
-    chunkLookup = new HashMap<>();
+
   }
   public List<AttractionNode> execute(double[] starting, double[] ending, int numStops) {
     double pathDistance = distanceFormula(starting[0], starting[1], ending[0], ending[1]);
@@ -48,12 +43,12 @@ public class Dijkstra {
     previous = new HashMap<>();
     PriorityQueue<AttractionNode> pq = new PriorityQueue(new Comparator<AttractionNode>() {
       public int compare(AttractionNode o1, AttractionNode o2) {
-        if ((o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()])) >
-          (o2.getCost()) + o2.generateValue(costPreference, preferredStop[o2.getType()])) {
+        if ((o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()], pathDistance)) >
+          (o2.getCost()) + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) {
           return 1;
         }
-        if ((o2.getCost() + o2.generateValue(costPreference, preferredStop[o2.getType()])) >
-          (o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()]))) {
+        if ((o2.getCost() + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) >
+          (o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()],pathDistance))) {
           return -1;
         }
         return 0;
@@ -65,23 +60,21 @@ public class Dijkstra {
       return null;
     }
     //Make a dumby attraction node to represent start and end? may be a better way to handle this
-    AttractionNode start = new Park("0", "starting Node", new String[0], starting,0.0,0.0 );
+    AttractionNode start = new Park("0", "starting Node", new String[0], starting,
+      0.0,0.0, 0.0 );
     nodes.add(start);
-    AttractionNode end = new Park("0", "ending Node", new String[0], target,0.0,0.0 );
+    AttractionNode end = new Park("0", "ending Node", new String[0], target,
+      0.0,0.0, 0.0 );
     nodes.add(end);
     distances.replace(end, 0.0); //setting the distance of end node to 0
     pq.add(start);
-    double minLon = 100000;
-    double maxLon = -100000;
     for (AttractionNode node: nodes){
-     // System.out.println(node.getLocation()[2]);
       visited.put(node, false);
       previous.put(node, null);
       node.setCost(Double.POSITIVE_INFINITY);
     }
     start.setCost(0.0);
     System.out.println("Ideal Spacing is" + pathDistance/numStops);
-
     while (!(pq.isEmpty()) && !(visited.get(end))) {
       AttractionNode current = pq.poll();
       visited.replace(current,true); //mark the popped node as visited
@@ -92,26 +85,21 @@ public class Dijkstra {
           double edgeWeight = distanceFormula(current.getCoordinates()[0],
             current.getCoordinates()[1], node.getCoordinates()[0], node.getCoordinates()[1]);
           if ((current.getCost() + edgeWeight) < node.getCost()) {
-            node.setCost(current.getCost() + edgeWeight); //Will need to add value to this!!
-            previous.replace(node, current);
+            node.setCost(current.getCost() + edgeWeight); //reset the cost
+            previous.replace(node, current); //reset the previous pointer
             pq.add(node);
           }
         }
         }
     AttractionNode curr = end;
-   // System.out.println("Previous node to the end: " + previous.get(end));
-    //gets the shortest path by looking at previous
-    //start with the end, while the previous node is not the start add to current path
     if(previous.get(curr)== start){
       System.out.println("shortest path is direct one :(");
     }
     while(previous.get(curr)!= start){
       shortestPath.add(previous.get(curr));
       curr = previous.get(curr);
-      //System.out.println(curr);
     }
-   // shortestPath.add(start);
-    Collections.reverse(shortestPath);
+    Collections.reverse(shortestPath); //want path to be in order from start to end
     return shortestPath;
   }
 
@@ -121,35 +109,44 @@ public class Dijkstra {
    * @return driving distance in Meters
    */
   private double distanceFormula(double lat1, double long1, double lat2, double long2) {
-//    double latDist = lat2 - lat1;
-//    double longDist = long2 - long1;
-//    latDist = Math.toRadians(latDist);
-//    longDist = Math.toRadians(longDist);
-//    double la1 = Math.toRadians(lat1);
-//    double la2 = Math.toRadians(lat2);
-//    double a = Math.pow(Math.sin(latDist / 2), 2) + Math.cos(la1) * Math.cos(la2)
-//      * Math.pow(Math.sin((longDist / 2)), 2);
-//    return (2.0 * Constants.EARTH_RADIUS * Math.asin(Math.sqrt(a)));
-    try {
-      LatLng start = new LatLng(lat1,long1);
-      LatLng end = new LatLng(lat2, long2);
-      DirectionsApiRequest req = DirectionsApi.newRequest(connection)
-          .origin(start).destination(end).language("en");
-
-      DirectionsResult response = req.await();
-      if (response.routes.length > 0) {
-        double dist = 0;
-        for (int i =0; i < response.routes[0].legs.length; i++) {
-          dist += response.routes[0].legs[i].distance.inMeters;
-        }
-        return dist;
-      }
-    } catch (ApiException | InterruptedException | IOException e) {
-      e.printStackTrace();
-    }
-    return 0.0;
+    double latDist = lat2 - lat1;
+    double longDist = long2 - long1;
+    latDist = Math.toRadians(latDist);
+    longDist = Math.toRadians(longDist);
+    double la1 = Math.toRadians(lat1);
+    double la2 = Math.toRadians(lat2);
+    double a = Math.pow(Math.sin(latDist / 2), 2) + Math.cos(la1) * Math.cos(la2)
+      * Math.pow(Math.sin((longDist / 2)), 2);
+    return (2.0 * Constants.EARTH_RADIUS * Math.asin(Math.sqrt(a)));
+//    try {
+//      LatLng start = new LatLng(lat1,long1);
+//      LatLng end = new LatLng(lat2, long2);
+//      DirectionsApiRequest req = DirectionsApi.newRequest(connection)
+//          .origin(start).destination(end).language("en");
+//
+//      DirectionsResult response = req.await();
+//      if (response.routes.length > 0) {
+//        double dist = 0;
+//        for (int i =0; i < response.routes[0].legs.length; i++) {
+//          dist += response.routes[0].legs[i].distance.inMeters;
+//        }
+//        return dist;
+//      }
+//    } catch (ApiException | InterruptedException | IOException e) {
+//      e.printStackTrace();
+//    }
+//    return 0.0;
    }
 
+  /**
+   * Gets a list of nodes "connected" to the current node as specified by the "ideal spacing"
+   * between nodes. Works to evenly space out stops on the roadtrip
+   * @param node the node to find connections from
+   * @param end the end node
+   * @param distance the distance between the start and end nodes
+   * @param numStops the number of stops ideally between start and end node
+   * @return list of connected nodes
+   */
   private List<AttractionNode> getConnectedNodes(AttractionNode node,
                                                  AttractionNode end, double distance,int numStops){
     double spacing = distance/numStops;
@@ -168,8 +165,6 @@ public class Dijkstra {
     for(AttractionNode r: toRemove){
       connects.remove(r);
     }
-//    System.out.println("The node " + node.getName() + "has this many connections: " + connects
-//    .size());
     Collections.sort(connects, new Comparator<AttractionNode>(){
       @Override
       //this comparator will sort the nodes based on HOW CLOSE THEY are to the target spacing,
@@ -193,9 +188,13 @@ public class Dijkstra {
     if (node == end){
       System.out.println("The connected nodes to the end re" + connects);
     }
+    //return a list of the number of connections specified in the constants class. Pick the n
+    // closest elements to the "ideal distance"
     if(connects.size()>=Constants.NUM_CONNECTIONS) {
       return connects.subList(0,Constants.NUM_CONNECTIONS);
     }
+    //if the list of potential connections is less than the specified number of connections for
+    // each node just return the whole list
    else if(connects.size() >= 1) {
      return connects;
     }

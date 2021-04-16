@@ -1,6 +1,5 @@
 edu/brown/cs/student/termProject/Main$RouteHandler.class
 database/BoundingBox.class
-graph/AttractionsComparator.class
 graph/Dijkstra$2.class
 edu/brown/cs/student/termProject/Main.class
 database/Database.class

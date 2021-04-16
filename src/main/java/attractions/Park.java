@@ -14,11 +14,13 @@ public class Park implements AttractionNode {
   private double[] coordinates;
   private double price;
   private double rating;
+  private double value;
   private double cost;
   private boolean visit = false;
   private double distance = 0;
   private int numPrev = 0;
   private String nodeType = "park";
+  private double numReviews;
 
 
   /**
@@ -30,15 +32,17 @@ public class Park implements AttractionNode {
    * @param p the price associated with the stop
    * @param rate the five star rating
    */
-  public Park(String parkId, String parkName, String[] loc, double[] coords, Double p,
-              Double rate){
+  public Park(String parkId, String parkName, String[] loc, double[] coords, double p,
+              double rate, double reviewCount){
     id = parkId;
     name = parkName;
     location = loc;
     coordinates = coords;
     price = p;
+    value = 0;
     rating = rate;
     cost = Double.POSITIVE_INFINITY;
+    numReviews = reviewCount;
 
   }
 
@@ -73,10 +77,18 @@ public class Park implements AttractionNode {
   }
 
   @Override
-  public double generateValue(double PreferredPrice, double PreferredStop) {
+  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
     double parkValue = PreferredStop;
-    double value = (Constants.VALUE_BOUND- parkValue) * Constants.VALUE_SCALE_PARKS;
-    value = value * (1 - rating *.1);
+    value = (1- parkValue/Constants.VALUE_BOUND) * distance;
+    //value is 1 minus the % preference for the stop times the total distance. At most the total
+    // distance should double
+    //value = (Constants.VALUE_BOUND- parkValue) * Constants.VALUE_SCALE_PARKS;
+    value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_PARKS) * distance;
+    value = value + (1 - rating/Constants.MAX_RATING) * distance;
+    value = value + (Math.abs(price-PreferredPrice)) * distance;
+
+    value = value * Constants.VALUE_SCALE;
+    System.out.println("park value is: " + value);
     return value;
   }
 
@@ -117,5 +129,15 @@ public class Park implements AttractionNode {
 
   @Override
   public int getType() {return 1;}
+
+  @Override
+  public double getValue() {
+    return value;
+  }
+
+  @Override
+  public double getNumReviews() {
+    return numReviews;
+  }
 
 }

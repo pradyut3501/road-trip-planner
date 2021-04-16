@@ -18,7 +18,9 @@ public class Museum implements AttractionNode {
   private boolean visit = false;
   private double distance = 0;
   private int numPrev = 0;
+  private double value;
   private String nodeType = "museum";
+  private double numReviews;
 
 
   /**
@@ -30,8 +32,8 @@ public class Museum implements AttractionNode {
    * @param p the price associated with the stop
    * @param rate the five star rating
    */
-  public Museum(String MuseumId, String MuseumName, String[] loc, double[] coords, Double p,
-              Double rate){
+  public Museum(String MuseumId, String MuseumName, String[] loc, double[] coords, double p,
+              double rate, double reviewCount){
     id = MuseumId;
     name = MuseumName;
     location = loc;
@@ -39,6 +41,8 @@ public class Museum implements AttractionNode {
     price = p;
     rating = rate;
     cost = Double.POSITIVE_INFINITY;
+    value = 0;
+    numReviews = reviewCount;
 
   }
 
@@ -73,10 +77,16 @@ public class Museum implements AttractionNode {
   }
 
   @Override
-  public double generateValue(double PreferredPrice, double PreferredStop) {
+  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
     double museumValue = PreferredStop;
-    double value = (Constants.VALUE_BOUND- museumValue) * Constants.VALUE_SCALE_MUSEUMS;
-    value = value * (1 - rating *.1);
+    value = (1- museumValue/Constants.VALUE_BOUND) * distance;
+   // value = (Constants.VALUE_BOUND- museumValue) * Constants.VALUE_SCALE_MUSEUMS;
+    value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_MUSEUMS) * distance;
+   // value = value * (1 - rating *.1);
+    value = value + (1 - rating/Constants.MAX_RATING) * distance;
+    value = value + (Math.abs(price-PreferredPrice)) * distance;
+    value = value * Constants.VALUE_SCALE;
+    System.out.println("museum value is: " + value);
     return value;
   }
 
@@ -117,4 +127,14 @@ public class Museum implements AttractionNode {
 
   @Override
   public int getType() {return 0;}
+
+  @Override
+  public double getValue() {
+    return value;
+  }
+
+  @Override
+  public double getNumReviews() {
+    return numReviews;
+  }
 }
