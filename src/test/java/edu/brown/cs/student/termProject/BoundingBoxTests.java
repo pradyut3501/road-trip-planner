@@ -1,6 +1,9 @@
 package edu.brown.cs.student.termProject;
 
+import attractions.Museum;
 import attractions.Park;
+import attractions.Restaurant;
+import attractions.Shop;
 import database.BoundingBox;
 
 import database.Database;
@@ -83,24 +86,24 @@ public class BoundingBoxTests {
             new double[]{2, 2, 5, 1}, 0);
   }
 
-  @Test
-  public void randomTests() {
-    Database.setYelpDatabaseConnection();
-    try {
-      List<AttractionNode> attractions = BoundingBox.findAttractionsWithinBoundingBox(
-              new double[]{40, 41, -106, -105},
-      Arrays.asList("Restaurant", "Museum", "Park", "Shop"), 0, 0);
-      System.out.println(attractions.size());
-      for (AttractionNode a: attractions) {
-        try {
-          Park x = (Park) a;
-        } catch (Exception e) {
-
-        }
-      }
-    } catch (Exception e) {
-      System.out.println("SQL query failed");
-    }
-  }
+//  @Test
+//  public void randomTests() {
+//    Database.setYelpDatabaseConnection();
+//    try {
+//      List<AttractionNode> attractions = BoundingBox.findAttractionsWithinBoundingBox(
+//              new double[]{40, 41, -106, -105},
+//      Arrays.asList("Restaurant", "Museum", "Park", "Shop"), 0, 0);
+//      System.out.println(attractions.size());
+//      for (AttractionNode a: attractions) {
+//        try {
+//          Park x = (Park) a;
+//          System.out.println(x.getPrice());
+//        } catch (Exception e) {
+//        }
+//      }
+//    } catch (Exception e) {
+//      System.out.println("SQL query failed");
+//    }
+//  }
 
 }

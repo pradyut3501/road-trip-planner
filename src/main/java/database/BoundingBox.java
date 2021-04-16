@@ -142,7 +142,7 @@ public class BoundingBox {
       double lon = rs.getDouble("longitude");
       double[] coords = new double[]{lat, lon};
 
-      double price = 0.0; //TODO: Decide on what to do for price
+      double price = 0.0;
       double rating = rs.getDouble("stars");
 
       double reviewCount = rs.getDouble("review_count");
@@ -153,9 +153,13 @@ public class BoundingBox {
               || categoriesList.contains("Food")
               || categoriesList.contains("Bars"))
               && categories.contains("Restaurant")) {
-        AttractionNode nextAttraction = new Restaurant(
-                id, name, location, coords, price, rating, reviewCount);
-        attractionsWithinBox.add(nextAttraction);
+        Integer priceInt = findPriceField(rs.getString("attributes"));
+        if (priceInt != null) {
+          price = priceInt;
+          AttractionNode nextAttraction = new Restaurant(
+                  id, name, location, coords, price, rating, reviewCount);
+          attractionsWithinBox.add(nextAttraction);
+        }
       } else if (categoriesList.contains("Museums") && categories.contains("Museum")) {
         AttractionNode nextAttraction = new Museum(
                 id, name, location, coords, price, rating, reviewCount);
@@ -165,10 +169,13 @@ public class BoundingBox {
             id, name, location, coords, price, rating, reviewCount);
         attractionsWithinBox.add(nextAttraction);
       } else if (categoriesList.contains("Shopping") && categories.contains("Shop")) {
-        System.out.println(findPriceField(rs.getString("attributes")));
-        AttractionNode nextAttraction = new Shop(
-                id, name, location, coords, price, rating, reviewCount);
-        attractionsWithinBox.add(nextAttraction);
+        Integer priceInt = findPriceField(rs.getString("attributes"));
+        if (priceInt != null) {
+          price = priceInt;
+          AttractionNode nextAttraction = new Shop(
+                  id, name, location, coords, price, rating, reviewCount);
+          attractionsWithinBox.add(nextAttraction);
+        }
       }
     }
     prep.close();
@@ -341,11 +348,6 @@ public class BoundingBox {
   return attractions;
   }
 
-  /**
-   *
-   * @param attributes
-   * @return
-   */
   public static Integer findPriceField(String attributes) {
     Integer price = null;
     if (attributes.contains("RestaurantsPriceRange2")) {
