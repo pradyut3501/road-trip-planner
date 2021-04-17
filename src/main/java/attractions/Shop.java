@@ -86,7 +86,7 @@ public class Shop implements AttractionNode {
     value = value + (Constants.AVERAGE_REVIEWS_SHOPS / numReviews) * distance
       * Constants.REVIEW_SCALE;
     value = value + (1 - rating/Constants.MAX_RATING) * distance;
-    value = value + (Math.abs(price-PreferredPrice)) * distance;
+    value = value + (Math.abs(price-PreferredPrice)) * distance * Constants.PRICE_SCALE;
     value = value * Constants.VALUE_SCALE;
     System.out.println("shop value is: " + value);
     return value;

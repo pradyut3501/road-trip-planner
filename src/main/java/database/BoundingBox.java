@@ -228,7 +228,7 @@ public class BoundingBox {
       if (categories.contains("Museum")) {
         URL url = new URL(
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
-                "&categories=museums");
+                "&categories=artmuseums");
         nodes = yelpUrlToAttractions(url, "Museum");
        // System.out.println(nodes.size() + " many museums");
        // attractionsWithinBox.addAll(nodes);

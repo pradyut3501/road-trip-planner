@@ -43,12 +43,21 @@ public class Dijkstra {
     previous = new HashMap<>();
     PriorityQueue<AttractionNode> pq = new PriorityQueue(new Comparator<AttractionNode>() {
       public int compare(AttractionNode o1, AttractionNode o2) {
-        if ((o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()], pathDistance)) >
-          (o2.getCost()) + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) {
+//        if ((o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()], pathDistance)) >
+//          (o2.getCost()) + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) {
+//          return 1;
+//        }
+//        if ((o2.getCost() + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) >
+//          (o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()],pathDistance))) {
+//          return -1;
+//        }
+//        return 0;
+        if ((o1.getCost()) >
+          (o2.getCost())) {
           return 1;
         }
-        if ((o2.getCost() + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) >
-          (o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()],pathDistance))) {
+        if ((o2.getCost()) >
+          (o1.getCost())) {
           return -1;
         }
         return 0;

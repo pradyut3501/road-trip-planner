@@ -85,7 +85,7 @@ public class Restaurant implements AttractionNode {
     //value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
     //value = value * (1 - rating *.1);
     value = value + (1 - rating/Constants.MAX_RATING) * distance;
-    value = value + (Math.abs(price-PreferredPrice)) * distance;
+    value = value + (Math.abs(price-PreferredPrice)) * distance * Constants.PRICE_SCALE;
     value = value * Constants.VALUE_SCALE;
     System.out.println("restaurant value is: " + value);
     return value;
