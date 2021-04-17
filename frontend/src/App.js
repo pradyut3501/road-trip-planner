@@ -17,10 +17,11 @@ import Slider from '@material-ui/core/Slider';
 import fork from './fork.png'
 import park from './park.png'
 import museum from './museum.png'
-import shop from './shop.png'
+import store from './store.png'
 import start from './start.png'
 import finish from './finish.png'
 import road from './road.png'
+import park2 from './park2.png'
 import {Container, Row, Col} from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -33,7 +34,15 @@ import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 /*global google*/
 
 let origin = null
+let originPlace = null
+let originName = ""
+let originWebsite = ""
+let originMapURL = ""
+let originPhone = ""
+let originIcon = ""
+let error_message = ""
 let dest = null
+let destPlace = null
 let middle = null
 let destText = ""
 let direction_service = null
@@ -47,6 +56,8 @@ let restaurantLogo = "fork.png"
 let response_message = ""
 let trip_message = ""
 let route_message = ""
+let summary_text = ""
+let loading_message = ""
 let originCoords = []
 let destCoords = []
 let middleCoords = []
@@ -58,6 +69,13 @@ let directionsRenderer = null
 let map = null
 let markerList = []
 let middlePhotoURL = ""
+let tripResourceLink = ""
+let resource_name = ""
+let destName = ""
+let destMapURL = ""
+let destWebsite = ""
+let destPhone = ""
+let destIcon = ""
 
 //const google = window.google;
 
@@ -65,9 +83,11 @@ function App() {
 
   const [shortestRouteTime, setShortestRouteTime] = useState("");
   const [submitted, setSubmitted] = useState(0)
+  const [loading, setLoading] = useState(0)
   const [attractions, setAttractions] = useState([])
   const [originText, setOriginText] = useState("")
   const [destText, setDestText] = useState("")
+  //const [destIcon, setDestIcon] = useState("")
 
   const [restaurant, setRestaurant] = useState(50);
   const [museum, setMuseum] = useState(50);
@@ -105,7 +125,19 @@ function App() {
 
   function setOrigin(newOrigin){
     origin = newOrigin
-  }
+
+    let service = new google.maps.places.PlacesService(document.getElementById('map'));
+
+    service.getDetails({
+        placeId: origin.value.place_id
+      }, (result, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          originPlace = result
+
+        }
+      })
+    }
+
 
   function setMiddle(newMiddle){
     middle = newMiddle
@@ -159,6 +191,17 @@ function App() {
     //let directions = new google.maps.DirectionsService()
     console.log(dest.value)
     //let directionsRenderer = new google.maps.DirectionsRenderer()
+
+    let service = new google.maps.places.PlacesService(document.getElementById('map'));
+
+    service.getDetails({
+        placeId: dest.value.place_id
+      }, (result, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          destPlace = result
+          console.log(originPlace)
+        }
+      })
 
     getRouteInfo();
   }
@@ -227,6 +270,8 @@ function App() {
     const requestTrip = () => {
 
       console.log(middle)
+      loading_message = "Calculating the perfect trip..."
+      setLoading(1)
       // the source and destination of our desired route
       const toSend = {
         costPref: costPreference,
@@ -261,6 +306,12 @@ function App() {
         )
         .then(response => {
           console.log(response.data);
+          loading_message = ""
+
+          if(response.data["error_message"] != ""){
+            error_message = response.data["error_message"] + ": please adjust your preferences"
+            setSubmitted(1);
+          } else {
 
            // add the start and the end to the list of attractions
            let originNode = {
@@ -283,6 +334,7 @@ function App() {
           // add start/end points to the attraction list
           newAttractions.unshift(originNode)
           newAttractions.push(destNode)
+          initMap()
 
           setAttractions(newAttractions)
           for (let i = 1; i < newAttractions.length - 1; i++){
@@ -304,15 +356,38 @@ function App() {
 
           }
           console.log(response.data["route"])
+          response_message = "Trip Itinerary"
+          trip_message = "Trip Details"
+          route_message = "Route Map"
 
           setOriginText(origin.value.structured_formatting)
           setDestText(dest.value.structured_formatting)
 
+
+          //initMap()
+          tripResourceLink = "https://www.tripsavvy.com/planning-a-road-trip-complete-guide-4845956"
+          resource_name = "Planning a Road Trip: The Complete Guide"
+          originName = originPlace.name
+          originMapURL = originPlace.url
+          originWebsite = originPlace.website
+          originPhone = originPlace.formatted_phone_number
+          originIcon = originPlace.icon
+
+          destName = destPlace.name
+          destMapURL = destPlace.url
+          destWebsite = destPlace.website
+          destPhone = destPlace.formatted_phone_number
+          destIcon = destPlace.icon
+          //setDestIcon(destIcon)
+          console.log(destName)
+          console.log(destMapURL)
+          console.log(destWebsite)
+          console.log(destPhone)
+          console.log(destIcon)
           setSubmitted(1);
-          response_message = "Trip Itinerary"
-          trip_message = "Trip Summary"
-          route_message = "Route Map"
-          initMap()
+
+        }
+          //specialDisplay()
 
 
         })
@@ -321,6 +396,22 @@ function App() {
           console.log(error);
 
         });
+
+    }
+
+    function specialDisplay(){
+      tripResourceLink = "https://www.tripsavvy.com/planning-a-road-trip-complete-guide-4845956"
+      originName = originPlace.name
+      originMapURL = originPlace.url
+      originWebsite = originPlace.website
+      originPhone = originPlace.formatted_phone_number
+      originIcon = originPlace.icon
+
+      destName = destPlace.name
+      destMapURL = destPlace.url
+      destWebsite = destPlace.website
+      destPhone = destPlace.formatted_phone_number
+      destIcon = destPlace.icon
 
     }
 
@@ -356,10 +447,12 @@ function App() {
 
   return (
   <div className = "App">
-    <Container>
-    <div className = "w-75 p-3">
+    <Container >
+    <div >
     <Row >
-    <Col >
+    <Col>
+    </Col>
+    <Col sm = {8}>
 
     &nbsp;
       <div ><img src={logo} alt={"RhodeTrip logo"} style={{width: '500px'}}></img></div>
@@ -432,7 +525,7 @@ function App() {
 
       How much do you prefer the following types of stops?
 
-      <div className={classes.root}>
+      <div >
             <Typography id="continuous-slider" gutterBottom>
               Restaurants
             </Typography>
@@ -496,7 +589,12 @@ function App() {
         </div>
 
         <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! </AwesomeButton>
+        <div><br></br>
+        <h1>{loading_message}</h1>
+        <h2>{error_message}</h2>
+        </div>
         </Col>
+        <Col></Col>
 
         </Row>
         </div>
@@ -505,74 +603,78 @@ function App() {
         <Col>
         <h1>{response_message}</h1>
 
-
-
-
           {attractions.map(function (x,i, elements){
 
           //displaying the start
           if (i == 0){
-            return (<p><div class = "container"><img src={start} alt={"start icon"} style={{width: '100px'}}/>
-          <h2 class = "text"> {originText.main_text} </h2><p><br/> <h3> {originText.secondary_text}</h3></p></div>
-          <br></br>
+            return (<div><img class = "left" src={start} alt={"start icon"} style={{width: '100px'}}/>
+          <h2 class = "text" class = "pad"> {originText.main_text} </h2> <h4> {originText.secondary_text}</h4>
+          &nbsp;
           <a href={"https://www.google.com/maps/dir/" +
           x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
           <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}}/></a>
-          <br></br>
-        </p>)
+
+        </div>)
           }
           //displaying the destination
           if (i == elements.length - 1){
-            return (<p><div class = "container"><img src={finish} alt={"finish icon"} style={{width: '100px'}}/>
-            <h2 class = "text"> {destText.main_text} </h2><p><br/> <h3> {destText.secondary_text}</h3></p></div>
-            </p>)
+            return (<div><br></br><img class = "left" src={finish} alt={"finish icon"} style={{width: '100px'}}/>
+            <h2 class = "text"> {destText.main_text} </h2> <h4> {destText.secondary_text}</h4>
+            </div>)
+
           }
           if (x.nodeType == "restaurant"){
-            return (<div><p class = "rectangle"><img class = "left" src={fork} alt={"restaurant"} style={{width: '100px'}}/>
+            return (<div><div class = "rectangle"><img class = "left" src={fork} alt={"restaurant"} style={{width: '100px'}}/>
+            <br></br>
           <p class = "pad"><h2> {x.name}</h2>
-          <p class = "description"><br></br> {x.location[1]}, {x.location[2]}
+          <p class = "description"> {x.location[1]}, {x.location[2]}
           <br></br> {x.rating} stars
           <br></br>
           <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a></p></p>
-        </p>
-        <br></br>
+        </div>
         <a href={"https://www.google.com/maps/dir/" +
         x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
         <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}} /></a>
         </div>)
           } else if (x.nodeType == "museum"){
-            return (<p><img src={museum} alt={"museum icon"} style={{width: '100px'}}/>
-            <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
+            return (<div><div class = "rectangle"><img class = "left" src={museum} alt={"museum"} style={{width: '100px'}}/>
+            <br></br>
+          <p class = "pad"><h2> {x.name}</h2>
+          <p class = "description"> {x.location[1]}, {x.location[2]}
           <br></br> {x.rating} stars
-          <br></br> {x.location[1]}, {x.location[2]}
           <br></br>
-          <a href={"https://www.google.com/maps/dir/" +
-          x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
-          <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}}/></a>
-          <br></br>
-        </p>)
+          <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a></p></p>
+        </div>
+        <a href={"https://www.google.com/maps/dir/" +
+        x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
+        <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}} /></a>
+        </div>)
           } else if(x.nodeType == "shop"){
-            return (<p><img src={shop} alt={"shop icon"} style={{width: '100px'}}/>
-            <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
+            return (<div><div class = "rectangle"><img class = "left" src={store} alt={"shop"} style={{width: '100px'}}/>
+            <br></br>
+          <p class = "pad"><h2> {x.name}</h2>
+          <p class = "description"> {x.location[1]}, {x.location[2]}
           <br></br> {x.rating} stars
-          <br></br> {x.location[1]}, {x.location[2]}
           <br></br>
-          <a href={"https://www.google.com/maps/dir/" +
-          x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
-          <img src={road} class = "center" alt={"road icon"} style={{width: '100px'}}/></a>
-          <br></br>
-        </p>)
+          <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a></p></p>
+        </div>
+        <a href={"https://www.google.com/maps/dir/" +
+        x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
+        <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}} /></a>
+        </div>)
           } else {
-            return (<p><img src={park} alt={"park icon"} style={{width: '100px'}}/>
-            <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">{x.name}</a>
+            return (<div><div class = "rectangle"><img class = "left" src={park2} alt={"park"} style={{width: '100px'}}/>
+            <br></br>
+          <p class = "pad"><h2> {x.name}</h2>
+          <div class = "description"> {x.location[1]}, {x.location[2]}
           <br></br> {x.rating} stars
-          <br></br> {x.location[1]}, {x.location[2]}
           <br></br>
-          <a href={"https://www.google.com/maps/dir/" +
-          x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
-          <img src={road} class = "center" alt={"road icon"} style={{width: '100px'}}/></a>
-          <br></br>
-        </p>)
+          <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a></div></p>
+        </div>
+        <a href={"https://www.google.com/maps/dir/" +
+        x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
+        <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}} /></a>
+        </div>)
           }})}
 
 
@@ -581,8 +683,35 @@ function App() {
         <Col>
 
         <h1>{route_message}</h1>
-        <div id="map" style={{float: "left", width: 600, height: 400}}></div>
+        <div id="map" class = "rounded" style={{float: "center", width: 600, height: 400}}></div>
         <h1>{trip_message}</h1>
+        <p>
+        {summary_text}
+        <a href={tripResourceLink} target="_blank">{resource_name}</a>
+        <br></br>
+        <h3>Origin</h3>
+        <img src = {originIcon} style={{width: '100px'}}/>
+        <p>
+        <a href={originWebsite} target="_blank">{originName}</a>
+        <br></br>
+        Contact: {originPhone}
+        <br></br>
+        <a href={originMapURL} target="_blank">View in Google Maps</a>
+        </p>
+
+
+        <h3>Destination</h3>
+        <img src = {destIcon} style={{width: '100px'}}/>
+        <p>
+        <a href={destWebsite} target="_blank">{destName}</a>
+        <br></br>
+        Contact: {destPhone}
+        <br></br>
+        <a href={destMapURL} target="_blank">View in Google Maps</a>
+        </p>
+
+
+        </p>
         <img src = {middlePhotoURL} style={{width: '250px'}}></img>
 
         </Col>

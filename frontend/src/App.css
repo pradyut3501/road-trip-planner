@@ -58,9 +58,14 @@
   width:10%
 }
 
+.header{
+  margin-bottom:0;
+}
+
 
 .text{
   padding-left:20px;
+  padding-bottom:0px;
 }
 
 .description{
@@ -68,7 +73,11 @@
 }
 
 .pad {
-  padding-left: 10px
+  padding-left: 15px
+}
+
+.rounded{
+  border-radius: 15px;
 }
 
 .rectangle {
@@ -110,6 +119,10 @@
 .right{
   float:right
 }*/
+
+.left{
+  float:left
+}
 
 body {
   background-color: #f5ffcf;
