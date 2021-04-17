@@ -36,6 +36,8 @@ public class BoundingBox {
    * @param coords1 - [lat, lon] of the start position
    * @param coords2 - [lat, lon] of the end position
    * @param categories - list of acceptable attraction categories
+   * @param prefNumStops - number of stops user prefers to make
+   * @param costPref - cost preference of user
    * @return list of attraction nodes of the given categories within a
    * box around the given positions
    */
@@ -107,8 +109,11 @@ public class BoundingBox {
    *
    * @param boundingBoxBounds - [start lat, end lat, start lon, end lon] of the bounding box
    * @param categories - list of acceptable attraction categories
+   * @param prefNumStops - number of stops preferred by user
+   * @param costPref - cost preference of user
    * @return list of attraction nodes of the given categories within the given bounding box
    * @throws SQLException - if yelp database cannot be successfully queried
+   * @throws IOException - if issue with yelp API connection
    */
   public static List<AttractionNode> findAttractionsWithinBoundingBox(
           double[] boundingBoxBounds, List<String> categories, int prefNumStops, int costPref)

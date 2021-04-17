@@ -31,6 +31,7 @@ public class Museum implements AttractionNode {
    * @param coords the latitude/longitude coordinates
    * @param p the price associated with the stop
    * @param rate the five star rating
+   * @param reviewCount number of reviews left at this establishment
    */
   public Museum(String MuseumId, String MuseumName, String[] loc, double[] coords, double p,
               double rate, double reviewCount){

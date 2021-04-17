@@ -48,9 +48,11 @@ public interface AttractionNode {
   double getRating();
 
   /**
-   * Gets the value of the node computed with our value algorithm
    *
-   * @return numerical "value"
+   * @param PreferredPrice value indicating user's preferred price point
+   * @param PreferredStop value indicating how much user prefers that type of stop
+   * @param distance from current node to prev
+   * @return value heuristic used in Dijkstra's PQ
    */
   double generateValue(double PreferredPrice, double PreferredStop, double distance);
 

@@ -13,12 +13,14 @@ public class Database {
 
   private static Connection yelpConn;
 
+
   /**
    * Establishes a connection to the SQLite database at the given filename
    * and returns the Connection object.
    *
    * @param filename file name of SQLite3 database to open.
-   * @throws SQLException           if an error occurs in any SQL query.
+   * @return connection object
+   * @throws SQLException if an error occurs in any SQL query.
    * @throws ClassNotFoundException if getting the "org.sqlite.JDBC? class object
    *                                cannot be retrieved
    */

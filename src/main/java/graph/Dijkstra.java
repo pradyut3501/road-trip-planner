@@ -102,9 +102,15 @@ public class Dijkstra {
     Collections.reverse(shortestPath); //want path to be in order from start to end
     return shortestPath;
   }
+
   /**
    * The distance formula will use the google maps API to compute the distance between a node and
    * the path
+   *
+   * @param lat1 latitude of point 1
+   * @param long1 longitude of point 1
+   * @param lat2 latitude of point 2
+   * @param long2 longitude of point 2
    * @return driving distance in Meters
    */
   public double distanceFormulaAPI(double lat1, double long1, double lat2, double long2) {
@@ -129,8 +135,11 @@ public class Dijkstra {
   }
 
   /**
-   * The distance formula will use the google maps API to compute the distance between a node and
-   * the path
+   * Haversine distance formula.
+   * @param lat1 latitude of point 1
+   * @param long1 longitude of point 1
+   * @param lat2 latitude of point 2
+   * @param long2 longitude of point 2
    * @return driving distance in Meters
    */
   private double distanceFormula(double lat1, double long1, double lat2, double long2) {

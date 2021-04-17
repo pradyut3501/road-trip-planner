@@ -31,6 +31,7 @@ public class Shop implements AttractionNode {
    * @param coords the latitude/longitude coordinates
    * @param p the price associated with the stop
    * @param rate the five star rating
+   * @param reviewCount number of reviews left at this establishment
    */
   public Shop(String ShopId, String ShopName, String[] loc, double[] coords, Double p,
                 Double rate,  double reviewCount){

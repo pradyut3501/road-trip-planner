@@ -30,6 +30,7 @@ public class Restaurant implements AttractionNode {
    * @param coords the latitude/longitude coordinates
    * @param p the price associated with the stop
    * @param rate the five star rating
+   * @param reviewCount number of reviews left at this establishment
    */
   public Restaurant(String RestaurantId, String RestaurantName, String[] loc, double[] coords,
                    Double p, Double rate,  double reviewCount){

@@ -31,6 +31,7 @@ public class Park implements AttractionNode {
    * @param coords the latitude/longitude coordinates
    * @param p the price associated with the stop
    * @param rate the five star rating
+   * @param reviewCount number of reviews left at this establishment
    */
   public Park(String parkId, String parkName, String[] loc, double[] coords, double p,
               double rate, double reviewCount){
