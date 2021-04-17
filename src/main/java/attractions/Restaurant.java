@@ -80,13 +80,14 @@ public class Restaurant implements AttractionNode {
   public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
     double restaurantValue = PreferredStop;
     value = (1- restaurantValue/Constants.VALUE_BOUND) * distance;
-    value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_RESTAURANTS) * distance;
-   //value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
+    //value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_RESTAURANTS) * distance;
+    value = value + (Constants.AVERAGE_REVIEWS_RESTAURANTS / numReviews) * distance * Constants.REVIEW_SCALE;
+    //value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
     //value = value * (1 - rating *.1);
     value = value + (1 - rating/Constants.MAX_RATING) * distance;
     value = value + (Math.abs(price-PreferredPrice)) * distance;
     value = value * Constants.VALUE_SCALE;
-  //  System.out.println("restaurant value is: " + value);
+    System.out.println("restaurant value is: " + value);
     return value;
   }
 

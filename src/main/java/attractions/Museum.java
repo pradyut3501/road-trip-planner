@@ -81,13 +81,14 @@ public class Museum implements AttractionNode {
   public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
     double museumValue = PreferredStop;
     value = (1- museumValue/Constants.VALUE_BOUND) * distance;
-   // value = (Constants.VALUE_BOUND- museumValue) * Constants.VALUE_SCALE_MUSEUMS;
-    value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_MUSEUMS) * distance;
-   // value = value * (1 - rating *.1);
+    // value = (Constants.VALUE_BOUND- museumValue) * Constants.VALUE_SCALE_MUSEUMS;
+    //value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_MUSEUMS) * distance;
+    value = value + (Constants.AVERAGE_REVIEWS_MUSEUMS / numReviews) * distance * Constants.REVIEW_SCALE;
+    // value = value * (1 - rating *.1);
     value = value + (1 - rating/Constants.MAX_RATING) * distance;
-  //  value = value + (Math.abs(price-PreferredPrice)) * distance;
+    //  value = value + (Math.abs(price-PreferredPrice)) * distance;
     value = value * Constants.VALUE_SCALE;
-  //  System.out.println("museum value is: " + value);
+    System.out.println("museum value is: " + value);
     return value;
   }
 
