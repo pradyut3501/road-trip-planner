@@ -43,12 +43,21 @@ public class Dijkstra {
     previous = new HashMap<>();
     PriorityQueue<AttractionNode> pq = new PriorityQueue(new Comparator<AttractionNode>() {
       public int compare(AttractionNode o1, AttractionNode o2) {
-        if ((o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()], pathDistance)) >
-          (o2.getCost()) + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) {
+//        if ((o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()], pathDistance)) >
+//          (o2.getCost()) + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) {
+//          return 1;
+//        }
+//        if ((o2.getCost() + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) >
+//          (o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()],pathDistance))) {
+//          return -1;
+//        }
+//        return 0;
+        if ((o1.getCost()) >
+          (o2.getCost())) {
           return 1;
         }
-        if ((o2.getCost() + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) >
-          (o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()],pathDistance))) {
+        if ((o2.getCost()) >
+          (o1.getCost())) {
           return -1;
         }
         return 0;
@@ -102,9 +111,15 @@ public class Dijkstra {
     Collections.reverse(shortestPath); //want path to be in order from start to end
     return shortestPath;
   }
+
   /**
    * The distance formula will use the google maps API to compute the distance between a node and
    * the path
+   *
+   * @param lat1 latitude of point 1
+   * @param long1 longitude of point 1
+   * @param lat2 latitude of point 2
+   * @param long2 longitude of point 2
    * @return driving distance in Meters
    */
   public double distanceFormulaAPI(double lat1, double long1, double lat2, double long2) {
@@ -129,8 +144,11 @@ public class Dijkstra {
   }
 
   /**
-   * The distance formula will use the google maps API to compute the distance between a node and
-   * the path
+   * Haversine distance formula.
+   * @param lat1 latitude of point 1
+   * @param long1 longitude of point 1
+   * @param lat2 latitude of point 2
+   * @param long2 longitude of point 2
    * @return driving distance in Meters
    */
   private double distanceFormula(double lat1, double long1, double lat2, double long2) {

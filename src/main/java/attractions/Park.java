@@ -31,6 +31,7 @@ public class Park implements AttractionNode {
    * @param coords the latitude/longitude coordinates
    * @param p the price associated with the stop
    * @param rate the five star rating
+   * @param reviewCount number of reviews left at this establishment
    */
   public Park(String parkId, String parkName, String[] loc, double[] coords, double p,
               double rate, double reviewCount){
@@ -83,12 +84,14 @@ public class Park implements AttractionNode {
     //value is 1 minus the % preference for the stop times the total distance. At most the total
     // distance should double
     //value = (Constants.VALUE_BOUND- parkValue) * Constants.VALUE_SCALE_PARKS;
-    value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_PARKS) * distance;
+    //value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_PARKS) * distance;
+    value = value + (Constants.AVERAGE_REVIEWS_PARKS / numReviews) * distance * Constants.REVIEW_SCALE;
     value = value + (1 - rating/Constants.MAX_RATING) * distance;
-    //value = value + (Math.abs(price-PreferredPrice)) * distance;
+    value = value + Constants.PRICE_SCALE* Constants.PRICE_SCALE* distance;
 
     value = value * Constants.VALUE_SCALE;
-  //  System.out.println("park value is: " + value);
+    value = value * Constants.VALUE_SCALE_PARKS;
+    System.out.println("park value is: " + value);
     return value;
   }
 

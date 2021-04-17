@@ -31,6 +31,7 @@ public class Shop implements AttractionNode {
    * @param coords the latitude/longitude coordinates
    * @param p the price associated with the stop
    * @param rate the five star rating
+   * @param reviewCount number of reviews left at this establishment
    */
   public Shop(String ShopId, String ShopName, String[] loc, double[] coords, Double p,
                 Double rate,  double reviewCount){
@@ -79,12 +80,15 @@ public class Shop implements AttractionNode {
   public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
     double shopValue = PreferredStop;
     value = (1- shopValue/Constants.VALUE_BOUND) * distance;
- //   value = (Constants.VALUE_BOUND- shopValue) * Constants.VALUE_SCALE_SHOPS;
+    //   value = (Constants.VALUE_BOUND- shopValue) * Constants.VALUE_SCALE_SHOPS;
     //value = value * (1 - rating *.1);
+    //   value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_SHOPS) * distance;
+    value = value + (Constants.AVERAGE_REVIEWS_SHOPS / numReviews) * distance
+      * Constants.REVIEW_SCALE;
     value = value + (1 - rating/Constants.MAX_RATING) * distance;
-    value = value + (Math.abs(price-PreferredPrice)) * distance;
+    value = value + (Math.abs(price-PreferredPrice)) * distance * Constants.PRICE_SCALE;
     value = value * Constants.VALUE_SCALE;
-  //  System.out.println("shop value is: " + value);
+    System.out.println("shop value is: " + value);
     return value;
   }
 
