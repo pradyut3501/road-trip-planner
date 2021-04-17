@@ -63,8 +63,6 @@ public final class Main {
    */
   private void run() {
     Database.setYelpDatabaseConnection();
-
-
     List<String> categories = new ArrayList<>();
     categories.add("Restaurant");
     categories.add("Park");

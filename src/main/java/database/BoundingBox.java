@@ -42,13 +42,9 @@ public class BoundingBox {
    * box around the given positions
    */
   public static List<AttractionNode> findAttractionsBetween(
-
           double[] coords1, double[] coords2, List<String> categories, int prefNumStops, int costPref) {
-
     double[] boundingBoxBounds = findBoundingBoxBounds(coords1, coords2);
-
     double[] expandedBoundingBoxBounds = expandBoundingBoxBounds(boundingBoxBounds, 2.0);
-
     try {
       return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories, prefNumStops, costPref);
     } catch (SQLException | IOException e) {
@@ -65,7 +61,6 @@ public class BoundingBox {
    */
   public static double[] findBoundingBoxBounds(double[] coords1, double[] coords2) {
     double[] bounds = new double[4];
-
     if (coords1[0] < coords2[0]) {
       bounds[0] = coords1[0];
       bounds[1] = coords2[0];
@@ -73,7 +68,6 @@ public class BoundingBox {
       bounds[0] = coords2[0];
       bounds[1] = coords1[0];
     }
-
     if (coords1[1] < coords2[1]) {
       bounds[2] = coords1[1];
       bounds[3] = coords2[1];
@@ -81,7 +75,6 @@ public class BoundingBox {
       bounds[2] = coords2[1];
       bounds[3] = coords1[1];
     }
-
     return bounds;
   }
 
@@ -94,12 +87,10 @@ public class BoundingBox {
    */
   public static double[] expandBoundingBoxBounds(double[] boundingBoxBounds, double expansionFactor) {
     double[] expandedBoundingBoxBounds = new double[4];
-
     expandedBoundingBoxBounds[0] = boundingBoxBounds[0] - expansionFactor;
     expandedBoundingBoxBounds[1] = boundingBoxBounds[1] + expansionFactor;
     expandedBoundingBoxBounds[2] = boundingBoxBounds[2] - expansionFactor;
     expandedBoundingBoxBounds[3] = boundingBoxBounds[3] + expansionFactor;
-
     return expandedBoundingBoxBounds;
   }
 
@@ -119,6 +110,9 @@ public class BoundingBox {
           double[] boundingBoxBounds, List<String> categories, int prefNumStops, int costPref)
       throws SQLException, IOException {
     ArrayList<String> nameList = new ArrayList<>();
+    for (String c: categories){
+      System.out.println(c);
+    }
     Connection conn = Database.getYelpDatabaseConnection();
 
     String query = "SELECT * FROM yelp_business " +
@@ -180,8 +174,7 @@ public class BoundingBox {
     }
     prep.close();
     rs.close();
-    System.out.println("Length of attractions within bounding box is: " + attractionsWithinBox.size());
-
+    System.out.println("Length of attractions from database within bounding box is: " + attractionsWithinBox.size());
     for (int i = 0; i < (prefNumStops + 2); i++) {
       //System.out.println(i);
       double reqLat = 0;
@@ -212,16 +205,16 @@ public class BoundingBox {
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" +
                 reqLon +
                 "&categories=" + "\"restaurant\",\"food\",\"bars\"" + "&price=" + costPref);
-        nodes = yelpUrlToAttractions(url, "Restaurant");
-       // System.out.println(nodes.size() + " many restaurants");
-        //attractionsWithinBox.addAll(nodes);
+        nodes.addAll(yelpUrlToAttractions(url, "Restaurant"));
+        System.out.println(nodes.size() + " many restaurants");
+       // attractionsWithinBox.addAll(nodes);
       }
       if (categories.contains("Shop")) {
         URL url = new URL(
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
                 "&categories=shoppingcenters");
-        nodes = yelpUrlToAttractions(url, "Shop");
-       // System.out.println(nodes.size() + " many shops");
+        nodes.addAll(yelpUrlToAttractions(url, "Shop"));
+        System.out.println(nodes.size() + " many shops");
        // attractionsWithinBox.addAll(nodes);
 
       }
@@ -229,16 +222,16 @@ public class BoundingBox {
         URL url = new URL(
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
                 "&categories=artmuseums");
-        nodes = yelpUrlToAttractions(url, "Museum");
-       // System.out.println(nodes.size() + " many museums");
+        nodes.addAll(yelpUrlToAttractions(url, "Museum"));
+        System.out.println(nodes.size() + " many museums");
        // attractionsWithinBox.addAll(nodes);
       }
       if (categories.contains("Park")) {
         URL url = new URL(
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
                 "&categories=parks");
-        nodes = yelpUrlToAttractions(url, "Park");
-       // System.out.println(nodes.size() + " many parks");
+        nodes.addAll(yelpUrlToAttractions(url, "Park"));
+        System.out.println(nodes.size() + " many parks");
         //attractionsWithinBox.addAll(nodes);
       }
       List<AttractionNode> removeRepeats = new ArrayList<>();
@@ -254,7 +247,32 @@ public class BoundingBox {
       nodes.removeAll(removeRepeats);
       attractionsWithinBox.addAll(nodes);
     }
-    System.out.println("The length of the list of attractions returned is: " + attractionsWithinBox.size());
+   double numRest = 0.0;
+   double numPark = 0.0;
+   double numMus = 0.0;
+   double numShops = 0.0;
+    for (AttractionNode a: attractionsWithinBox){
+      switch(a.getType()){
+        case 0:
+          numMus ++;
+          break;
+        case 1:
+          numPark++;
+          break;
+        case 2:
+          numRest++;
+          break;
+        case 3:
+          numShops++;
+          break;
+        default:
+          break;
+      }
+    }
+    System.out.println("Number of Shop: " + numShops);
+    System.out.println("Number for Restaurant: " + numRest);
+    System.out.println("Number of  Museum: " + numMus);
+    System.out.println("Number of Park: " + numPark);
     return attractionsWithinBox;
   }
 
@@ -271,9 +289,11 @@ public class BoundingBox {
     //System.out.println("Attraction Parameter is: " + attraction);
     HttpURLConnection con = (HttpURLConnection) yelpUrl.openConnection();
     con.setRequestMethod("GET");
+    String yelpKeyAbby =
+      "RLI6ay67RiMOfxTbWDWV9iPiC4WyVydxY2ePdMV8SoTi74Ddx6Ez7fkBa8cY2LoI6_yqJaVTGGqsiUT_GeGh4RO0gOyclHeDDaoD43pkWDQmjSHrM_DyifOLaGF7YHYx";
     String yelpKey =
         "PlFxZHha-zmiQvrMQUb12P0uD9s_GZRJzzGZqVSJFKgR4iDXj1aBwOBuMc2DBFYkZODPw2V5PaJBMapJ5WA9PA3Lx2cGXq9FkzzT45m9t9I9gsXDdGCwQnuYu6J3YHYx";
-    con.setRequestProperty("Authorization", "Bearer " + yelpKey);
+    con.setRequestProperty("Authorization", "Bearer " + yelpKeyAbby);
     BufferedReader in = null;
     List<AttractionNode> attractions = new ArrayList<>();
     try {
@@ -288,13 +308,21 @@ public class BoundingBox {
 //      System.out.println(json.getInt("total"));
 //      System.out.println(json.getJSONArray("businesses").toString());
 //      System.out.println("Now Looping");
+      if (attraction != "Park") {
+        System.out.println("attraction: " + attraction + " readIn: " + json.getInt("total") );
+      }
       if (json.getInt("total") != 0) {
-        for (int j = 0; j < json.getInt("total"); j++) {
+        for (int j = 0; j < json.getJSONArray("businesses").length(); j++) {
           try {
             //for each business create a json object to parse
+            //JSONObject businessJson = null;
+          //  try{
             JSONObject businessJson = json.getJSONArray("businesses").getJSONObject(j);
+           // }
+//            catch(JSONException e){
+//              System.out.println("Problem w making business object: " +e);
+//            }
           //  System.out.println(json.getJSONArray("businesses").getString(j));
-
             String name = businessJson.get("name").toString();
             String id = businessJson.get("id").toString();
             JSONObject locationJson = businessJson.getJSONObject("location");
@@ -313,7 +341,6 @@ public class BoundingBox {
               price = 0.0;
             }
             double rating = businessJson.getDouble("rating");
-
             double reviewCount = businessJson.getDouble("review_count");
            // System.out.println("Reviews Count: " + reviewCount );
 //            System.out.println("the name is : " + name + " id is: " + id + " location is: " + loc[0] + " " + loc[1]
@@ -346,7 +373,7 @@ public class BoundingBox {
             }
           }
           catch (JSONException e){
-         //System.out.println("Json error");
+         System.out.println(e + "exception");
           }
           //THEN INSTANTIATE ATTRACTION NODE
           //attractions.add(attraction node)

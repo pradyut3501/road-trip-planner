@@ -15,6 +15,8 @@ public class DijkstraTests {
     List<String> categories = new ArrayList<>();
     categories.add("Park");
     categories.add("Restaurant");
+    categories.add("Shop");
+    categories.add("Museum");
     List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
         new double[]{41.83108984050821,-71.40029245994668},
         new double[]{41.819930960017274, -71.41042819577497}, categories, 4, 3);
