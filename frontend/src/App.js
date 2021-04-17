@@ -2,7 +2,7 @@ import './App.css';
 import './index.js'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { GoogleMap, DirectionsRenderer, DirectionsService, TravelMode, DirectionsStatus } from "react-google-maps";
-import { Map, Marker, GoogleApiWrapper, InfoWindow } from "google-maps-react"
+import { Map, Marker } from "google-maps-react"
 
 import {useState, useEffect} from 'react'
 import { AwesomeButton } from "react-awesome-button";
@@ -24,8 +24,6 @@ import road from './road.png'
 import park2 from './park2.png'
 import {Container, Row, Col} from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-//import 'semantic-ui-css/semantic.min.css';
 import { Icon } from 'semantic-ui-react';
 
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
@@ -49,7 +47,6 @@ let direction_service = null
 let costPreference = 1
 let steps = []
 let shortestRouteDist = ""
-//let shortestRouteTime = null
 let distanceMessage = ["", ""]
 let logo = "https://i.ibb.co/drqk6c8/logo.png";
 let restaurantLogo = "fork.png"
@@ -58,11 +55,11 @@ let trip_message = ""
 let route_message = ""
 let summary_text = ""
 let loading_message = ""
+let loading_class = ""
 let originCoords = []
 let destCoords = []
 let middleCoords = []
 let stops = 0
-let time = 0
 let dist = 0
 let directions = null
 let directionsRenderer = null
@@ -76,8 +73,11 @@ let destMapURL = ""
 let destWebsite = ""
 let destPhone = ""
 let destIcon = ""
-
-//const google = window.google;
+let originMessage = ""
+let destMessage = ""
+let contactOrigin = ""
+let contactDest = ""
+let viewInGoogle = ""
 
 function App() {
 
@@ -87,12 +87,12 @@ function App() {
   const [attractions, setAttractions] = useState([])
   const [originText, setOriginText] = useState("")
   const [destText, setDestText] = useState("")
-  //const [destIcon, setDestIcon] = useState("")
 
   const [restaurant, setRestaurant] = useState(50);
   const [museum, setMuseum] = useState(50);
   const [park, setPark] = useState(50);
   const [shop, setShop] = useState(50);
+  const [error, setError] = useState(0)
 
   const handleChangeRestaurant = (event, newValue) => {
     setRestaurant(newValue);
@@ -112,7 +112,7 @@ function App() {
 
   const useStyles = makeStyles({
     root: {
-      width: 150,
+      width: 250,
     },
   });
 
@@ -181,16 +181,10 @@ function App() {
     dist = value
   }
 
-  function setTime(value){
-    time = value
-  }
-
   function setDest(newDest){
     dest = newDest
     console.log(dest.value.place_id)
-    //let directions = new google.maps.DirectionsService()
     console.log(dest.value)
-    //let directionsRenderer = new google.maps.DirectionsRenderer()
 
     let service = new google.maps.places.PlacesService(document.getElementById('map'));
 
@@ -207,8 +201,6 @@ function App() {
   }
 
     function initMap(){
-      //var directionsService = new google.maps.DirectionsService();
-      //var directionsRenderer = new google.maps.DirectionsRenderer();
       let initialView = new google.maps.LatLng(41.850033, -87.6500523);
       var mapOptions = {
         zoom:7,
@@ -224,14 +216,12 @@ function App() {
     directions = new google.maps.DirectionsService()
     directionsRenderer = new google.maps.DirectionsRenderer()
 
-
     directions.route({
         origin: origin.value.description,
         destination: dest.value.description,
         travelMode: google.maps.TravelMode.DRIVING,
       }, (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
-          console.log(result)
 
       directionsRenderer.setDirections(result);
 
@@ -252,12 +242,10 @@ function App() {
         steps.push([startLat, startLon, endLat, endLon])
 
        }
-       console.log(steps)
 
        originCoords = [steps[0][0], steps[0][1]]
        destCoords = [steps[tripLength-1][0], steps[tripLength-1][1]]
 
-       //when axios is ready, move this into requestTrip
 
         } else {
           console.error(`error fetching directions ${result}`);
@@ -268,10 +256,33 @@ function App() {
 
     // make axios post request to the backend
     const requestTrip = () => {
+      error_message = ""
+      resetDisplay()
+      setSubmitted(0)
 
+      if(origin == null){
+        error_message = "Please enter a starting location"
+        loading_class = ""
+        setError(1);
+      } else if (dest == null){
+        error_message = "Please enter a destination"
+        loading_class = ""
+        setError(1);
+      } else if (dist == 0){
+        error_message = "Please enter a maximum distance"
+        loading_class = ""
+        setError(1);
+      }
+      else{
       console.log(middle)
-      loading_message = "Calculating the perfect trip..."
+      loading_message = "Calculating the perfect trip"
+      loading_class = "loading"
       setLoading(1)
+
+      console.log(museum)
+      console.log(park)
+      console.log(shop)
+      console.log(restaurant)
       // the source and destination of our desired route
       const toSend = {
         costPref: costPreference,
@@ -285,7 +296,6 @@ function App() {
         originLon:originCoords[1],
         destLat: destCoords[0],
         destLon: destCoords[1],
-        maxTime: time,
         maxDist: dist,
         middleLat: middleCoords[0],
         middleLon: middleCoords[1]
@@ -310,8 +320,14 @@ function App() {
 
           if(response.data["error_message"] != ""){
             error_message = response.data["error_message"] + ": please adjust your preferences"
+            loading_class = ""
             setSubmitted(1);
-          } else {
+          } else if (response.data["route"].length == 0){
+            error_message = "Oops! This route returned no results. Please adjust your preferences "
+            loading_class = ""
+            setSubmitted(1);
+          }
+            else {
 
            // add the start and the end to the list of attractions
            let originNode = {
@@ -378,12 +394,19 @@ function App() {
           destWebsite = destPlace.website
           destPhone = destPlace.formatted_phone_number
           destIcon = destPlace.icon
-          //setDestIcon(destIcon)
-          console.log(destName)
-          console.log(destMapURL)
-          console.log(destWebsite)
-          console.log(destPhone)
-          console.log(destIcon)
+          originMessage = "Origin"
+          destMessage = "Destination"
+          console.log("dest phone " + destPhone)
+          if(destPhone === undefined){
+            contactDest = "Contact: None Available"
+          }
+          if (originPhone === undefined){
+            contactOrigin = "Contact: None Available"
+          }
+          viewInGoogle = "View in Google Maps"
+          loading_class = ""
+          // now that we're done setting information for the results page,
+          // re-render the page
           setSubmitted(1);
 
         }
@@ -394,12 +417,12 @@ function App() {
 
         .catch(function(error) {
           console.log(error);
-
         });
 
     }
+  }
 
-    function specialDisplay(){
+    function setDisplay(){
       tripResourceLink = "https://www.tripsavvy.com/planning-a-road-trip-complete-guide-4845956"
       originName = originPlace.name
       originMapURL = originPlace.url
@@ -415,23 +438,41 @@ function App() {
 
     }
 
+    function resetDisplay(){
+      tripResourceLink = ""
+      resource_name = ""
+      originName = ""
+      originMapURL = ""
+      originWebsite = ""
+      originPhone = ""
+      originIcon = ""
+
+      destName = ""
+      destMapURL = ""
+      destWebsite = ""
+      destPhone = ""
+      destIcon = ""
+      originMessage = ""
+      destMessage = ""
+      contactDest = ""
+      contactOrigin = ""
+
+
+
+
+    }
+
 
     useEffect(()=> {
-      console.log("in use effect")
-      console.log(shortestRouteDist)
-      console.log(shortestRouteTime)
       distanceMessage[0] = "The quickest route for this origin and destination is "
       distanceMessage[1] = "and"
     }, [shortestRouteTime])
 
     useEffect(()=> {
-      console.log("changing message")
 
     }, [submitted])
 
     useEffect(()=> {
-      console.log("changing message")
-      console.log(attractions)
 
     }, [attractions])
 
@@ -440,6 +481,10 @@ function App() {
       console.log(originText)
 
     }, [originText])
+
+    useEffect(()=> {
+      setError(0)
+    }, [error])
 
 
 
@@ -459,7 +504,7 @@ function App() {
 
     &nbsp;
 
-    Where do you want to start?
+    <p class = "question">Where do you want to start?</p>
     <GooglePlacesAutocomplete id = "origin" apiKey="AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c"
     selectProps={{
           origin,
@@ -467,10 +512,10 @@ function App() {
         }}
       style = {{width: '66%'}}/>
 
-    <br></br>
-    <br></br>
+
+
     &nbsp;
-    Where do you want to go?
+    <p class = "question">Where do you want to go?</p>
     <GooglePlacesAutocomplete id = "destination" apiKey="AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c"
     selectProps={{
           dest,
@@ -482,24 +527,16 @@ function App() {
 
       <p>{distanceMessage[0]} {shortestRouteDist} {distanceMessage[1]} {shortestRouteTime}</p>
 
-      <br></br>
+
       Based on this, how much long would you like to spend on the road?
       &nbsp;
       <br></br>
-      <TextBox label = {"Maximum time (hours): "} change = {setTime} />
       <TextBox label = {"Maximum distance (miles): "} change = {setDist} />
 
-      <br></br>
-      &nbsp;
-      What's your budget like?
-      <br></br>
 
-      {/*&nbsp;*/}
-      {/*<AwesomeButton type = "primary" onPress = {setDollar1} > $ < /AwesomeButton>*/}
-      {/*&nbsp;*/}
-      {/*<AwesomeButton type = "primary" onPress = {setDollar2} > $$ < /AwesomeButton>*/}
-      {/*&nbsp;*/}
-      {/*<AwesomeButton type = "primary" onPress = {setDollar3} > $$$ < /AwesomeButton>*/}
+      &nbsp;
+      <p class = "question">What's your budget like?</p>
+
         <div class="item1">
           <input type="radio" value="$" name="budget" onChange={setDollar1} checked/> $
           <input type="radio" value="$$" name="budget" onChange={setDollar2}/> $$
@@ -511,10 +548,10 @@ function App() {
       <br></br>
 
       <TextBox label = {"Preferred # of stops: "}
-      change = {setStops} />
+      change = {setStops} class = "question"/>
 
       <br></br>
-      Any stops you need to make on the way?
+      <p class = "question"> Any stops you need to make on the way? </p>
       <GooglePlacesAutocomplete id = "destination" apiKey="AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c"
       selectProps={{
             middle,
@@ -523,9 +560,9 @@ function App() {
 
       <br></br>
 
-      How much do you prefer the following types of stops?
+      <p class = "question"> How much do you prefer the following types of stops? </p>
 
-      <div >
+      <div class = "here">
             <Typography id="continuous-slider" gutterBottom>
               Restaurants
             </Typography>
@@ -556,7 +593,7 @@ function App() {
               </Grid>
             </Grid>
 
-            <Typography id="continuous-slider" gutterBottom>
+            <Typography id="continuous-slider" gutterBottom >
               Parks
             </Typography>
             <Grid container spacing={1}>
@@ -588,9 +625,11 @@ function App() {
 
         </div>
 
+
+        <br></br>
         <AwesomeButton type = "secondary" onPress = {requestTrip} > Get my trip! </AwesomeButton>
         <div><br></br>
-        <h1>{loading_message}</h1>
+        <div> <h1 class = {loading_class}>{loading_message}</h1></div>
         <h2>{error_message}</h2>
         </div>
         </Col>
@@ -637,7 +676,7 @@ function App() {
         <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}} /></a>
         </div>)
           } else if (x.nodeType == "museum"){
-            return (<div><div class = "rectangle"><img class = "left" src={museum} alt={"museum"} style={{width: '100px'}}/>
+            return (<div><div class = "rectangle"><img class = "left" src={museum} alt={"museum icon"} style={{width: '100px'}}/>
             <br></br>
           <p class = "pad"><h2> {x.name}</h2>
           <p class = "description"> {x.location[1]}, {x.location[2]}
@@ -689,27 +728,26 @@ function App() {
         {summary_text}
         <a href={tripResourceLink} target="_blank">{resource_name}</a>
         <br></br>
-        <h3>Origin</h3>
+        <h3>{originMessage}</h3>
         <img src = {originIcon} style={{width: '100px'}}/>
         <p>
         <a href={originWebsite} target="_blank">{originName}</a>
         <br></br>
-        Contact: {originPhone}
+        {contactOrigin}{originPhone}
         <br></br>
-        <a href={originMapURL} target="_blank">View in Google Maps</a>
+        <a href={originMapURL} target="_blank">{viewInGoogle}</a>
         </p>
 
 
-        <h3>Destination</h3>
+        <h3>{destMessage}</h3>
         <img src = {destIcon} style={{width: '100px'}}/>
         <p>
         <a href={destWebsite} target="_blank">{destName}</a>
         <br></br>
-        Contact: {destPhone}
+        {contactDest}{destPhone}
         <br></br>
-        <a href={destMapURL} target="_blank">View in Google Maps</a>
+        <a href={destMapURL} target="_blank">{viewInGoogle}</a>
         </p>
-
 
         </p>
         <img src = {middlePhotoURL} style={{width: '250px'}}></img>
