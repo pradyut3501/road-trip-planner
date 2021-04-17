@@ -85,6 +85,7 @@ public class Park implements AttractionNode {
     // distance should double
     //value = (Constants.VALUE_BOUND- parkValue) * Constants.VALUE_SCALE_PARKS;
     value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_PARKS) * distance;
+    System.out.println("park review is " + numReviews);
     value = value + (1 - rating/Constants.MAX_RATING) * distance;
     //value = value + (Math.abs(price-PreferredPrice)) * distance;
 

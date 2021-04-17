@@ -176,14 +176,6 @@ public class BoundingBox {
         AttractionNode nextAttraction = new Park(
             id, name, location, coords, price, rating, reviewCount);
         attractionsWithinBox.add(nextAttraction);
-      } else if (categoriesList.contains("Shopping") && categories.contains("Shop")) {
-        Integer priceInt = findPriceField(rs.getString("attributes"));
-        if (priceInt != null) {
-          price = priceInt;
-          AttractionNode nextAttraction = new Shop(
-                  id, name, location, coords, price, rating, reviewCount);
-          attractionsWithinBox.add(nextAttraction);
-        }
       }
     }
     prep.close();
