@@ -20,6 +20,8 @@ import start from './start.png'
 import finish from './finish.png'
 import road from './road.png'
 import park2 from './park2.png'
+import flags from './flags.png'
+
 import {Container, Row, Col} from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Icon } from 'semantic-ui-react';
@@ -78,6 +80,7 @@ let contactOrigin = ""
 let contactDest = ""
 let viewInGoogle = ""
 let destSet = 0
+let intermedText = ""
 
 function App() {
 
@@ -96,6 +99,7 @@ function App() {
   // keeps track of origin and destination messages
   const [originText, setOriginText] = useState("")
   const [destText, setDestText] = useState("")
+  const [middleText, setMiddleText] = useState("")
 
   // keeps track of user's relative preference for restaurants
   const [restaurant, setRestaurant] = useState(50);
@@ -427,13 +431,14 @@ function App() {
               })
 
 
+          let infoWindow = null
           if (newAttractions[i].name == "Intermediate Stop") {
-                let infoWindow = new google.maps.InfoWindow({
+              infoWindow = new google.maps.InfoWindow({
                   content: '<div> <h3>' + middle.value.structured_formatting.main_text + '</h3>' + middle.value.structured_formatting.secondary_text + '</div>'
                 })
 
           } else{
-            let infoWindow = new google.maps.InfoWindow({
+            infoWindow = new google.maps.InfoWindow({
               content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
             })
           }
@@ -487,9 +492,11 @@ function App() {
           response_message = "Trip Itinerary"
           trip_message = "Trip Details"
           route_message = "Route Map"
+          intermedText =  "(You added this stop!)"
 
           setOriginText(origin.value.structured_formatting)
           setDestText(dest.value.structured_formatting)
+          setMiddleText(middle.value.structured_formatting)
 
 
           //initMap()
@@ -766,13 +773,26 @@ function App() {
         </div>)
           }
           //displaying the destination
-          if (i == elements.length - 1){
+          else if (i == elements.length - 1){
             return (<div><br></br><img class = "left" src={finish} alt={"finish icon"} style={{width: '100px'}}/>
             <h2 class = "text"> {destText.main_text} </h2> <h4> {destText.secondary_text}</h4>
             </div>)
-
           }
-          if (x.nodeType == "restaurant"){
+          else if (elements[i].name == "Intermediate Stop"){
+            return (<div><div class = "rectangle"><br></br><img class = "left" src={flags} alt={"flag icon"} style={{width: '100px'}}/>
+            <br></br>
+          <p class = "pad"><h2> {middleText.main_text}</h2>
+          <p class = "description"> {middleText.secondary_text}
+          <br></br> {intermedText}
+          </p></p>
+          <br></br>
+        </div>
+        <a href={"https://www.google.com/maps/dir/" +
+        x.coordinates[0]+ "," + x.coordinates[1] + "/" + elements[i+1].coordinates[0] + "," + elements[i+1].coordinates[1]} target="_blank">
+        <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}} /></a>
+        </div>)
+          }
+          else if (x.nodeType == "restaurant"){
             return (<div><div class = "rectangle"><img class = "left" src={fork} alt={"restaurant"} style={{width: '100px'}}/>
             <br></br>
           <p class = "pad"><h2> {x.name}</h2>
