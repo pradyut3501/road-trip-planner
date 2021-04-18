@@ -56,6 +56,8 @@ public class Dijkstra {
     visited = new HashMap<>();
     distances = new HashMap<>();
     previous = new HashMap<>();
+    //Comparator considers value generated as well as a cost by distance in determining how to
+    // rank the stops in the priority queue
     PriorityQueue<AttractionNode> pq = new PriorityQueue(new Comparator<AttractionNode>() {
       public int compare(AttractionNode o1, AttractionNode o2) {
         if ((o1.getCost() + o1.generateValue(costPreference,
@@ -78,7 +80,7 @@ public class Dijkstra {
     if (starting == ending) { //stop if the start and end node are the same
       return null;
     }
-    //Make a dumby attraction node to represent start and end? may be a better way to handle this
+    //Make a dumby attraction node to represent start and end
     AttractionNode start = new Park("0", "starting Node", new String[0], starting,
         0.0, 0.0, 0.0);
     nodes.add(start);
@@ -93,7 +95,6 @@ public class Dijkstra {
       node.setCost(Double.POSITIVE_INFINITY);
     }
     start.setCost(0.0);
-    System.out.println("Ideal Spacing is" + pathDistance / numStops);
     while (!(pq.isEmpty()) && !(visited.get(end))) {
       AttractionNode current = pq.poll();
       visited.replace(current, true); //mark the popped node as visited
@@ -112,15 +113,13 @@ public class Dijkstra {
     }
     AttractionNode curr = end;
     if (previous.get(curr) == start) {
-      System.out.println("shortest path is direct one :(");
+    //  System.out.println("shortest path is direct one :(");
     }
-    while (previous.get(curr) != start) {
+    while (previous.get(curr) != start) { //compile the "best" path
       shortestPath.add(previous.get(curr));
       curr = previous.get(curr);
     }
     Collections.reverse(shortestPath); //want path to be in order from start to end
-    nodes.remove(start);
-    nodes.remove(end); //remove the dumby nodes
     return shortestPath;
   }
 
@@ -140,7 +139,6 @@ public class Dijkstra {
       LatLng end = new LatLng(lat2, long2);
       DirectionsApiRequest req = DirectionsApi.newRequest(connection)
           .origin(start).destination(end).language("en");
-
       DirectionsResult response = req.await();
       if (response.routes.length > 0) {
         double dist = 0;
@@ -195,7 +193,8 @@ public class Dijkstra {
           >= distanceFormula(node.getCoordinates()[0], node.getCoordinates()[1],
               end.getCoordinates()[0], end.getCoordinates()[1])
       ) {
-        toRemove.add(n); //remove the node from the list of possible connecting nodes if it is
+        toRemove.add(n);
+        //remove the node from the list of possible connecting nodes if it is
         // farther from the target than the current node
       }
     }
@@ -221,9 +220,7 @@ public class Dijkstra {
         }
       }
     });
-    if (node == end) {
-      System.out.println("The connected nodes to the end re" + connects);
-    }
+
     //return a list of the number of connections specified in the constants class. Pick the n
     // closest elements to the "ideal distance"
     if (connects.size() >= Constants.NUM_CONNECTIONS) {

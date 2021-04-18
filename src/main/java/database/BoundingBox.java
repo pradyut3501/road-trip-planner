@@ -119,9 +119,6 @@ public final class BoundingBox {
       double[] preferredStop)
       throws SQLException, IOException {
     ArrayList<String> nameList = new ArrayList<>();
-    for (String c : categories) {
-      System.out.println(c);
-    }
     Connection conn = Database.getYelpDatabaseConnection();
     String query = "SELECT * FROM yelp_business "
         + "WHERE (latitude BETWEEN ? and ?) "
@@ -174,8 +171,8 @@ public final class BoundingBox {
     }
     prep.close();
     rs.close();
-    System.out.println("Length of attractions from database within bounding box is: "
-        + attractionsWithinBox.size());
+   // System.out.println("Length of attractions from database within bounding box is: "
+    //    + attractionsWithinBox.size());
     for (int i = 0; i < (4 * prefNumStops + 4); i++) {
       double reqLat = 0;
       double reqLon = 0;
@@ -234,35 +231,13 @@ public final class BoundingBox {
       for (AttractionNode n : nodes) {
         if (nameList.contains(n.getName())) {
           removeRepeats.add(n);
-          System.out.println("A repeat");
+         // System.out.println("A repeat");
         } else {
           nameList.add(n.getName());
         }
       }
       nodes.removeAll(removeRepeats);
       attractionsWithinBox.addAll(nodes);
-    }
-    double numRest = 0.0;
-    double numPark = 0.0;
-    double numMus = 0.0;
-    double numShops = 0.0;
-    for (AttractionNode a : attractionsWithinBox) {
-      switch (a.getType()) {
-        case 0:
-          numMus++;
-          break;
-        case 1:
-          numPark++;
-          break;
-        case 2:
-          numRest++;
-          break;
-        case 3:
-          numShops++;
-          break;
-        default:
-          break;
-      }
     }
     return attractionsWithinBox;
   }
@@ -291,7 +266,6 @@ public final class BoundingBox {
               + "\"restaurant\",\"food\",\"bars\"" + "&price=" + costPref);
       List<AttractionNode> restaurants = yelpUrlToAttractions(url, "Restaurant");
       nodes.addAll(restaurants);
-      System.out.println(restaurants.size() + " many restaurants");
     }
     if (i == 1) {
       URL url = new URL(
@@ -299,7 +273,6 @@ public final class BoundingBox {
               + reqLon + "&categories=parks");
       List<AttractionNode> parks = yelpUrlToAttractions(url, "Park");
       nodes.addAll(parks);
-      System.out.println(parks.size() + " many parks");
     }
     if (i == 0) {
       URL url = new URL(
@@ -307,7 +280,6 @@ public final class BoundingBox {
               + reqLon + "&categories=museums");
       List<AttractionNode> museums = yelpUrlToAttractions(url, "Museum");
       nodes.addAll(museums);
-      System.out.println(museums.size() + " many museums");
       double reqLat2 = reqLat + Constants.LATOFFSET;
       double reqLon2 = reqLon + Constants.LATOFFSET;
       URL url2 = new URL(
@@ -315,7 +287,6 @@ public final class BoundingBox {
               + reqLon2 + "&categories=museums");
       List<AttractionNode> museums2 = yelpUrlToAttractions(url2, "Museum");
       nodes.addAll(museums2);
-      System.out.println(museums2.size() + " many museums");
     }
     if (i == 3) {
       URL url = new URL(
@@ -331,7 +302,6 @@ public final class BoundingBox {
               + reqLon2 + "&categories=shoppingcenters");
       List<AttractionNode> shops2 = yelpUrlToAttractions(url2, "Shop");
       nodes.addAll(shops2);
-      System.out.println(shops2.size() + " many shops");
     }
     return nodes;
   }
@@ -356,7 +326,7 @@ public final class BoundingBox {
     String yelpKey =
         "PlFxZHha-zmiQvrMQUb12P0uD9s_GZRJzzGZqVSJFKgR4iDXj1aBw"
             + "OBuMc2DBFYkZODPw2V5PaJBMapJ5WA9PA3Lx2cGXq9FkzzT45m9t9I9gsXDdGCwQnuYu6J3YHYx";
-    con.setRequestProperty("Authorization", "Bearer " + yelpKeyAbby);
+    con.setRequestProperty("Authorization", "Bearer " + yelpKey);
     BufferedReader in = null;
     List<AttractionNode> attractions = new ArrayList<>();
     try {
@@ -367,9 +337,6 @@ public final class BoundingBox {
         sb.append(line);
       }
       JSONObject json = new JSONObject(sb.toString());
-      if (attraction != "Park") {
-        System.out.println("attraction: " + attraction + " readIn: " + json.getInt("total"));
-      }
       if (json.getInt("total") != 0) {
         for (int j = 0; j < json.getJSONArray("businesses").length(); j++) {
           try {
@@ -415,14 +382,14 @@ public final class BoundingBox {
               attractions.add(node);
             }
           } catch (JSONException e) {
-            System.out.println(e + "exception");
+            //System.out.println(e + "exception");
           }
         }
         return attractions;
       }
 
     } catch (IOException | JSONException e) {
-      System.out.println("ERROR: failed to open input stream");
+      //System.out.println("ERROR: failed to open input stream");
       e.printStackTrace();
     }
     return attractions;
