@@ -417,17 +417,27 @@ function App() {
 
           setAttractions(newAttractions)
           for (let i = 1; i < newAttractions.length - 1; i++){
-            console.log("in loop")
-            let marker = new google.maps.Marker({
-              position: {lat: newAttractions[i].coordinates[0], lng:newAttractions[i].coordinates[1] },
-              map: map,
-              icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+
+            // check if it's the intermediate node
+
+              let marker = new google.maps.Marker({
+                position: {lat: newAttractions[i].coordinates[0], lng:newAttractions[i].coordinates[1] },
+                map: map,
+                icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+              })
+
+
+          if (newAttractions[i].name == "Intermediate Stop") {
+                let infoWindow = new google.maps.InfoWindow({
+                  content: '<div> <h3>' + middle.value.structured_formatting.main_text + '</h3>' + middle.value.structured_formatting.secondary_text + '</div>'
+                })
+
+          } else{
+            let infoWindow = new google.maps.InfoWindow({
+              content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
             })
+          }
 
-
-          let infoWindow = new google.maps.InfoWindow({
-            content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
-          })
 
 
           marker.addListener('click', function(){
