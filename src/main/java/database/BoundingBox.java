@@ -25,8 +25,11 @@ import java.util.List;
  * Class with static functions to find all the attractions within a bounding box
  * around two sets of coordinates.
  */
-public class BoundingBox {
+public final class BoundingBox {
 
+  private BoundingBox() {
+
+  }
 
   /**
    * Creates a bounding box around the given starting and end positions,

@@ -78,13 +78,13 @@ public class Museum implements AttractionNode {
   }
 
   @Override
-  public double generateValue(double preferredPrice, double preferredStop, double distance) {
+  public double generateValue(double preferredPrice, double preferredStop, double dist) {
     double museumValue = preferredStop;
-    value = (1 - museumValue / Constants.VALUE_BOUND) * distance * Constants.PREFERENCE_VALUE_SCALE;
+    value = (1 - museumValue / Constants.VALUE_BOUND) * dist * Constants.PREFERENCE_VALUE_SCALE;
     value = value + (Constants.AVERAGE_REVIEWS_MUSEUMS / numReviews)
-        * distance * Constants.REVIEW_SCALE;
-    value = value + (1 - rating / Constants.MAX_RATING) * distance;
-    value = value + Constants.PRICE_SCALE * Constants.PRICE_SCALE * distance;
+        * dist * Constants.REVIEW_SCALE;
+    value = value + (1 - rating / Constants.MAX_RATING) * dist;
+    value = value + Constants.PRICE_SCALE * Constants.PRICE_SCALE * dist;
     value = value * Constants.VALUE_SCALE;
     value = value * Constants.VALUE_SCALE_MUSEUMS;
     return value;

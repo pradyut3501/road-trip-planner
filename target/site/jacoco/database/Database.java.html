@@ -9,7 +9,11 @@ import java.sql.Statement;
 /**
  * This class is responsible for creating a connection to the Yelp business sqlite3 database.
  */
-<span class="nc" id="L12">public class Database {</span>
+public final class Database {
+
+  private Database() {
+
+  }
 
   private static Connection yelpConn;
 
@@ -26,16 +30,16 @@ import java.sql.Statement;
    */
   public static Connection connectToDatabase(String filename)
       throws SQLException, ClassNotFoundException {
-<span class="fc" id="L29">    File tempFile = new File(filename);</span>
-<span class="pc bpc" id="L30" title="1 of 2 branches missed.">    if (!tempFile.exists()) {</span>
-<span class="nc" id="L31">      throw new IllegalArgumentException(&quot;ERROR: No database could be found at the given filepath&quot;);</span>
+<span class="fc" id="L33">    File tempFile = new File(filename);</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">    if (!tempFile.exists()) {</span>
+<span class="nc" id="L35">      throw new IllegalArgumentException(&quot;ERROR: No database could be found at the given filepath&quot;);</span>
     }
-<span class="fc" id="L33">    Class.forName(&quot;org.sqlite.JDBC&quot;);</span>
-<span class="fc" id="L34">    String urlToDB = &quot;jdbc:sqlite:&quot; + filename;</span>
-<span class="fc" id="L35">    Connection conn = DriverManager.getConnection(urlToDB);</span>
-<span class="fc" id="L36">    Statement stat = conn.createStatement();</span>
-<span class="fc" id="L37">    stat.executeUpdate(&quot;PRAGMA foreign_keys=ON;&quot;);</span>
-<span class="fc" id="L38">    return conn;</span>
+<span class="fc" id="L37">    Class.forName(&quot;org.sqlite.JDBC&quot;);</span>
+<span class="fc" id="L38">    String urlToDB = &quot;jdbc:sqlite:&quot; + filename;</span>
+<span class="fc" id="L39">    Connection conn = DriverManager.getConnection(urlToDB);</span>
+<span class="fc" id="L40">    Statement stat = conn.createStatement();</span>
+<span class="fc" id="L41">    stat.executeUpdate(&quot;PRAGMA foreign_keys=ON;&quot;);</span>
+<span class="fc" id="L42">    return conn;</span>
   }
 
   /**
@@ -44,18 +48,18 @@ import java.sql.Statement;
    */
   public static void setYelpDatabaseConnection() {
     try {
-<span class="fc" id="L47">      yelpConn = connectToDatabase(&quot;data/yelp_business_database_w_attributes.sqlite3&quot;);</span>
-<span class="nc" id="L48">    } catch (SQLException | ClassNotFoundException e) {</span>
-<span class="nc" id="L49">      System.out.println(&quot;ERROR: Connection to Yelp Database could not be established&quot;);</span>
-<span class="fc" id="L50">    }</span>
-<span class="fc" id="L51">  }</span>
+<span class="fc" id="L51">      yelpConn = connectToDatabase(&quot;data/yelp_business_database_w_attributes.sqlite3&quot;);</span>
+<span class="nc" id="L52">    } catch (SQLException | ClassNotFoundException e) {</span>
+<span class="nc" id="L53">      System.out.println(&quot;ERROR: Connection to Yelp Database could not be established&quot;);</span>
+<span class="fc" id="L54">    }</span>
+<span class="fc" id="L55">  }</span>
 
   /**
    * An accessor method for the Yelp Database Connection.
    * @return the Connection ton the Yelp Database.
    */
   public static Connection getYelpDatabaseConnection() {
-<span class="fc" id="L58">    return yelpConn;</span>
+<span class="fc" id="L62">    return yelpConn;</span>
   }
 
 }

@@ -45,10 +45,10 @@ public interface AttractionNode {
    * Node's value heuristic.
    * @param preferredPrice value indicating user's preferred price point
    * @param preferredStop value indicating how much user prefers that type of stop
-   * @param distance from current node to prev
+   * @param dist from current node to prev
    * @return value heuristic used in Dijkstra's PQ
    */
-  double generateValue(double preferredPrice, double preferredStop, double distance);
+  double generateValue(double preferredPrice, double preferredStop, double dist);
 
   /**
    * Sets the "cost" associated with the node to be used in Dijkstra's.

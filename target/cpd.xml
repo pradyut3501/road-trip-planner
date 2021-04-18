@@ -2,13 +2,13 @@
 <pmd-cpd>
    <duplication lines="46" tokens="112">
       <file line="90"
-            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Museum.java"/>
+            path="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Museum.java"/>
       <file line="92"
-            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Park.java"/>
+            path="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Park.java"/>
       <file line="90"
-            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Restaurant.java"/>
+            path="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Restaurant.java"/>
       <file line="89"
-            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Shop.java"/>
+            path="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Shop.java"/>
       <codefragment><![CDATA[    return value;
   }
 
@@ -58,9 +58,9 @@
    </duplication>
    <duplication lines="43" tokens="111">
       <file line="40"
-            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Museum.java"/>
+            path="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Museum.java"/>
       <file line="39"
-            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Restaurant.java"/>
+            path="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Restaurant.java"/>
       <codefragment><![CDATA[    location = loc;
     coordinates = coords;
     price = p;
@@ -102,7 +102,7 @@
   }
 
   @Override
-  public double generateValue(double preferredPrice, double preferredStop, double distance) {
+  public double generateValue(double preferredPrice, double preferredStop, double dist) {
     double museumValue = preferredStop;]]></codefragment>
    </duplication>
 </pmd-cpd>

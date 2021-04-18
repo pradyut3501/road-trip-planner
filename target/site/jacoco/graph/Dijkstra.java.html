@@ -94,7 +94,7 @@ public class Dijkstra {
 <span class="fc" id="L94">    }</span>
 <span class="fc" id="L95">    start.setCost(0.0);</span>
 <span class="fc" id="L96">    System.out.println(&quot;Ideal Spacing is&quot; + pathDistance / numStops);</span>
-<span class="fc bfc" id="L97" title="All 4 branches covered.">    while (!(pq.isEmpty()) &amp;&amp; !(visited.get(end))) {</span>
+<span class="pc bpc" id="L97" title="1 of 4 branches missed.">    while (!(pq.isEmpty()) &amp;&amp; !(visited.get(end))) {</span>
 <span class="fc" id="L98">      AttractionNode current = pq.poll();</span>
 <span class="fc" id="L99">      visited.replace(current, true); //mark the popped node as visited</span>
 <span class="fc" id="L100">      List&lt;AttractionNode&gt; connectedNodes = getConnectedNodes(current, end, pathDistance, numStops);</span>

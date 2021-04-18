@@ -3,7 +3,11 @@ package edu.brown.cs.student.termProject;
 /**
  * Constants class.
  */
-public class Constants {
+public final class Constants {
+
+  private Constants() {
+
+  }
   public static final int EARTH_RADIUS = 6371; //measured in kilometers
   public static final double VALUE_BOUND = 100; //upper limit of value scale
   public static final double VALUE_SCALE_PARKS = 1.5;

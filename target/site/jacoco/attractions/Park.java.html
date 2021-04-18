@@ -78,15 +78,15 @@ public class Park implements AttractionNode {
   }
 
   @Override
-  public double generateValue(double preferredPrice, double preferredStop, double distance) {
+  public double generateValue(double preferredPrice, double preferredStop, double dist) {
 <span class="fc" id="L82">    double parkValue = preferredStop;</span>
-<span class="fc" id="L83">    value = (1 - parkValue / Constants.VALUE_BOUND) * Constants.PREFERENCE_VALUE_SCALE * distance;</span>
+<span class="fc" id="L83">    value = (1 - parkValue / Constants.VALUE_BOUND) * Constants.PREFERENCE_VALUE_SCALE * dist;</span>
     //value is 1 minus the % preference for the stop times the total distance. At most the total
     // distance should double
 <span class="fc" id="L86">    value = value + (Constants.AVERAGE_REVIEWS_PARKS / numReviews)</span>
-        * distance * Constants.REVIEW_SCALE;
-<span class="fc" id="L88">    value = value + (1 - rating / Constants.MAX_RATING) * distance;</span>
-<span class="fc" id="L89">    value = value + Constants.PRICE_SCALE * Constants.PRICE_SCALE * distance;</span>
+        * dist * Constants.REVIEW_SCALE;
+<span class="fc" id="L88">    value = value + (1 - rating / Constants.MAX_RATING) * dist;</span>
+<span class="fc" id="L89">    value = value + Constants.PRICE_SCALE * Constants.PRICE_SCALE * dist;</span>
 <span class="fc" id="L90">    value = value * Constants.VALUE_SCALE;</span>
 <span class="fc" id="L91">    value = value * Constants.VALUE_SCALE_PARKS;</span>
 <span class="fc" id="L92">    return value;</span>

@@ -77,14 +77,14 @@ public class Restaurant implements AttractionNode {
   }
 
   @Override
-  public double generateValue(double preferredPrice, double preferredStop, double distance) {
+  public double generateValue(double preferredPrice, double preferredStop, double dist) {
 <span class="fc" id="L81">    double restaurantValue = preferredStop;</span>
 <span class="fc" id="L82">    value = (1 - restaurantValue / Constants.VALUE_BOUND)</span>
-        * distance * Constants.PREFERENCE_VALUE_SCALE;
+        * dist * Constants.PREFERENCE_VALUE_SCALE;
 <span class="fc" id="L84">    value = value + (Constants.AVERAGE_REVIEWS_RESTAURANTS / numReviews)</span>
-        * distance * Constants.REVIEW_SCALE;
-<span class="fc" id="L86">    value = value + (1 - rating / Constants.MAX_RATING) * distance;</span>
-<span class="fc" id="L87">    value = value + (Math.abs(price - preferredPrice)) * distance * Constants.PRICE_SCALE;</span>
+        * dist * Constants.REVIEW_SCALE;
+<span class="fc" id="L86">    value = value + (1 - rating / Constants.MAX_RATING) * dist;</span>
+<span class="fc" id="L87">    value = value + (Math.abs(price - preferredPrice)) * dist * Constants.PRICE_SCALE;</span>
 <span class="fc" id="L88">    value = value * Constants.VALUE_SCALE;</span>
 <span class="fc" id="L89">    value = value * Constants.VALUE_SCALE_RESTAURANTS;</span>
 <span class="fc" id="L90">    return value;</span>

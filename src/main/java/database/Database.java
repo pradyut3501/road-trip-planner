@@ -9,7 +9,11 @@ import java.sql.Statement;
 /**
  * This class is responsible for creating a connection to the Yelp business sqlite3 database.
  */
-public class Database {
+public final class Database {
+
+  private Database() {
+
+  }
 
   private static Connection yelpConn;
 
