@@ -80,7 +80,7 @@ public class Park implements AttractionNode {
   @Override
   public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
     double parkValue = PreferredStop;
-    value = (1- parkValue/Constants.VALUE_BOUND) * distance;
+    value = (1- parkValue/Constants.VALUE_BOUND) * Constants.PREFERENCE_VALUE_SCALE* distance;
     //value is 1 minus the % preference for the stop times the total distance. At most the total
     // distance should double
     //value = (Constants.VALUE_BOUND- parkValue) * Constants.VALUE_SCALE_PARKS;
@@ -91,7 +91,7 @@ public class Park implements AttractionNode {
 
     value = value * Constants.VALUE_SCALE;
     value = value * Constants.VALUE_SCALE_PARKS;
-    System.out.println("park value is: " + value);
+  //  System.out.println("park value is: " + value);
     return value;
   }
 

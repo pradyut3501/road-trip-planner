@@ -205,16 +205,18 @@ public class BoundingBox {
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" +
                 reqLon +
                 "&categories=" + "\"restaurant\",\"food\",\"bars\"" + "&price=" + costPref);
-        nodes.addAll(yelpUrlToAttractions(url, "Restaurant"));
-        System.out.println(nodes.size() + " many restaurants");
+        List<AttractionNode> restaurants = yelpUrlToAttractions(url, "Restaurant");
+        nodes.addAll(restaurants);
+        System.out.println(restaurants.size() + " many restaurants");
        // attractionsWithinBox.addAll(nodes);
       }
       if (categories.contains("Shop")) {
         URL url = new URL(
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
                 "&categories=shoppingcenters");
-        nodes.addAll(yelpUrlToAttractions(url, "Shop"));
-        System.out.println(nodes.size() + " many shops");
+        List<AttractionNode> shops = yelpUrlToAttractions(url, "Shop");
+        nodes.addAll(shops);
+        System.out.println(shops.size() + " many shops");
        // attractionsWithinBox.addAll(nodes);
 
       }
@@ -222,16 +224,18 @@ public class BoundingBox {
         URL url = new URL(
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
                 "&categories=artmuseums");
-        nodes.addAll(yelpUrlToAttractions(url, "Museum"));
-        System.out.println(nodes.size() + " many museums");
+        List<AttractionNode> museums = yelpUrlToAttractions(url, "Museum");
+        nodes.addAll(museums);
+        System.out.println(museums.size() + " many museums");
        // attractionsWithinBox.addAll(nodes);
       }
       if (categories.contains("Park")) {
         URL url = new URL(
             "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
                 "&categories=parks");
-        nodes.addAll(yelpUrlToAttractions(url, "Park"));
-        System.out.println(nodes.size() + " many parks");
+        List<AttractionNode> parks = yelpUrlToAttractions(url, "Park");
+        nodes.addAll(parks);
+        System.out.println(parks.size() + " many parks");
         //attractionsWithinBox.addAll(nodes);
       }
       List<AttractionNode> removeRepeats = new ArrayList<>();

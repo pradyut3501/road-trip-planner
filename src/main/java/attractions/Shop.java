@@ -79,7 +79,7 @@ public class Shop implements AttractionNode {
   @Override
   public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
     double shopValue = PreferredStop;
-    value = (1- shopValue/Constants.VALUE_BOUND) * distance;
+    value = (1- shopValue/Constants.VALUE_BOUND) * distance * Constants.PREFERENCE_VALUE_SCALE;
     //   value = (Constants.VALUE_BOUND- shopValue) * Constants.VALUE_SCALE_SHOPS;
     //value = value * (1 - rating *.1);
     //   value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_SHOPS) * distance;
@@ -88,7 +88,8 @@ public class Shop implements AttractionNode {
     value = value + (1 - rating/Constants.MAX_RATING) * distance;
     value = value + (Math.abs(price-PreferredPrice)) * distance * Constants.PRICE_SCALE;
     value = value * Constants.VALUE_SCALE;
-    System.out.println("shop value is: " + value);
+    value = value * Constants.VALUE_SCALE_SHOPS;
+  //  System.out.println("shop value is: " + value);
     return value;
   }
 
