@@ -1,7 +1,6 @@
 import './App.css';
 import './index.js'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import { GoogleMap, DirectionsRenderer, DirectionsService, TravelMode, DirectionsStatus } from "react-google-maps";
 import { Map, Marker } from "google-maps-react"
 
 import {useState, useEffect} from 'react'
@@ -15,8 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import fork from './fork.png'
-import park from './park.png'
-import museum from './museum.png'
+import museum1 from './museum1.png'
 import store from './store.png'
 import start from './start.png'
 import finish from './finish.png'
@@ -39,6 +37,7 @@ let originMapURL = ""
 let originPhone = ""
 let originIcon = ""
 let error_message = ""
+let driving_message = ""
 let dest = null
 let destPlace = null
 let middle = null
@@ -78,67 +77,88 @@ let destMessage = ""
 let contactOrigin = ""
 let contactDest = ""
 let viewInGoogle = ""
+let destSet = 0
 
 function App() {
 
+  // keeps track of the shortest route time
   const [shortestRouteTime, setShortestRouteTime] = useState("");
+
+  // keeps track of whether used has submitted their preferences
   const [submitted, setSubmitted] = useState(0)
+
+  // keeps track of whether route is actively being calculated
   const [loading, setLoading] = useState(0)
+
+  // keeps track of the list of attractions received from the server
   const [attractions, setAttractions] = useState([])
+
+  // keeps track of origin and destination messages
   const [originText, setOriginText] = useState("")
   const [destText, setDestText] = useState("")
 
+  // keeps track of user's relative preference for restaurants
   const [restaurant, setRestaurant] = useState(50);
+
+  // keeps track of user's relative preference for museums
   const [museum, setMuseum] = useState(50);
+
+  // keeps track of user's relative preference for parks
   const [park, setPark] = useState(50);
+
+  // keeps track of user's relative preference for shops
   const [shop, setShop] = useState(50);
+
+  // keeps track of whether there was an error in the route from the server
   const [error, setError] = useState(0)
 
+  // update user's restaurant preference
   const handleChangeRestaurant = (event, newValue) => {
     setRestaurant(newValue);
   };
 
+  // update user's museum preference
   const handleChangeMuseum = (event, newValue) => {
     setMuseum(newValue);
   };
 
+  // update user's park preference
   const handleChangePark = (event, newValue) => {
     setPark(newValue);
   };
 
+  // update user's shopping preference
   const handleChangeShop = (event, newValue) => {
     setShop(newValue);
   };
 
-  const useStyles = makeStyles({
-    root: {
-      width: 250,
-    },
-  });
 
-  const classes = useStyles();
-
-  const script = document.createElement("script");
-  script.async = true;
-  script.defer = true;
-  script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c";
-
+  // set the place of the
   function setOrigin(newOrigin){
+    // place return by Google Autocomplete search
     origin = newOrigin
 
     let service = new google.maps.places.PlacesService(document.getElementById('map'));
 
+    // get the Google Place associated w/ the new origin
     service.getDetails({
         placeId: origin.value.place_id
       }, (result, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           originPlace = result
-
         }
       })
+
+      // update the time/distance display for shortest route,
+      // but only if the destination has already been set
+      if (destSet == 1){
+        getRouteInfo();
+      }
+
     }
 
 
+  // sets an intermediate stop indicated by the user
   function setMiddle(newMiddle){
     middle = newMiddle
     let service = new google.maps.places.PlacesService(document.getElementById('map'));
@@ -148,44 +168,51 @@ function App() {
       }, (result, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
 
-          console.log(result)
-          console.log(result.geometry.location.lat())
           middleCoords = [result.geometry.location.lat(), result.geometry.location.lng()]
           middlePhotoURL = result.photos[0].getUrl()
         }
       })
     }
 
+  // sets the user's budget preference to $ (lowest price)
   function setDollar1(){
     costPreference = 1
   }
 
+  // sets the user's budget preference to $$ (second-lowest)
   function setDollar2(){
     costPreference = 2
   }
 
+  // sets the user's budget preference to $$$ (second-highest)
   function setDollar3(){
     costPreference = 3
   }
 
+  // sets the user's budget preference to $$$$ (highest price)
   function setDollar4(){
     costPreference = 4
   }
 
+  // sets the number of preferred stops (user preference)
   function setStops(value){
     stops = value
     console.log(stops)
   }
 
+  // sets the maximum desired trip distance (user preference)
   function setDist(value){
     dist = value
   }
 
+  // sets the Google Place associated with user-inputted destination
   function setDest(newDest){
     dest = newDest
     console.log(dest.value.place_id)
     console.log(dest.value)
 
+    // so we can get more information about the destination (website, phone #, etc.)
+    // for the destination later on (in trip summary)
     let service = new google.maps.places.PlacesService(document.getElementById('map'));
 
     service.getDetails({
@@ -197,9 +224,12 @@ function App() {
         }
       })
 
+      destSet = 1
+
     getRouteInfo();
   }
 
+    // initializes the Google Map that will be displayed with the route
     function initMap(){
       let initialView = new google.maps.LatLng(41.850033, -87.6500523);
       var mapOptions = {
@@ -211,10 +241,13 @@ function App() {
       directionsRenderer.setPanel(document.getElementById('directionsPanel'));
     }
 
+  // gets preliminary trip data (time, distance) for the inputted origin and
+  // destination, using the Google Directions API
   function getRouteInfo(){
 
     directions = new google.maps.DirectionsService()
     directionsRenderer = new google.maps.DirectionsRenderer()
+
 
     directions.route({
         origin: origin.value.description,
@@ -228,24 +261,24 @@ function App() {
       shortestRouteDist = result.routes[0].legs[0].distance.text
       setShortestRouteTime(result.routes[0].legs[0].duration.text)
 
-
       let directionsData = result.routes[0].legs[0];
 
       steps = [];
       let tripLength = directionsData.steps.length
-      for (var i = 0; i < tripLength; i++) {
+
+      // get the legs of the Google Maps-recommended shortest route
+      // between the origin and destination (used in backend to determine stops)
+      for (let i = 0; i < tripLength; i++) {
         let currStep = directionsData.steps[i]
         let startLat = currStep.start_location.lat()
         let startLon = currStep.start_location.lng()
         let endLat = currStep.end_location.lat()
         let endLon = currStep.end_location.lng()
         steps.push([startLat, startLon, endLat, endLon])
-
        }
 
        originCoords = [steps[0][0], steps[0][1]]
        destCoords = [steps[tripLength-1][0], steps[tripLength-1][1]]
-
 
         } else {
           console.error(`error fetching directions ${result}`);
@@ -254,12 +287,40 @@ function App() {
 
   }
 
-    // make axios post request to the backend
+  function getRouteWithStops(ways){
+
+    directions = new google.maps.DirectionsService()
+    directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true})
+
+    let waypts = [];
+
+    for (let i = 0; i < ways.length; i++) {
+        waypts.push({
+          location: new google.maps.LatLng(ways[i].coordinates[0], ways[i].coordinates[1]),
+          stopover: true,
+        });
+      }
+
+    directions.route({
+        origin: origin.value.description,
+        destination: dest.value.description,
+        waypoints: waypts,
+        travelMode: google.maps.TravelMode.DRIVING,
+      }, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+
+          directionsRenderer.setDirections(result);
+        }
+      })
+    }
+
+    // make axios post request to the backend-- get information
     const requestTrip = () => {
       error_message = ""
       resetDisplay()
       setSubmitted(0)
 
+      // do preliminary error-checking on front-end user inputs
       if(origin == null){
         error_message = "Please enter a starting location"
         loading_class = ""
@@ -273,17 +334,13 @@ function App() {
         loading_class = ""
         setError(1);
       }
-      else{
-      console.log(middle)
+      else {
       loading_message = "Calculating the perfect trip"
       loading_class = "loading"
       setLoading(1)
 
-      console.log(museum)
-      console.log(park)
-      console.log(shop)
-      console.log(restaurant)
-      // the source and destination of our desired route
+
+      // user preferences and locations to send to backend
       const toSend = {
         costPref: costPreference,
         route: steps,
@@ -316,12 +373,16 @@ function App() {
         )
         .then(response => {
           console.log(response.data);
+          // remove message that we're still calculating the route
           loading_message = ""
 
-          if(response.data["error_message"] != ""){
+          // received an error message from the backend, display to user
+          if (response.data["error_message"] != "") {
             error_message = response.data["error_message"] + ": please adjust your preferences"
             loading_class = ""
             setSubmitted(1);
+
+            // server-generated route was empty, display message to user
           } else if (response.data["route"].length == 0){
             error_message = "Oops! This route returned no results. Please adjust your preferences "
             loading_class = ""
@@ -329,7 +390,7 @@ function App() {
           }
             else {
 
-           // add the start and the end to the list of attractions
+           // add the start and the end to the list of attractions (for display purposes)
            let originNode = {
              id: "",
              name: originText,
@@ -347,6 +408,8 @@ function App() {
 
           markerList = []
           let newAttractions = response.data["route"]
+          // sets the map with attraction nodes as waypoints
+          getRouteWithStops(newAttractions)
           // add start/end points to the attraction list
           newAttractions.unshift(originNode)
           newAttractions.push(destNode)
@@ -361,16 +424,55 @@ function App() {
               icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
             })
 
-            console.log(marker.position.lat())
+
           let infoWindow = new google.maps.InfoWindow({
             content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
           })
-            marker.addListener('click', function(){
+
+
+          marker.addListener('click', function(){
             infoWindow.open(map, marker)
-            })
-            markerList.push(marker)
+          })
+          markerList.push(marker)
 
           }
+
+          let originMarker = new google.maps.Marker({
+            position: {lat: originCoords[0], lng:originCoords[1] },
+            map: map,
+            label: "A"
+          })
+
+          console.log(originMarker)
+          console.log(originCoords)
+          console.log(destCoords)
+
+          // change name
+          let infoWindowOrigin = new google.maps.InfoWindow({
+            content: '<div> <h3>' + origin.value.structured_formatting.main_text + '</h3>' + origin.value.structured_formatting.secondary_text + '</div>'
+          })
+
+          console.log(infoWindowOrigin)
+
+          originMarker.addListener('click', function(){
+            infoWindowOrigin.open(map, originMarker)
+          })
+
+          let destMarker = new google.maps.Marker({
+            position: {lat: destCoords[0], lng:destCoords[1] },
+            map: map,
+            label: "B"
+          })
+
+          // change name
+          let infoWindowDest = new google.maps.InfoWindow({
+            content: '<div> <h3>' + dest.value.structured_formatting.main_text + '</h3>' + dest.value.structured_formatting.secondary_text + '</div>'
+          })
+
+          destMarker.addListener('click', function(){
+            infoWindowDest.open(map, destMarker)
+          })
+
           console.log(response.data["route"])
           response_message = "Trip Itinerary"
           trip_message = "Trip Details"
@@ -396,6 +498,7 @@ function App() {
           destIcon = destPlace.icon
           originMessage = "Origin"
           destMessage = "Destination"
+          driving_message = "(Click on the road icons for directions!)"
           console.log("dest phone " + destPhone)
           if(destPhone === undefined){
             contactDest = "Contact: None Available"
@@ -457,9 +560,6 @@ function App() {
       contactDest = ""
       contactOrigin = ""
 
-
-
-
     }
 
 
@@ -485,9 +585,6 @@ function App() {
     useEffect(()=> {
       setError(0)
     }, [error])
-
-
-
 
 
   return (
@@ -641,6 +738,9 @@ function App() {
         <Row>
         <Col>
         <h1>{response_message}</h1>
+        &nbsp;
+        {driving_message}
+        <br></br>
 
           {attractions.map(function (x,i, elements){
 
@@ -676,7 +776,7 @@ function App() {
         <img class = "center" src={road} alt={"road icon"} style={{width: '100px'}} /></a>
         </div>)
           } else if (x.nodeType == "museum"){
-            return (<div><div class = "rectangle"><img class = "left" src={museum} alt={"museum icon"} style={{width: '100px'}}/>
+            return (<div><div class = "rectangle"><img class = "left" src={museum1} alt={"museum icon"} style={{width: '100px'}}/>
             <br></br>
           <p class = "pad"><h2> {x.name}</h2>
           <p class = "description"> {x.location[1]}, {x.location[2]}
@@ -750,7 +850,6 @@ function App() {
         </p>
 
         </p>
-        <img src = {middlePhotoURL} style={{width: '250px'}}></img>
 
         </Col>
         </Row>
