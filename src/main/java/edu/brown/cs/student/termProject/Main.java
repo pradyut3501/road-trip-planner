@@ -235,7 +235,7 @@ public final class Main {
                 .setPreferences(preferredStop, costPreference, BoundingBox.findAttractionsBetween(
                     new double[] {originLat, originLon},
                     new double[] {middleLat, middleLong}, categories, numStopsFirstHalf,
-                    costPreference));
+                    costPreference, preferredStop));
             List<AttractionNode> route1 = dijkstra.execute(new double[] {originLat, originLon},
                 new double[] {middleLat, middleLong}, numStopsFirstHalf);
             //set new preferences
@@ -243,7 +243,7 @@ public final class Main {
                 .setPreferences(preferredStop, costPreference, BoundingBox.findAttractionsBetween(
                     new double[] {middleLat, middleLong},
                     new double[] {destLat, destLon}, categories, numStopsSecondHalf,
-                    costPreference));
+                    costPreference, preferredStop));
             List<AttractionNode> route2 = dijkstra.execute(new double[] {middleLat, middleLong},
                 new double[] {destLat, destLon}, numStopsSecondHalf);
 
@@ -258,7 +258,7 @@ public final class Main {
           } else {
             List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
                 new double[] {originLat, originLon},
-                new double[] {destLat, destLon}, categories, numStops, costPreference);
+                new double[] {destLat, destLon}, categories, numStops, costPreference, preferredStop);
             System.out.println("number of nodes: " + attractions.size());
             dijkstra.setPreferences(preferredStop, costPreference, attractions);
             route = dijkstra.execute(new double[] {originLat, originLon},
