@@ -5,7 +5,7 @@ import edu.brown.cs.student.termProject.Constants;
 
 /**
  * The Restaurant class stores information of Restaurants and implements the attraction node
- * interface for Dijkstra's
+ * interface for Dijkstra's.
  */
 public class Restaurant implements AttractionNode {
   private String id;
@@ -23,19 +23,19 @@ public class Restaurant implements AttractionNode {
   private double numReviews;
 
   /**
-   * The constructor sets the fields
-   * @param RestaurantId the id
-   * @param RestaurantName the name of the stop
+   * The constructor sets the fields.
+   * @param restaurantId the id
+   * @param restaurantName the name of the stop
    * @param loc the address of the Restaurant in an array
    * @param coords the latitude/longitude coordinates
    * @param p the price associated with the stop
    * @param rate the five star rating
    * @param reviewCount number of reviews left at this establishment
    */
-  public Restaurant(String RestaurantId, String RestaurantName, String[] loc, double[] coords,
-                   Double p, Double rate,  double reviewCount){
-    id = RestaurantId;
-    name = RestaurantName;
+  public Restaurant(String restaurantId, String restaurantName, String[] loc, double[] coords,
+                   Double p, Double rate,  double reviewCount) {
+    id = restaurantId;
+    name = restaurantName;
     location = loc;
     coordinates = coords;
     price = p;
@@ -77,18 +77,16 @@ public class Restaurant implements AttractionNode {
   }
 
   @Override
-  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
-    double restaurantValue = PreferredStop;
-    value = (1- restaurantValue/Constants.VALUE_BOUND) * distance * Constants.PREFERENCE_VALUE_SCALE;
-    //value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_RESTAURANTS) * distance;
-    value = value + (Constants.AVERAGE_REVIEWS_RESTAURANTS / numReviews) * distance * Constants.REVIEW_SCALE;
-    //value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
-    //value = value * (1 - rating *.1);
-    value = value + (1 - rating/Constants.MAX_RATING) * distance;
-    value = value + (Math.abs(price-PreferredPrice)) * distance * Constants.PRICE_SCALE;
+  public double generateValue(double preferredPrice, double preferredStop, double distance) {
+    double restaurantValue = preferredStop;
+    value = (1 - restaurantValue / Constants.VALUE_BOUND)
+        * distance * Constants.PREFERENCE_VALUE_SCALE;
+    value = value + (Constants.AVERAGE_REVIEWS_RESTAURANTS / numReviews)
+        * distance * Constants.REVIEW_SCALE;
+    value = value + (1 - rating / Constants.MAX_RATING) * distance;
+    value = value + (Math.abs(price - preferredPrice)) * distance * Constants.PRICE_SCALE;
     value = value * Constants.VALUE_SCALE;
     value = value * Constants.VALUE_SCALE_RESTAURANTS;
- //   System.out.println("restaurant value is: " + value);
     return value;
   }
 
@@ -103,32 +101,39 @@ public class Restaurant implements AttractionNode {
   }
 
   @Override
-  public void setDistance(double c) {distance = c;}
-
-  @Override
-  public double getDistance() { return distance; }
-
-  @Override
-  public void setVisited(boolean c) { visit = c; }
-
-  @Override
-  public boolean getVisited() { return visit; }
-
-  @Override
-  public void setNumPrev(int c) {numPrev = c;}
-
-  @Override
-  public int getNumPrev() {return numPrev;}
-
-  @Override
-  public void reset() {
-    distance = 0;
-    visit = false;
-    numPrev = 0;
+  public void setDistance(double c) {
+    distance = c;
   }
 
   @Override
-  public int getType() {return 2;}
+  public double getDistance() {
+    return distance;
+  }
+
+  @Override
+  public void setVisited(boolean c) {
+    visit = c;
+  }
+
+  @Override
+  public boolean getVisited() {
+    return visit;
+  }
+
+  @Override
+  public void setNumPrev(int c) {
+    numPrev = c;
+  }
+
+  @Override
+  public int getNumPrev() {
+    return numPrev;
+  }
+
+  @Override
+  public int getType() {
+    return 2;
+  }
 
   @Override
   public double getValue() {

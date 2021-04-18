@@ -5,7 +5,7 @@ import edu.brown.cs.student.termProject.Constants;
 
 /**
  * The park class stores information of parks and implements the attraction node interface for
- * Dijkstra's
+ * Dijkstra's.
  */
 public class Park implements AttractionNode {
   private String id;
@@ -24,7 +24,7 @@ public class Park implements AttractionNode {
 
 
   /**
-   * The constructor sets the fields
+   * The constructor sets the fields.
    * @param parkId the id
    * @param parkName the name of the stop
    * @param loc the address of the park in an array
@@ -34,7 +34,7 @@ public class Park implements AttractionNode {
    * @param reviewCount number of reviews left at this establishment
    */
   public Park(String parkId, String parkName, String[] loc, double[] coords, double p,
-              double rate, double reviewCount){
+              double rate, double reviewCount) {
     id = parkId;
     name = parkName;
     location = loc;
@@ -78,20 +78,17 @@ public class Park implements AttractionNode {
   }
 
   @Override
-  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
-    double parkValue = PreferredStop;
-    value = (1- parkValue/Constants.VALUE_BOUND) * Constants.PREFERENCE_VALUE_SCALE* distance;
+  public double generateValue(double preferredPrice, double preferredStop, double distance) {
+    double parkValue = preferredStop;
+    value = (1 - parkValue / Constants.VALUE_BOUND) * Constants.PREFERENCE_VALUE_SCALE * distance;
     //value is 1 minus the % preference for the stop times the total distance. At most the total
     // distance should double
-    //value = (Constants.VALUE_BOUND- parkValue) * Constants.VALUE_SCALE_PARKS;
-    //value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_PARKS) * distance;
-    value = value + (Constants.AVERAGE_REVIEWS_PARKS / numReviews) * distance * Constants.REVIEW_SCALE;
-    value = value + (1 - rating/Constants.MAX_RATING) * distance;
-    value = value + Constants.PRICE_SCALE* Constants.PRICE_SCALE* distance;
-
+    value = value + (Constants.AVERAGE_REVIEWS_PARKS / numReviews)
+        * distance * Constants.REVIEW_SCALE;
+    value = value + (1 - rating / Constants.MAX_RATING) * distance;
+    value = value + Constants.PRICE_SCALE * Constants.PRICE_SCALE * distance;
     value = value * Constants.VALUE_SCALE;
     value = value * Constants.VALUE_SCALE_PARKS;
-  //  System.out.println("park value is: " + value);
     return value;
   }
 
@@ -106,32 +103,40 @@ public class Park implements AttractionNode {
   }
 
   @Override
-  public void setDistance(double c) {distance = c;}
-
-  @Override
-  public double getDistance() { return distance; }
-
-  @Override
-  public void setVisited(boolean c) { visit = c; }
-
-  @Override
-  public boolean getVisited() { return visit; }
-
-  @Override
-  public void setNumPrev(int c) {numPrev = c;}
-
-  @Override
-  public int getNumPrev() {return numPrev;}
-
-  @Override
-  public void reset() {
-    distance = 0;
-    visit = false;
-    numPrev = 0;
+  public void setDistance(double c) {
+    distance = c;
   }
 
   @Override
-  public int getType() {return 1;}
+  public double getDistance() {
+    return distance;
+  }
+
+  @Override
+  public void setVisited(boolean c) {
+    visit = c;
+  }
+
+  @Override
+  public boolean getVisited() {
+    return visit;
+  }
+
+  @Override
+  public void setNumPrev(int c) {
+    numPrev = c;
+  }
+
+  @Override
+  public int getNumPrev() {
+    return numPrev;
+  }
+
+
+  @Override
+  public int getType() {
+    return 1;
+  }
 
   @Override
   public double getValue() {

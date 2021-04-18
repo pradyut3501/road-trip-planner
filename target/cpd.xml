@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd-cpd>
-   <duplication lines="40" tokens="130">
-      <file line="94"
+   <duplication lines="46" tokens="112">
+      <file line="90"
             path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Museum.java"/>
-      <file line="95"
-            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Park.java"/>
       <file line="92"
+            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Park.java"/>
+      <file line="90"
             path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Restaurant.java"/>
-      <file line="93"
+      <file line="89"
             path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Shop.java"/>
       <codefragment><![CDATA[    return value;
   }
@@ -23,32 +23,38 @@
   }
 
   @Override
-  public void setDistance(double c) {distance = c;}
-
-  @Override
-  public double getDistance() { return distance; }
-
-  @Override
-  public void setVisited(boolean c) { visit = c; }
-
-  @Override
-  public boolean getVisited() { return visit; }
-
-  @Override
-  public void setNumPrev(int c) {numPrev = c;}
-
-  @Override
-  public int getNumPrev() {return numPrev;}
-
-  @Override
-  public void reset() {
-    distance = 0;
-    visit = false;
-    numPrev = 0;
+  public void setDistance(double c) {
+    distance = c;
   }
 
   @Override
-  public int getType() {return 0;}]]></codefragment>
+  public double getDistance() {
+    return distance;
+  }
+
+  @Override
+  public void setVisited(boolean c) {
+    visit = c;
+  }
+
+  @Override
+  public boolean getVisited() {
+    return visit;
+  }
+
+  @Override
+  public void setNumPrev(int c) {
+    numPrev = c;
+  }
+
+  @Override
+  public int getNumPrev() {
+    return numPrev;
+  }
+
+  @Override
+  public int getType() {
+    return 0;]]></codefragment>
    </duplication>
    <duplication lines="43" tokens="111">
       <file line="40"
@@ -96,7 +102,7 @@
   }
 
   @Override
-  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
-    double museumValue = PreferredStop;]]></codefragment>
+  public double generateValue(double preferredPrice, double preferredStop, double distance) {
+    double museumValue = preferredStop;]]></codefragment>
    </duplication>
 </pmd-cpd>

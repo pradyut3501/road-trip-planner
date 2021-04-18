@@ -25,8 +25,8 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021</copyright>
     <item>
-      <title>File: 10,
-             Errors: 526,
+      <title>File: 8,
+             Errors: 23,
              Warnings: 0,
              Infos: 0
       </title>
@@ -46,20 +46,6 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#graph.Dijkstra.java">graph/Dijkstra.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  92
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#database.Database.java">database/Database.java</a>
                 </td>
                 <td>
@@ -69,7 +55,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  1
                 </td>
               </tr>
                           <tr>
@@ -83,7 +69,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  36
+                  2
                 </td>
               </tr>
                           <tr>
@@ -97,7 +83,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  36
+                  2
                 </td>
               </tr>
                           <tr>
@@ -125,7 +111,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  207
+                  7
                 </td>
               </tr>
                           <tr>
@@ -139,21 +125,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  54
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#edu.brown.cs.student.termProject.AttractionNode.java">edu/brown/cs/student/termProject/AttractionNode.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  21
+                  2
                 </td>
               </tr>
                           <tr>
@@ -167,7 +139,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  37
+                  1
                 </td>
               </tr>
                           <tr>
@@ -181,7 +153,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  38
+                  6
                 </td>
               </tr>
                       </tbody>

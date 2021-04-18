@@ -5,7 +5,7 @@ import edu.brown.cs.student.termProject.Constants;
 
 /**
  * The Restaurant class stores information of Restaurants and implements the attraction node
- * interface for Dijkstra's
+ * interface for Dijkstra's.
  */
 public class Restaurant implements AttractionNode {
   private String id;
@@ -23,19 +23,19 @@ public class Restaurant implements AttractionNode {
   private double numReviews;
 
   /**
-   * The constructor sets the fields
-   * @param RestaurantId the id
-   * @param RestaurantName the name of the stop
+   * The constructor sets the fields.
+   * @param restaurantId the id
+   * @param restaurantName the name of the stop
    * @param loc the address of the Restaurant in an array
    * @param coords the latitude/longitude coordinates
    * @param p the price associated with the stop
    * @param rate the five star rating
    * @param reviewCount number of reviews left at this establishment
    */
-  public Restaurant(String RestaurantId, String RestaurantName, String[] loc, double[] coords,
-<span class="fc" id="L36">                   Double p, Double rate,  double reviewCount){</span>
-<span class="fc" id="L37">    id = RestaurantId;</span>
-<span class="fc" id="L38">    name = RestaurantName;</span>
+  public Restaurant(String restaurantId, String restaurantName, String[] loc, double[] coords,
+<span class="fc" id="L36">                   Double p, Double rate,  double reviewCount) {</span>
+<span class="fc" id="L37">    id = restaurantId;</span>
+<span class="fc" id="L38">    name = restaurantName;</span>
 <span class="fc" id="L39">    location = loc;</span>
 <span class="fc" id="L40">    coordinates = coords;</span>
 <span class="fc" id="L41">    price = p;</span>
@@ -77,67 +77,72 @@ public class Restaurant implements AttractionNode {
   }
 
   @Override
-  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
-<span class="fc" id="L81">    double restaurantValue = PreferredStop;</span>
-<span class="fc" id="L82">    value = (1- restaurantValue/Constants.VALUE_BOUND) * distance * Constants.PREFERENCE_VALUE_SCALE;</span>
-    //value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_RESTAURANTS) * distance;
-<span class="fc" id="L84">    value = value + (Constants.AVERAGE_REVIEWS_RESTAURANTS / numReviews) * distance * Constants.REVIEW_SCALE;</span>
-    //value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
-    //value = value * (1 - rating *.1);
-<span class="fc" id="L87">    value = value + (1 - rating/Constants.MAX_RATING) * distance;</span>
-<span class="fc" id="L88">    value = value + (Math.abs(price-PreferredPrice)) * distance * Constants.PRICE_SCALE;</span>
-<span class="fc" id="L89">    value = value * Constants.VALUE_SCALE;</span>
-<span class="fc" id="L90">    value = value * Constants.VALUE_SCALE_RESTAURANTS;</span>
- //   System.out.println(&quot;restaurant value is: &quot; + value);
-<span class="fc" id="L92">    return value;</span>
+  public double generateValue(double preferredPrice, double preferredStop, double distance) {
+<span class="fc" id="L81">    double restaurantValue = preferredStop;</span>
+<span class="fc" id="L82">    value = (1- restaurantValue/Constants.VALUE_BOUND)</span>
+        * distance * Constants.PREFERENCE_VALUE_SCALE;
+<span class="fc" id="L84">    value = value + (Constants.AVERAGE_REVIEWS_RESTAURANTS / numReviews)</span>
+        * distance * Constants.REVIEW_SCALE;
+<span class="fc" id="L86">    value = value + (1 - rating/Constants.MAX_RATING) * distance;</span>
+<span class="fc" id="L87">    value = value + (Math.abs(price - preferredPrice)) * distance * Constants.PRICE_SCALE;</span>
+<span class="fc" id="L88">    value = value * Constants.VALUE_SCALE;</span>
+<span class="fc" id="L89">    value = value * Constants.VALUE_SCALE_RESTAURANTS;</span>
+<span class="fc" id="L90">    return value;</span>
   }
 
   @Override
   public void setCost(double c) {
-<span class="fc" id="L97">    cost = c;</span>
-<span class="fc" id="L98">  }</span>
+<span class="fc" id="L95">    cost = c;</span>
+<span class="fc" id="L96">  }</span>
 
   @Override
   public double getCost() {
-<span class="fc" id="L102">    return cost;</span>
+<span class="fc" id="L100">    return cost;</span>
   }
 
   @Override
-<span class="nc" id="L106">  public void setDistance(double c) {distance = c;}</span>
+  public void setDistance(double c) {
+<span class="nc" id="L105">    distance = c;</span>
+<span class="nc" id="L106">  }</span>
 
   @Override
-<span class="nc" id="L109">  public double getDistance() { return distance; }</span>
+  public double getDistance() {
+<span class="nc" id="L110">    return distance;</span>
+  }
 
   @Override
-<span class="nc" id="L112">  public void setVisited(boolean c) { visit = c; }</span>
+  public void setVisited(boolean c) {
+<span class="nc" id="L115">    visit = c;</span>
+<span class="nc" id="L116">  }</span>
 
   @Override
-<span class="nc" id="L115">  public boolean getVisited() { return visit; }</span>
+  public boolean getVisited() {
+<span class="nc" id="L120">    return visit;</span>
+  }
 
   @Override
-<span class="nc" id="L118">  public void setNumPrev(int c) {numPrev = c;}</span>
+  public void setNumPrev(int c) {
+<span class="nc" id="L125">    numPrev = c;</span>
+<span class="nc" id="L126">  }</span>
 
   @Override
-<span class="nc" id="L121">  public int getNumPrev() {return numPrev;}</span>
+  public int getNumPrev() {
+<span class="nc" id="L130">    return numPrev;</span>
+  }
 
   @Override
-  public void reset() {
-<span class="nc" id="L125">    distance = 0;</span>
-<span class="nc" id="L126">    visit = false;</span>
-<span class="nc" id="L127">    numPrev = 0;</span>
-<span class="nc" id="L128">  }</span>
-
-  @Override
-<span class="fc" id="L131">  public int getType() {return 2;}</span>
+  public int getType() {
+<span class="fc" id="L135">    return 2;</span>
+  }
 
   @Override
   public double getValue() {
-<span class="nc" id="L135">    return value;</span>
+<span class="nc" id="L140">    return value;</span>
   }
 
   @Override
   public double getNumReviews() {
-<span class="fc" id="L140">    return numReviews;</span>
+<span class="fc" id="L145">    return numReviews;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

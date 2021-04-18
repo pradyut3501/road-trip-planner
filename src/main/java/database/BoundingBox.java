@@ -12,7 +12,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,20 +32,21 @@ public class BoundingBox {
    * and returns a list of the AttractionNodes from the yelp-database within
    * this box that are of the given categories.
    *
-   * @param coords1 - [lat, lon] of the start position
-   * @param coords2 - [lat, lon] of the end position
-   * @param categories - list of acceptable attraction categories
+   * @param coords1      - [lat, lon] of the start position
+   * @param coords2      - [lat, lon] of the end position
+   * @param categories   - list of acceptable attraction categories
    * @param prefNumStops - number of stops user prefers to make
-   * @param costPref - cost preference of user
+   * @param costPref     - cost preference of user
    * @return list of attraction nodes of the given categories within a
    * box around the given positions
    */
   public static List<AttractionNode> findAttractionsBetween(
-          double[] coords1, double[] coords2, List<String> categories, int prefNumStops, int costPref) {
+      double[] coords1, double[] coords2, List<String> categories, int prefNumStops, int costPref) {
     double[] boundingBoxBounds = findBoundingBoxBounds(coords1, coords2);
     double[] expandedBoundingBoxBounds = expandBoundingBoxBounds(boundingBoxBounds, 2.0);
     try {
-      return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories, prefNumStops, costPref);
+      return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories, prefNumStops,
+          costPref);
     } catch (SQLException | IOException e) {
       throw new IllegalArgumentException("ERROR: Error while connecting to SQL database");
     }
@@ -82,10 +82,11 @@ public class BoundingBox {
    * Extends the given bounding box expansionFactor units in every direction.
    *
    * @param boundingBoxBounds - original bounding box to be expanded
-   * @param expansionFactor - number of units to expand the bounding box by in every direction
+   * @param expansionFactor   - number of units to expand the bounding box by in every direction
    * @return [start lat, end lat, start lon, end lon] of the expanded bounding box
    */
-  public static double[] expandBoundingBoxBounds(double[] boundingBoxBounds, double expansionFactor) {
+  public static double[] expandBoundingBoxBounds(double[] boundingBoxBounds,
+                                                 double expansionFactor) {
     double[] expandedBoundingBoxBounds = new double[4];
     expandedBoundingBoxBounds[0] = boundingBoxBounds[0] - expansionFactor;
     expandedBoundingBoxBounds[1] = boundingBoxBounds[1] + expansionFactor;
@@ -99,37 +100,33 @@ public class BoundingBox {
    * bounding box that are of the given categories.
    *
    * @param boundingBoxBounds - [start lat, end lat, start lon, end lon] of the bounding box
-   * @param categories - list of acceptable attraction categories
-   * @param prefNumStops - number of stops preferred by user
-   * @param costPref - cost preference of user
+   * @param categories        - list of acceptable attraction categories
+   * @param prefNumStops      - number of stops preferred by user
+   * @param costPref          - cost preference of user
    * @return list of attraction nodes of the given categories within the given bounding box
    * @throws SQLException - if yelp database cannot be successfully queried
-   * @throws IOException - if issue with yelp API connection
+   * @throws IOException  - if issue with yelp API connection
    */
   public static List<AttractionNode> findAttractionsWithinBoundingBox(
-          double[] boundingBoxBounds, List<String> categories, int prefNumStops, int costPref)
+      double[] boundingBoxBounds, List<String> categories, int prefNumStops, int costPref)
       throws SQLException, IOException {
     ArrayList<String> nameList = new ArrayList<>();
-    for (String c: categories){
+    for (String c : categories) {
       System.out.println(c);
     }
     Connection conn = Database.getYelpDatabaseConnection();
-
-    String query = "SELECT * FROM yelp_business " +
-            "WHERE (latitude BETWEEN ? and ?) " +
-            "AND (longitude BETWEEN ? AND ?)" +
-            "AND (stars > 3.0)" +
-            "AND (review_count > 10)";
-
+    String query = "SELECT * FROM yelp_business "
+        + "WHERE (latitude BETWEEN ? and ?) "
+        + "AND (longitude BETWEEN ? AND ?)"
+        + "AND (stars > 3.0)"
+        + "AND (review_count > 10)";
     PreparedStatement prep = conn.prepareStatement(query);
     prep.setDouble(1, boundingBoxBounds[0]);
     prep.setDouble(2, boundingBoxBounds[1]);
     prep.setDouble(3, boundingBoxBounds[2]);
     prep.setDouble(4, boundingBoxBounds[3]);
-
     ResultSet rs = prep.executeQuery();
     List<AttractionNode> attractionsWithinBox = new ArrayList<>();
-
     while (rs.next()) {
       String id = rs.getString("business_id");
       String name = rs.getString("name");
@@ -138,33 +135,28 @@ public class BoundingBox {
       String city = rs.getString("city");
       String state = rs.getString("state");
       String postalCode = rs.getString("postal_code");
-      String[] location = new String[]{address, city, state, postalCode};
-
+      String[] location = new String[] {address, city, state, postalCode};
       double lat = rs.getDouble("latitude");
       double lon = rs.getDouble("longitude");
-      double[] coords = new double[]{lat, lon};
-
+      double[] coords = new double[] {lat, lon};
       double price = 0.0;
       double rating = rs.getDouble("stars");
-
       double reviewCount = rs.getDouble("review_count");
-
       String categoriesList = rs.getString("categories");
-
       if ((categoriesList.contains("Restaurants")
-              || categoriesList.contains("Food")
-              || categoriesList.contains("Bars"))
-              && categories.contains("Restaurant")) {
+          || categoriesList.contains("Food")
+          || categoriesList.contains("Bars"))
+          && categories.contains("Restaurant")) {
         Integer priceInt = findPriceField(rs.getString("attributes"));
         if (priceInt != null) {
           price = priceInt;
           AttractionNode nextAttraction = new Restaurant(
-                  id, name, location, coords, price, rating, reviewCount);
+              id, name, location, coords, price, rating, reviewCount);
           attractionsWithinBox.add(nextAttraction);
         }
       } else if (categoriesList.contains("Museums") && categories.contains("Museum")) {
         AttractionNode nextAttraction = new Museum(
-                id, name, location, coords, price, rating, reviewCount);
+            id, name, location, coords, price, rating, reviewCount);
         attractionsWithinBox.add(nextAttraction);
       } else if (categoriesList.contains("Parks") && categories.contains("Park")) {
         AttractionNode nextAttraction = new Park(
@@ -174,26 +166,24 @@ public class BoundingBox {
     }
     prep.close();
     rs.close();
-    System.out.println("Length of attractions from database within bounding box is: " + attractionsWithinBox.size());
+    System.out.println("Length of attractions from database within bounding box is: "
+        + attractionsWithinBox.size());
     for (int i = 0; i < (prefNumStops + 2); i++) {
-      //System.out.println(i);
       double reqLat = 0;
       double reqLon = 0;
-      //start lat > end lat
-      if (boundingBoxBounds[0] > boundingBoxBounds[1]) {
-        reqLat = ((boundingBoxBounds[0] - boundingBoxBounds[1]) / (prefNumStops + 2)) * i +
-            boundingBoxBounds[1];
+      if (boundingBoxBounds[0] > boundingBoxBounds[1]) { //start lat > end lat
+        reqLat = ((boundingBoxBounds[0] - boundingBoxBounds[1]) / (prefNumStops + 2)) * i
+            + boundingBoxBounds[1];
       } else {
-        reqLat = ((boundingBoxBounds[1] - boundingBoxBounds[0]) / (prefNumStops + 2)) * i +
-            boundingBoxBounds[0];
+        reqLat = ((boundingBoxBounds[1] - boundingBoxBounds[0]) / (prefNumStops + 2)) * i
+            + boundingBoxBounds[0];
       }
-      //start lon > end lon
-      if (boundingBoxBounds[2] > boundingBoxBounds[3]) {
-        reqLon = ((boundingBoxBounds[2] - boundingBoxBounds[3]) / (prefNumStops + 2)) * i +
-            boundingBoxBounds[3];
+      if (boundingBoxBounds[2] > boundingBoxBounds[3]) { //start lon > end lon
+        reqLon = ((boundingBoxBounds[2] - boundingBoxBounds[3]) / (prefNumStops + 2)) * i
+            + boundingBoxBounds[3];
       } else {
-        reqLon = ((boundingBoxBounds[3] - boundingBoxBounds[2]) / (prefNumStops + 2)) * i +
-            boundingBoxBounds[2];
+        reqLon = ((boundingBoxBounds[3] - boundingBoxBounds[2]) / (prefNumStops + 2)) * i
+            + boundingBoxBounds[2];
       }
       List<AttractionNode> nodes = new ArrayList<>();
       if (categories.contains("Restaurant")) {
@@ -202,63 +192,57 @@ public class BoundingBox {
         param.add("food");
         param.add("bars");
         URL url = new URL(
-            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" +
-                reqLon +
-                "&categories=" + "\"restaurant\",\"food\",\"bars\"" + "&price=" + costPref);
+            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude="
+                + reqLon + "&categories="
+                + "\"restaurant\",\"food\",\"bars\"" + "&price=" + costPref);
         List<AttractionNode> restaurants = yelpUrlToAttractions(url, "Restaurant");
         nodes.addAll(restaurants);
         System.out.println(restaurants.size() + " many restaurants");
-       // attractionsWithinBox.addAll(nodes);
       }
       if (categories.contains("Shop")) {
         URL url = new URL(
-            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
-                "&categories=shoppingcenters");
+            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude="
+                + reqLon + "&categories=shoppingcenters");
         List<AttractionNode> shops = yelpUrlToAttractions(url, "Shop");
         nodes.addAll(shops);
         System.out.println(shops.size() + " many shops");
-       // attractionsWithinBox.addAll(nodes);
-
       }
       if (categories.contains("Museum")) {
         URL url = new URL(
-            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
-                "&categories=artmuseums");
+            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude="
+                + reqLon + "&categories=artmuseums");
         List<AttractionNode> museums = yelpUrlToAttractions(url, "Museum");
         nodes.addAll(museums);
         System.out.println(museums.size() + " many museums");
-       // attractionsWithinBox.addAll(nodes);
       }
       if (categories.contains("Park")) {
         URL url = new URL(
-            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude=" + reqLon +
-                "&categories=parks");
+            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude="
+                + reqLon + "&categories=parks");
         List<AttractionNode> parks = yelpUrlToAttractions(url, "Park");
         nodes.addAll(parks);
         System.out.println(parks.size() + " many parks");
-        //attractionsWithinBox.addAll(nodes);
       }
       List<AttractionNode> removeRepeats = new ArrayList<>();
-      for(AttractionNode n: nodes){
-        if (nameList.contains(n.getName())){
+      for (AttractionNode n : nodes) {
+        if (nameList.contains(n.getName())) {
           removeRepeats.add(n);
           System.out.println("A repeat");
-        }
-        else{
+        } else {
           nameList.add(n.getName());
         }
       }
       nodes.removeAll(removeRepeats);
       attractionsWithinBox.addAll(nodes);
     }
-   double numRest = 0.0;
-   double numPark = 0.0;
-   double numMus = 0.0;
-   double numShops = 0.0;
-    for (AttractionNode a: attractionsWithinBox){
-      switch(a.getType()){
+    double numRest = 0.0;
+    double numPark = 0.0;
+    double numMus = 0.0;
+    double numShops = 0.0;
+    for (AttractionNode a : attractionsWithinBox) {
+      switch (a.getType()) {
         case 0:
-          numMus ++;
+          numMus++;
           break;
         case 1:
           numPark++;
@@ -273,10 +257,6 @@ public class BoundingBox {
           break;
       }
     }
-    System.out.println("Number of Shop: " + numShops);
-    System.out.println("Number for Restaurant: " + numRest);
-    System.out.println("Number of  Museum: " + numMus);
-    System.out.println("Number of Park: " + numPark);
     return attractionsWithinBox;
   }
 
@@ -284,19 +264,22 @@ public class BoundingBox {
    * Helper class that takes in yelp url,
    * makes an API request,
    * and creates an attraction node accordingly.
-   * @param yelpUrl yelp url to make API request from
+   *
+   * @param yelpUrl    yelp url to make API request from
    * @param attraction type of attraction we are making request for
    * @return list of attraction nodes, created from data from API call
    * @throws IOException occurs when failure from API call.
    */
-  public static List<AttractionNode> yelpUrlToAttractions(URL yelpUrl, String attraction) throws IOException {
-    //System.out.println("Attraction Parameter is: " + attraction);
+  public static List<AttractionNode> yelpUrlToAttractions(URL yelpUrl, String attraction)
+      throws IOException {
     HttpURLConnection con = (HttpURLConnection) yelpUrl.openConnection();
     con.setRequestMethod("GET");
     String yelpKeyAbby =
-      "RLI6ay67RiMOfxTbWDWV9iPiC4WyVydxY2ePdMV8SoTi74Ddx6Ez7fkBa8cY2LoI6_yqJaVTGGqsiUT_GeGh4RO0gOyclHeDDaoD43pkWDQmjSHrM_DyifOLaGF7YHYx";
+        "RLI6ay67RiMOfxTbWDWV9iPiC4WyVydxY2ePdMV8SoTi74Ddx6Ez7fkBa8cY2LoI6_yqJaVTGGqsiUT_GeGh4"
+            + "RO0gOyclHeDDaoD43pkWDQmjSHrM_DyifOLaGF7YHYx";
     String yelpKey =
-        "PlFxZHha-zmiQvrMQUb12P0uD9s_GZRJzzGZqVSJFKgR4iDXj1aBwOBuMc2DBFYkZODPw2V5PaJBMapJ5WA9PA3Lx2cGXq9FkzzT45m9t9I9gsXDdGCwQnuYu6J3YHYx";
+        "PlFxZHha-zmiQvrMQUb12P0uD9s_GZRJzzGZqVSJFKgR4iDXj1aBw"
+            + "OBuMc2DBFYkZODPw2V5PaJBMapJ5WA9PA3Lx2cGXq9FkzzT45m9t9I9gsXDdGCwQnuYu6J3YHYx";
     con.setRequestProperty("Authorization", "Bearer " + yelpKeyAbby);
     BufferedReader in = null;
     List<AttractionNode> attractions = new ArrayList<>();
@@ -308,54 +291,34 @@ public class BoundingBox {
         sb.append(line);
       }
       JSONObject json = new JSONObject(sb.toString());
-//      System.out.println("buffered reader");
-//      System.out.println(json.getInt("total"));
-//      System.out.println(json.getJSONArray("businesses").toString());
-//      System.out.println("Now Looping");
       if (attraction != "Park") {
-        System.out.println("attraction: " + attraction + " readIn: " + json.getInt("total") );
+        System.out.println("attraction: " + attraction + " readIn: " + json.getInt("total"));
       }
       if (json.getInt("total") != 0) {
         for (int j = 0; j < json.getJSONArray("businesses").length(); j++) {
           try {
             //for each business create a json object to parse
-            //JSONObject businessJson = null;
-          //  try{
             JSONObject businessJson = json.getJSONArray("businesses").getJSONObject(j);
-           // }
-//            catch(JSONException e){
-//              System.out.println("Problem w making business object: " +e);
-//            }
-          //  System.out.println(json.getJSONArray("businesses").getString(j));
             String name = businessJson.get("name").toString();
             String id = businessJson.get("id").toString();
             JSONObject locationJson = businessJson.getJSONObject("location");
             //location field is its own json object
-            String[] loc = new String[]{locationJson.get("address1").toString(), locationJson.get(
-              "city").toString(), locationJson.get("state").toString(),
-              locationJson.get("zip_code").toString()};
-            double[] coords = new double[]{businessJson.getJSONObject("coordinates").getDouble(
-              "latitude"), businessJson.getJSONObject("coordinates").getDouble(
-              "longitude")};
+            String[] loc = new String[] {locationJson.get("address1").toString(), locationJson.get(
+                "city").toString(), locationJson.get("state").toString(),
+                locationJson.get("zip_code").toString()};
+            double[] coords = new double[] {businessJson.getJSONObject("coordinates").getDouble(
+                "latitude"), businessJson.getJSONObject("coordinates").getDouble(
+                "longitude")};
             double price;
             try { //try catch for price because sometimes it isnt a field
               price = businessJson.get("price").toString().toCharArray().length;
             } catch (JSONException e) {
-           //   System.out.println("no price");
               price = 0.0;
             }
             double rating = businessJson.getDouble("rating");
             double reviewCount = businessJson.getDouble("review_count");
-           // System.out.println("Reviews Count: " + reviewCount );
-//            System.out.println("the name is : " + name + " id is: " + id + " location is: " + loc[0] + " " + loc[1]
-//              + " coordinates are: " + coords[0] + " and " + coords[1] + " price is: " + price + " " +
-//              "and" +
-//              " rating " +
-//              "is: " + rating);
-//            String category = businessJson.getJSONArray("categories").getJSONObject(0).getString("title");
-          //  System.out.println("The category is: " + category); //This is a specific category
             AttractionNode node;
-            switch(attraction){
+            switch (attraction) {
               case "Park":
                 node = new Park(id, name, loc, coords, price, rating, reviewCount);
                 break;
@@ -372,15 +335,12 @@ public class BoundingBox {
                 node = null;
                 break;
             }
-            if (node!=null){
+            if (node != null) {
               attractions.add(node);
             }
+          } catch (JSONException e) {
+            System.out.println(e + "exception");
           }
-          catch (JSONException e){
-         System.out.println(e + "exception");
-          }
-          //THEN INSTANTIATE ATTRACTION NODE
-          //attractions.add(attraction node)
         }
         return attractions;
       }
@@ -389,10 +349,13 @@ public class BoundingBox {
       System.out.println("ERROR: failed to open input stream");
       e.printStackTrace();
     }
-  return attractions;
+    return attractions;
   }
 
-  public static Integer findPriceField(String attributes) {
+  /**
+   * helper method that finds price field from DB.
+   */
+  private static Integer findPriceField(String attributes) {
     Integer price = null;
     if (attributes.contains("RestaurantsPriceRange2")) {
       int startIndex = attributes.indexOf("RestaurantsPriceRange2");
