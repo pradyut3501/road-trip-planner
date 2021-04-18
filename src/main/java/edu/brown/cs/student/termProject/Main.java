@@ -249,8 +249,10 @@ public final class Main {
 
             route.addAll(route1);
             //dumby "node" to represent the user inputted intermediate stop
-            route.add(new Park("0", "Intermediate Stop", new String[] {""},
-                new double[] {middleLat, middleLong}, 0.0, 0.0, 0.0));
+            AttractionNode med = new Park("0", "Intermediate Stop", new String[] {""},
+              new double[] {middleLat, middleLong}, 0.0, 0.0, 0.0);
+            med.setCost(0.0);
+            route.add(med);
             route.addAll(route2);
             System.out.println("The length of your first part is " + route1.size() + " and your "
                 + "second part is " + route2.size());
