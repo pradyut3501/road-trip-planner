@@ -58,10 +58,17 @@ categorization of stop types, etc.)
 ## How to Build and Run
 _A necessary part of any README!_
 
+## Errors/Bugs
+
+## Design decisions
+
+## Tests
+
 ## Support sources utilized for Google Maps API implementation
 https://tintef.github.io/react-google-places-autocomplete/docs/
 https://developers.google.com/maps/documentation/places/web-service/details
 https://developers.google.com/maps/documentation/directions/start#api-key
+https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceDetailsRequest
 
 ## Other sources utilized
 Animations: http://jsfiddle.net/MDzsR/1/
