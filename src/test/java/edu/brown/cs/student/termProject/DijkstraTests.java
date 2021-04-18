@@ -7,6 +7,7 @@ import database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.Assert.assertTrue;
 
 
@@ -35,6 +36,6 @@ public class DijkstraTests {
       assertTrue(path.get(i).getType() != 0);
     }
   }
-
+  
 
 }

@@ -1,9 +1,5 @@
 package edu.brown.cs.student.termProject;
 
-import attractions.Museum;
-import attractions.Park;
-import attractions.Restaurant;
-import attractions.Shop;
 import database.BoundingBox;
 
 import database.Database;
@@ -12,7 +8,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.*;
 
 /**
  * Tests for the BoundingBox class.
@@ -86,24 +82,174 @@ public class BoundingBoxTests {
             new double[]{2, 2, 5, 1}, 0);
   }
 
-//  @Test
-//  public void randomTests() {
-//    Database.setYelpDatabaseConnection();
-//    try {
-//      List<AttractionNode> attractions = BoundingBox.findAttractionsWithinBoundingBox(
-//              new double[]{40, 41, -106, -105},
-//      Arrays.asList("Restaurant", "Museum", "Park", "Shop"), 0, 0);
-//      System.out.println(attractions.size());
-//      for (AttractionNode a: attractions) {
-//        try {
-//          Park x = (Park) a;
-//          System.out.println(x.getPrice());
-//        } catch (Exception e) {
-//        }
-//      }
-//    } catch (Exception e) {
-//      System.out.println("SQL query failed");
-//    }
-//  }
+  @Test
+  public void testFindAttractionsBetweenSameStartEnd() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
+              new double[]{40, -105}, new double[]{40, -105},
+              Arrays.asList("Restaurant", "Museum", "Park", "Shop"),
+      5, 5, new double[]{2, 2, 2, 2});
+      assertTrue(containsAttractionWithID(attractions, "6iYb2HFDywm3zjuRg0shjw"));
+      assertFalse(containsAttractionWithID(attractions, "D4JtQNTI4X3KcbzacDJsMw"));
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testFindAttractionsBetweenDifferentStartEnd() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
+              new double[]{40, -105}, new double[]{39, -106},
+              Arrays.asList("Restaurant", "Museum", "Park", "Shop"),
+              5, 5, new double[]{2, 2, 2, 2});
+      assertTrue(containsAttractionWithID(attractions, "6iYb2HFDywm3zjuRg0shjw"));
+      assertFalse(containsAttractionWithID(attractions, "tCbdrRPZA0oiIYSmHG3J0w"));
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testFindAttractionsBetweenEmptyCategoriesList() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
+              new double[]{40, -105}, new double[]{39, -106},
+              Arrays.asList(),
+              5, 5, new double[]{2, 2, 2, 2});
+      assertTrue(attractions.isEmpty());
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testFindAttractionsBetweenInvalidCategoryNames() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
+              new double[]{40, -105}, new double[]{39, -106},
+              Arrays.asList("Parks", "Restaurants"),
+              5, 5, new double[]{2, 2, 2, 2});
+      assertTrue(attractions.isEmpty());
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testFindAttractionsBetweenValidCategoryNoStops() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
+              new double[]{20, -100}, new double[]{20, -100},
+              Arrays.asList("Park"),
+              5, 5, new double[]{2, 2, 2, 2});
+      assertTrue(attractions.isEmpty());
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testFindAttractionsBetweenOnlyCategoriesOfValidStops() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
+              new double[]{40, -105}, new double[]{40, -105},
+              Arrays.asList("Museum", "Park", "Shop"),
+              5, 0, new double[]{2, 2, 2, 2});
+      assertFalse(containsAttractionWithID(attractions, "6iYb2HFDywm3zjuRg0shjw"));
+      assertTrue(containsAttractionWithID(attractions, "UYmatKG6_NMm0WOADzoDoQ"));
+      assertTrue(containsAttractionWithID(attractions, "GlI_cFeXKtsI6qqUJobOpg"));
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testFindAttractionsWithinBoundingBoxAllCategories() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsWithinBoundingBox(
+              new double[]{38, 42, -107, -105},
+              Arrays.asList("Restaurant", "Museum", "Park", "Shop"),
+              5, 5, new double[]{2, 2, 2, 2});
+      assertTrue(containsAttractionWithID(attractions, "6iYb2HFDywm3zjuRg0shjw"));
+      assertFalse(containsAttractionWithID(attractions, "D4JtQNTI4X3KcbzacDJsMw"));
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testFindAttractionsWithinBoundingBoxEmptyCategoriesList() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsWithinBoundingBox(
+              new double[]{40, 42, -107, -105},
+              Arrays.asList(),
+              5, 5, new double[]{2, 2, 2, 2});
+      assertTrue(attractions.isEmpty());
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testFindAttractionsWithinBoundingBoxInvalidCategoryNames() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsWithinBoundingBox(
+              new double[]{40, 42, -107, -105},
+              Arrays.asList("Parks", "Restaurants"),
+              5, 5, new double[]{2, 2, 2, 2});
+      assertTrue(attractions.isEmpty());
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testFindAttractionsWithinBoundingBoxValidCategoryNoStops() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsWithinBoundingBox(
+              new double[]{18, 20, -98, -100},
+              Arrays.asList("Park"),
+              5, 5, new double[]{2, 2, 2, 2});
+      assertTrue(attractions.isEmpty());
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testFindAttractionsWithinBoundingBoxOnlyCategoriesOfValidStops() {
+    Database.setYelpDatabaseConnection();
+    try {
+      List<AttractionNode> attractions = BoundingBox.findAttractionsWithinBoundingBox(
+              new double[]{38, 42, -107, -103},
+              Arrays.asList("Museum", "Park", "Shop"),
+              5, 0, new double[]{2, 2, 2, 2});
+      assertFalse(containsAttractionWithID(attractions, "6iYb2HFDywm3zjuRg0shjw"));
+      assertTrue(containsAttractionWithID(attractions, "UYmatKG6_NMm0WOADzoDoQ"));
+      assertTrue(containsAttractionWithID(attractions, "GlI_cFeXKtsI6qqUJobOpg"));
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  private static boolean containsAttractionWithID(List<AttractionNode> attractions, String Id) {
+    for (AttractionNode attraction: attractions) {
+      if (attraction.getId().equals(Id)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 }
