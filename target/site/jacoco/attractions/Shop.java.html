@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Shop.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">termProject</a> &gt; <a href="index.source.html" class="el_package">attractions</a> &gt; <span class="el_source">Shop.java</span></div><h1>Shop.java</h1><pre class="source lang-java linenums">package attractions;
+
+import edu.brown.cs.student.termProject.AttractionNode;
+import edu.brown.cs.student.termProject.Constants;
+
+/**
+ * The Shop class stores information of Shops and implements the attraction node interface
+ * for Dijkstra's
+ */
+public class Shop implements AttractionNode {
+  private String id;
+  private String name;
+  private String[] location;
+  private double[] coordinates;
+  private double price;
+  private double rating;
+  private double cost;
+<span class="fc" id="L18">  private double distance = 0;</span>
+<span class="fc" id="L19">  private boolean visit = false;</span>
+<span class="fc" id="L20">  private int numPrev = 0;</span>
+<span class="fc" id="L21">  private double value = 0;</span>
+<span class="fc" id="L22">  private String nodeType = &quot;shop&quot;;</span>
+  private double numReviews;
+
+
+  /**
+   * The constructor sets the fields
+   * @param ShopId the id
+   * @param ShopName the name of the stop
+   * @param loc the address of the Museum in an array
+   * @param coords the latitude/longitude coordinates
+   * @param p the price associated with the stop
+   * @param rate the five star rating
+   * @param reviewCount number of reviews left at this establishment
+   */
+  public Shop(String ShopId, String ShopName, String[] loc, double[] coords, Double p,
+<span class="fc" id="L37">                Double rate,  double reviewCount){</span>
+<span class="fc" id="L38">    id = ShopId;</span>
+<span class="fc" id="L39">    name = ShopName;</span>
+<span class="fc" id="L40">    location = loc;</span>
+<span class="fc" id="L41">    coordinates = coords;</span>
+<span class="fc" id="L42">    price = p;</span>
+<span class="fc" id="L43">    rating = rate;</span>
+<span class="fc" id="L44">    cost = Double.POSITIVE_INFINITY;</span>
+<span class="fc" id="L45">    numReviews = reviewCount;</span>
+
+<span class="fc" id="L47">  }</span>
+
+  @Override
+  public String getId() {
+<span class="fc" id="L51">    return id;</span>
+  }
+
+  @Override
+  public String getName() {
+<span class="fc" id="L56">    return name;</span>
+  }
+
+  @Override
+  public String[] getLocation() {
+<span class="nc" id="L61">    return location;</span>
+  }
+
+  @Override
+  public double[] getCoordinates() {
+<span class="nc" id="L66">    return coordinates;</span>
+  }
+
+  @Override
+  public double getPrice() {
+<span class="fc" id="L71">    return price;</span>
+  }
+
+  @Override
+  public double getRating() {
+<span class="fc" id="L76">    return rating;</span>
+  }
+
+  @Override
+  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
+<span class="nc" id="L81">    double shopValue = PreferredStop;</span>
+<span class="nc" id="L82">    value = (1- shopValue/Constants.VALUE_BOUND) * distance * Constants.PREFERENCE_VALUE_SCALE;</span>
+    //   value = (Constants.VALUE_BOUND- shopValue) * Constants.VALUE_SCALE_SHOPS;
+    //value = value * (1 - rating *.1);
+    //   value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_SHOPS) * distance;
+<span class="nc" id="L86">    value = value + (Constants.AVERAGE_REVIEWS_SHOPS / numReviews) * distance</span>
+      * Constants.REVIEW_SCALE;
+<span class="nc" id="L88">    value = value + (1 - rating/Constants.MAX_RATING) * distance;</span>
+<span class="nc" id="L89">    value = value + (Math.abs(price-PreferredPrice)) * distance * Constants.PRICE_SCALE;</span>
+<span class="nc" id="L90">    value = value * Constants.VALUE_SCALE;</span>
+<span class="nc" id="L91">    value = value * Constants.VALUE_SCALE_SHOPS;</span>
+  //  System.out.println(&quot;shop value is: &quot; + value);
+<span class="nc" id="L93">    return value;</span>
+  }
+
+  @Override
+  public void setCost(double c) {
+<span class="nc" id="L98">    cost = c;</span>
+<span class="nc" id="L99">  }</span>
+
+  @Override
+  public double getCost() {
+<span class="nc" id="L103">    return cost;</span>
+  }
+
+  @Override
+<span class="nc" id="L107">  public void setDistance(double c) {distance = c;}</span>
+
+  @Override
+<span class="nc" id="L110">  public double getDistance() { return distance; }</span>
+
+  @Override
+<span class="nc" id="L113">  public void setVisited(boolean c) { visit = c; }</span>
+
+  @Override
+<span class="nc" id="L116">  public boolean getVisited() { return visit; }</span>
+
+  @Override
+<span class="nc" id="L119">  public void setNumPrev(int c) {numPrev = c;}</span>
+
+  @Override
+<span class="nc" id="L122">  public int getNumPrev() {return numPrev;}</span>
+
+  @Override
+  public void reset() {
+<span class="nc" id="L126">    distance = 0;</span>
+<span class="nc" id="L127">    visit = false;</span>
+<span class="nc" id="L128">    numPrev = 0;</span>
+<span class="nc" id="L129">  }</span>
+
+  @Override
+<span class="fc" id="L132">  public int getType() {return 3;}</span>
+
+  @Override
+  public double getValue() {
+<span class="nc" id="L136">    return value;</span>
+  }
+
+  @Override
+  public double getNumReviews() {
+<span class="fc" id="L141">    return numReviews;</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

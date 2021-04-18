@@ -36,7 +36,7 @@ public final class Main {
 
   private static final int DEFAULT_PORT = 4567;
   private static final int TIMER_DELAY = 2000;
-  private static final GeoApiContext
+  public static final GeoApiContext
       APICONNECTION = new GeoApiContext.Builder().apiKey("AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c").build();
 
   // map of latest checkins: maps user id to their latest checkins

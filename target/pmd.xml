@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
+    version="6.13.0" timestamp="2021-04-17T21:08:53.691">
+<file name="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Museum.java">
+<violation beginline="22" endline="22" begincolumn="18" endcolumn="25" rule="UnusedPrivateField" ruleset="Best Practices" package="attractions" class="Museum" variable="nodeType" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedprivatefield" priority="3">
+Avoid unused private fields such as 'nodeType'.
+</violation>
+</file>
+<file name="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Park.java">
+<violation beginline="22" endline="22" begincolumn="18" endcolumn="25" rule="UnusedPrivateField" ruleset="Best Practices" package="attractions" class="Park" variable="nodeType" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedprivatefield" priority="3">
+Avoid unused private fields such as 'nodeType'.
+</violation>
+</file>
+<file name="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Restaurant.java">
+<violation beginline="22" endline="22" begincolumn="18" endcolumn="25" rule="UnusedPrivateField" ruleset="Best Practices" package="attractions" class="Restaurant" variable="nodeType" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedprivatefield" priority="3">
+Avoid unused private fields such as 'nodeType'.
+</violation>
+</file>
+<file name="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Shop.java">
+<violation beginline="22" endline="22" begincolumn="18" endcolumn="25" rule="UnusedPrivateField" ruleset="Best Practices" package="attractions" class="Shop" variable="nodeType" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedprivatefield" priority="3">
+Avoid unused private fields such as 'nodeType'.
+</violation>
+</file>
+<file name="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/database/BoundingBox.java">
+<violation beginline="15" endline="15" begincolumn="1" endcolumn="34" rule="UnusedImports" ruleset="Best Practices" package="database" class="BoundingBox" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedimports" priority="4">
+Avoid unused imports such as 'java.net.ProtocolException'
+</violation>
+<violation beginline="298" endline="298" begincolumn="12" endcolumn="18" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="yelpUrlToAttractions" variable="yelpKey" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'yelpKey'.
+</violation>
+<violation beginline="403" endline="405" begincolumn="9" endcolumn="7" rule="EmptyCatchBlock" ruleset="Error Prone" package="database" class="BoundingBox" method="findPriceField" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/edu/brown/cs/student/termProject/Main.java">
+<violation beginline="8" endline="8" begincolumn="1" endcolumn="25" rule="UnusedImports" ruleset="Best Practices" package="edu.brown.cs.student.termProject" class="Main" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedimports" priority="4">
+Avoid unused imports such as 'java.util.HashMap'
+</violation>
+<violation beginline="38" endline="38" begincolumn="28" endcolumn="38" rule="UnusedPrivateField" ruleset="Best Practices" package="edu.brown.cs.student.termProject" class="Main" variable="TIMER_DELAY" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedprivatefield" priority="3">
+Avoid unused private fields such as 'TIMER_DELAY'.
+</violation>
+<violation beginline="175" endline="175" begincolumn="22" endcolumn="31" rule="UnusedLocalVariable" ruleset="Best Practices" package="edu.brown.cs.student.termProject" class="Main" method="runSparkServer" variable="freeMarker" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'freeMarker'.
+</violation>
+<violation beginline="347" endline="349" begincolumn="11" endcolumn="8" rule="EmptyTryBlock" ruleset="Error Prone" package="edu.brown.cs.student.termProject" class="Main$RouteHandler" method="handle" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_errorprone.html#emptytryblock" priority="3">
+Avoid empty try blocks
+</violation>
+</file>
+<file name="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/graph/Dijkstra.java">
+<violation beginline="9" endline="9" begincolumn="1" endcolumn="43" rule="UnusedImports" ruleset="Best Practices" package="graph" class="Dijkstra" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedimports" priority="4">
+Avoid unused imports such as 'com.google.maps.model.DirectionsLeg'
+</violation>
+<violation beginline="155" endline="155" begincolumn="28" endcolumn="39" rule="UselessParentheses" ruleset="Code Style" package="graph" class="Dijkstra" method="distanceFormula" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_codestyle.html#uselessparentheses" priority="4">
+Useless parentheses.
+</violation>
+<violation beginline="156" endline="156" begincolumn="13" endcolumn="66" rule="UselessParentheses" ruleset="Code Style" package="graph" class="Dijkstra" method="distanceFormula" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_codestyle.html#uselessparentheses" priority="4">
+Useless parentheses.
+</violation>
+</file>
+</pmd>

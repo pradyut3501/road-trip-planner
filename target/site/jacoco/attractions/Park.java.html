@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Park.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">termProject</a> &gt; <a href="index.source.html" class="el_package">attractions</a> &gt; <span class="el_source">Park.java</span></div><h1>Park.java</h1><pre class="source lang-java linenums">package attractions;
+
+import edu.brown.cs.student.termProject.AttractionNode;
+import edu.brown.cs.student.termProject.Constants;
+
+/**
+ * The park class stores information of parks and implements the attraction node interface for
+ * Dijkstra's
+ */
+public class Park implements AttractionNode {
+  private String id;
+  private String name;
+  private String[] location;
+  private double[] coordinates;
+  private double price;
+  private double rating;
+  private double value;
+  private double cost;
+<span class="fc" id="L19">  private boolean visit = false;</span>
+<span class="fc" id="L20">  private double distance = 0;</span>
+<span class="fc" id="L21">  private int numPrev = 0;</span>
+<span class="fc" id="L22">  private String nodeType = &quot;park&quot;;</span>
+  private double numReviews;
+
+
+  /**
+   * The constructor sets the fields
+   * @param parkId the id
+   * @param parkName the name of the stop
+   * @param loc the address of the park in an array
+   * @param coords the latitude/longitude coordinates
+   * @param p the price associated with the stop
+   * @param rate the five star rating
+   * @param reviewCount number of reviews left at this establishment
+   */
+  public Park(String parkId, String parkName, String[] loc, double[] coords, double p,
+<span class="fc" id="L37">              double rate, double reviewCount){</span>
+<span class="fc" id="L38">    id = parkId;</span>
+<span class="fc" id="L39">    name = parkName;</span>
+<span class="fc" id="L40">    location = loc;</span>
+<span class="fc" id="L41">    coordinates = coords;</span>
+<span class="fc" id="L42">    price = p;</span>
+<span class="fc" id="L43">    value = 0;</span>
+<span class="fc" id="L44">    rating = rate;</span>
+<span class="fc" id="L45">    cost = Double.POSITIVE_INFINITY;</span>
+<span class="fc" id="L46">    numReviews = reviewCount;</span>
+
+<span class="fc" id="L48">  }</span>
+
+  @Override
+  public String getId() {
+<span class="fc" id="L52">    return id;</span>
+  }
+
+  @Override
+  public String getName() {
+<span class="fc" id="L57">    return name;</span>
+  }
+
+  @Override
+  public String[] getLocation() {
+<span class="nc" id="L62">    return location;</span>
+  }
+
+  @Override
+  public double[] getCoordinates() {
+<span class="fc" id="L67">    return coordinates;</span>
+  }
+
+  @Override
+  public double getPrice() {
+<span class="fc" id="L72">    return price;</span>
+  }
+
+  @Override
+  public double getRating() {
+<span class="fc" id="L77">    return rating;</span>
+  }
+
+  @Override
+  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
+<span class="fc" id="L82">    double parkValue = PreferredStop;</span>
+<span class="fc" id="L83">    value = (1- parkValue/Constants.VALUE_BOUND) * Constants.PREFERENCE_VALUE_SCALE* distance;</span>
+    //value is 1 minus the % preference for the stop times the total distance. At most the total
+    // distance should double
+    //value = (Constants.VALUE_BOUND- parkValue) * Constants.VALUE_SCALE_PARKS;
+    //value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_PARKS) * distance;
+<span class="fc" id="L88">    value = value + (Constants.AVERAGE_REVIEWS_PARKS / numReviews) * distance * Constants.REVIEW_SCALE;</span>
+<span class="fc" id="L89">    value = value + (1 - rating/Constants.MAX_RATING) * distance;</span>
+<span class="fc" id="L90">    value = value + Constants.PRICE_SCALE* Constants.PRICE_SCALE* distance;</span>
+
+<span class="fc" id="L92">    value = value * Constants.VALUE_SCALE;</span>
+<span class="fc" id="L93">    value = value * Constants.VALUE_SCALE_PARKS;</span>
+  //  System.out.println(&quot;park value is: &quot; + value);
+<span class="fc" id="L95">    return value;</span>
+  }
+
+  @Override
+  public void setCost(double c) {
+<span class="fc" id="L100">    cost = c;</span>
+<span class="fc" id="L101">  }</span>
+
+  @Override
+  public double getCost() {
+<span class="fc" id="L105">    return cost;</span>
+  }
+
+  @Override
+<span class="nc" id="L109">  public void setDistance(double c) {distance = c;}</span>
+
+  @Override
+<span class="nc" id="L112">  public double getDistance() { return distance; }</span>
+
+  @Override
+<span class="nc" id="L115">  public void setVisited(boolean c) { visit = c; }</span>
+
+  @Override
+<span class="nc" id="L118">  public boolean getVisited() { return visit; }</span>
+
+  @Override
+<span class="nc" id="L121">  public void setNumPrev(int c) {numPrev = c;}</span>
+
+  @Override
+<span class="nc" id="L124">  public int getNumPrev() {return numPrev;}</span>
+
+  @Override
+  public void reset() {
+<span class="nc" id="L128">    distance = 0;</span>
+<span class="nc" id="L129">    visit = false;</span>
+<span class="nc" id="L130">    numPrev = 0;</span>
+<span class="nc" id="L131">  }</span>
+
+  @Override
+<span class="fc" id="L134">  public int getType() {return 1;}</span>
+
+  @Override
+  public double getValue() {
+<span class="nc" id="L138">    return value;</span>
+  }
+
+  @Override
+  public double getNumReviews() {
+<span class="fc" id="L143">    return numReviews;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

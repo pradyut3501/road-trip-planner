@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+   <duplication lines="40" tokens="130">
+      <file line="94"
+            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Museum.java"/>
+      <file line="95"
+            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Park.java"/>
+      <file line="92"
+            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Restaurant.java"/>
+      <file line="93"
+            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Shop.java"/>
+      <codefragment><![CDATA[    return value;
+  }
+
+  @Override
+  public void setCost(double c) {
+    cost = c;
+  }
+
+  @Override
+  public double getCost() {
+    return cost;
+  }
+
+  @Override
+  public void setDistance(double c) {distance = c;}
+
+  @Override
+  public double getDistance() { return distance; }
+
+  @Override
+  public void setVisited(boolean c) { visit = c; }
+
+  @Override
+  public boolean getVisited() { return visit; }
+
+  @Override
+  public void setNumPrev(int c) {numPrev = c;}
+
+  @Override
+  public int getNumPrev() {return numPrev;}
+
+  @Override
+  public void reset() {
+    distance = 0;
+    visit = false;
+    numPrev = 0;
+  }
+
+  @Override
+  public int getType() {return 0;}]]></codefragment>
+   </duplication>
+   <duplication lines="43" tokens="111">
+      <file line="40"
+            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Museum.java"/>
+      <file line="39"
+            path="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Restaurant.java"/>
+      <codefragment><![CDATA[    location = loc;
+    coordinates = coords;
+    price = p;
+    rating = rate;
+    cost = Double.POSITIVE_INFINITY;
+    value = 0;
+    numReviews = reviewCount;
+
+  }
+
+  @Override
+  public String getId() {
+    return id;
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public String[] getLocation() {
+    return location;
+  }
+
+  @Override
+  public double[] getCoordinates() {
+    return coordinates;
+  }
+
+  @Override
+  public double getPrice() {
+    return price;
+  }
+
+  @Override
+  public double getRating() {
+    return rating;
+  }
+
+  @Override
+  public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
+    double museumValue = PreferredStop;]]></codefragment>
+   </duplication>
+</pmd-cpd>

@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BoundingBox.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">termProject</a> &gt; <a href="index.source.html" class="el_package">database</a> &gt; <span class="el_source">BoundingBox.java</span></div><h1>BoundingBox.java</h1><pre class="source lang-java linenums">package database;
+
+import attractions.Museum;
+import attractions.Park;
+import attractions.Restaurant;
+import attractions.Shop;
+import edu.brown.cs.student.termProject.AttractionNode;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Class with static functions to find all the attractions within a bounding box
+ * around two sets of coordinates.
+ */
+<span class="nc" id="L28">public class BoundingBox {</span>
+
+
+  /**
+   * Creates a bounding box around the given starting and end positions,
+   * and returns a list of the AttractionNodes from the yelp-database within
+   * this box that are of the given categories.
+   *
+   * @param coords1 - [lat, lon] of the start position
+   * @param coords2 - [lat, lon] of the end position
+   * @param categories - list of acceptable attraction categories
+   * @param prefNumStops - number of stops user prefers to make
+   * @param costPref - cost preference of user
+   * @return list of attraction nodes of the given categories within a
+   * box around the given positions
+   */
+  public static List&lt;AttractionNode&gt; findAttractionsBetween(
+          double[] coords1, double[] coords2, List&lt;String&gt; categories, int prefNumStops, int costPref) {
+<span class="fc" id="L46">    double[] boundingBoxBounds = findBoundingBoxBounds(coords1, coords2);</span>
+<span class="fc" id="L47">    double[] expandedBoundingBoxBounds = expandBoundingBoxBounds(boundingBoxBounds, 2.0);</span>
+    try {
+<span class="fc" id="L49">      return findAttractionsWithinBoundingBox(expandedBoundingBoxBounds, categories, prefNumStops, costPref);</span>
+<span class="nc" id="L50">    } catch (SQLException | IOException e) {</span>
+<span class="nc" id="L51">      throw new IllegalArgumentException(&quot;ERROR: Error while connecting to SQL database&quot;);</span>
+    }
+  }
+
+  /**
+   * Finds the bounds for a bounding box to be created around the given coordinates.
+   *
+   * @param coords1 - [lat, lon] of the first position
+   * @param coords2 - [lat, lon] of the second position
+   * @return [start lat, end lat, start lon, end lon] of the bounding box
+   */
+  public static double[] findBoundingBoxBounds(double[] coords1, double[] coords2) {
+<span class="fc" id="L63">    double[] bounds = new double[4];</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">    if (coords1[0] &lt; coords2[0]) {</span>
+<span class="fc" id="L65">      bounds[0] = coords1[0];</span>
+<span class="fc" id="L66">      bounds[1] = coords2[0];</span>
+    } else {
+<span class="fc" id="L68">      bounds[0] = coords2[0];</span>
+<span class="fc" id="L69">      bounds[1] = coords1[0];</span>
+    }
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (coords1[1] &lt; coords2[1]) {</span>
+<span class="fc" id="L72">      bounds[2] = coords1[1];</span>
+<span class="fc" id="L73">      bounds[3] = coords2[1];</span>
+    } else {
+<span class="fc" id="L75">      bounds[2] = coords2[1];</span>
+<span class="fc" id="L76">      bounds[3] = coords1[1];</span>
+    }
+<span class="fc" id="L78">    return bounds;</span>
+  }
+
+  /**
+   * Extends the given bounding box expansionFactor units in every direction.
+   *
+   * @param boundingBoxBounds - original bounding box to be expanded
+   * @param expansionFactor - number of units to expand the bounding box by in every direction
+   * @return [start lat, end lat, start lon, end lon] of the expanded bounding box
+   */
+  public static double[] expandBoundingBoxBounds(double[] boundingBoxBounds, double expansionFactor) {
+<span class="fc" id="L89">    double[] expandedBoundingBoxBounds = new double[4];</span>
+<span class="fc" id="L90">    expandedBoundingBoxBounds[0] = boundingBoxBounds[0] - expansionFactor;</span>
+<span class="fc" id="L91">    expandedBoundingBoxBounds[1] = boundingBoxBounds[1] + expansionFactor;</span>
+<span class="fc" id="L92">    expandedBoundingBoxBounds[2] = boundingBoxBounds[2] - expansionFactor;</span>
+<span class="fc" id="L93">    expandedBoundingBoxBounds[3] = boundingBoxBounds[3] + expansionFactor;</span>
+<span class="fc" id="L94">    return expandedBoundingBoxBounds;</span>
+  }
+
+  /**
+   * Returns a list of all the attractions in the yelp database within the given
+   * bounding box that are of the given categories.
+   *
+   * @param boundingBoxBounds - [start lat, end lat, start lon, end lon] of the bounding box
+   * @param categories - list of acceptable attraction categories
+   * @param prefNumStops - number of stops preferred by user
+   * @param costPref - cost preference of user
+   * @return list of attraction nodes of the given categories within the given bounding box
+   * @throws SQLException - if yelp database cannot be successfully queried
+   * @throws IOException - if issue with yelp API connection
+   */
+  public static List&lt;AttractionNode&gt; findAttractionsWithinBoundingBox(
+          double[] boundingBoxBounds, List&lt;String&gt; categories, int prefNumStops, int costPref)
+      throws SQLException, IOException {
+<span class="fc" id="L112">    ArrayList&lt;String&gt; nameList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">    for (String c: categories){</span>
+<span class="fc" id="L114">      System.out.println(c);</span>
+<span class="fc" id="L115">    }</span>
+<span class="fc" id="L116">    Connection conn = Database.getYelpDatabaseConnection();</span>
+
+<span class="fc" id="L118">    String query = &quot;SELECT * FROM yelp_business &quot; +</span>
+            &quot;WHERE (latitude BETWEEN ? and ?) &quot; +
+            &quot;AND (longitude BETWEEN ? AND ?)&quot; +
+            &quot;AND (stars &gt; 3.0)&quot; +
+            &quot;AND (review_count &gt; 10)&quot;;
+
+<span class="fc" id="L124">    PreparedStatement prep = conn.prepareStatement(query);</span>
+<span class="fc" id="L125">    prep.setDouble(1, boundingBoxBounds[0]);</span>
+<span class="fc" id="L126">    prep.setDouble(2, boundingBoxBounds[1]);</span>
+<span class="fc" id="L127">    prep.setDouble(3, boundingBoxBounds[2]);</span>
+<span class="fc" id="L128">    prep.setDouble(4, boundingBoxBounds[3]);</span>
+
+<span class="fc" id="L130">    ResultSet rs = prep.executeQuery();</span>
+<span class="fc" id="L131">    List&lt;AttractionNode&gt; attractionsWithinBox = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L133" title="All 2 branches covered.">    while (rs.next()) {</span>
+<span class="fc" id="L134">      String id = rs.getString(&quot;business_id&quot;);</span>
+<span class="fc" id="L135">      String name = rs.getString(&quot;name&quot;);</span>
+<span class="fc" id="L136">      nameList.add(name);</span>
+<span class="fc" id="L137">      String address = rs.getString(&quot;address&quot;);</span>
+<span class="fc" id="L138">      String city = rs.getString(&quot;city&quot;);</span>
+<span class="fc" id="L139">      String state = rs.getString(&quot;state&quot;);</span>
+<span class="fc" id="L140">      String postalCode = rs.getString(&quot;postal_code&quot;);</span>
+<span class="fc" id="L141">      String[] location = new String[]{address, city, state, postalCode};</span>
+
+<span class="fc" id="L143">      double lat = rs.getDouble(&quot;latitude&quot;);</span>
+<span class="fc" id="L144">      double lon = rs.getDouble(&quot;longitude&quot;);</span>
+<span class="fc" id="L145">      double[] coords = new double[]{lat, lon};</span>
+
+<span class="fc" id="L147">      double price = 0.0;</span>
+<span class="fc" id="L148">      double rating = rs.getDouble(&quot;stars&quot;);</span>
+
+<span class="fc" id="L150">      double reviewCount = rs.getDouble(&quot;review_count&quot;);</span>
+
+<span class="fc" id="L152">      String categoriesList = rs.getString(&quot;categories&quot;);</span>
+
+<span class="fc bfc" id="L154" title="All 2 branches covered.">      if ((categoriesList.contains(&quot;Restaurants&quot;)</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">              || categoriesList.contains(&quot;Food&quot;)</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">              || categoriesList.contains(&quot;Bars&quot;))</span>
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">              &amp;&amp; categories.contains(&quot;Restaurant&quot;)) {</span>
+<span class="fc" id="L158">        Integer priceInt = findPriceField(rs.getString(&quot;attributes&quot;));</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        if (priceInt != null) {</span>
+<span class="fc" id="L160">          price = priceInt;</span>
+<span class="fc" id="L161">          AttractionNode nextAttraction = new Restaurant(</span>
+<span class="fc" id="L162">                  id, name, location, coords, price, rating, reviewCount);</span>
+<span class="fc" id="L163">          attractionsWithinBox.add(nextAttraction);</span>
+        }
+<span class="fc bfc" id="L165" title="All 4 branches covered.">      } else if (categoriesList.contains(&quot;Museums&quot;) &amp;&amp; categories.contains(&quot;Museum&quot;)) {</span>
+<span class="fc" id="L166">        AttractionNode nextAttraction = new Museum(</span>
+                id, name, location, coords, price, rating, reviewCount);
+<span class="fc" id="L168">        attractionsWithinBox.add(nextAttraction);</span>
+<span class="pc bpc" id="L169" title="1 of 4 branches missed.">      } else if (categoriesList.contains(&quot;Parks&quot;) &amp;&amp; categories.contains(&quot;Park&quot;)) {</span>
+<span class="fc" id="L170">        AttractionNode nextAttraction = new Park(</span>
+            id, name, location, coords, price, rating, reviewCount);
+<span class="fc" id="L172">        attractionsWithinBox.add(nextAttraction);</span>
+      }
+<span class="fc" id="L174">    }</span>
+<span class="fc" id="L175">    prep.close();</span>
+<span class="fc" id="L176">    rs.close();</span>
+<span class="fc" id="L177">    System.out.println(&quot;Length of attractions from database within bounding box is: &quot; + attractionsWithinBox.size());</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">    for (int i = 0; i &lt; (prefNumStops + 2); i++) {</span>
+      //System.out.println(i);
+<span class="fc" id="L180">      double reqLat = 0;</span>
+<span class="fc" id="L181">      double reqLon = 0;</span>
+      //start lat &gt; end lat
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">      if (boundingBoxBounds[0] &gt; boundingBoxBounds[1]) {</span>
+<span class="nc" id="L184">        reqLat = ((boundingBoxBounds[0] - boundingBoxBounds[1]) / (prefNumStops + 2)) * i +</span>
+            boundingBoxBounds[1];
+      } else {
+<span class="fc" id="L187">        reqLat = ((boundingBoxBounds[1] - boundingBoxBounds[0]) / (prefNumStops + 2)) * i +</span>
+            boundingBoxBounds[0];
+      }
+      //start lon &gt; end lon
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">      if (boundingBoxBounds[2] &gt; boundingBoxBounds[3]) {</span>
+<span class="nc" id="L192">        reqLon = ((boundingBoxBounds[2] - boundingBoxBounds[3]) / (prefNumStops + 2)) * i +</span>
+            boundingBoxBounds[3];
+      } else {
+<span class="fc" id="L195">        reqLon = ((boundingBoxBounds[3] - boundingBoxBounds[2]) / (prefNumStops + 2)) * i +</span>
+            boundingBoxBounds[2];
+      }
+<span class="fc" id="L198">      List&lt;AttractionNode&gt; nodes = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">      if (categories.contains(&quot;Restaurant&quot;)) {</span>
+<span class="fc" id="L200">        List&lt;String&gt; param = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L201">        param.add(&quot;restaurant&quot;);</span>
+<span class="fc" id="L202">        param.add(&quot;food&quot;);</span>
+<span class="fc" id="L203">        param.add(&quot;bars&quot;);</span>
+<span class="fc" id="L204">        URL url = new URL(</span>
+            &quot;https://api.yelp.com/v3/businesses/search?latitude=&quot; + reqLat + &quot;&amp;longitude=&quot; +
+                reqLon +
+                &quot;&amp;categories=&quot; + &quot;\&quot;restaurant\&quot;,\&quot;food\&quot;,\&quot;bars\&quot;&quot; + &quot;&amp;price=&quot; + costPref);
+<span class="fc" id="L208">        List&lt;AttractionNode&gt; restaurants = yelpUrlToAttractions(url, &quot;Restaurant&quot;);</span>
+<span class="fc" id="L209">        nodes.addAll(restaurants);</span>
+<span class="fc" id="L210">        System.out.println(restaurants.size() + &quot; many restaurants&quot;);</span>
+       // attractionsWithinBox.addAll(nodes);
+      }
+<span class="fc bfc" id="L213" title="All 2 branches covered.">      if (categories.contains(&quot;Shop&quot;)) {</span>
+<span class="fc" id="L214">        URL url = new URL(</span>
+            &quot;https://api.yelp.com/v3/businesses/search?latitude=&quot; + reqLat + &quot;&amp;longitude=&quot; + reqLon +
+                &quot;&amp;categories=shoppingcenters&quot;);
+<span class="fc" id="L217">        List&lt;AttractionNode&gt; shops = yelpUrlToAttractions(url, &quot;Shop&quot;);</span>
+<span class="fc" id="L218">        nodes.addAll(shops);</span>
+<span class="fc" id="L219">        System.out.println(shops.size() + &quot; many shops&quot;);</span>
+       // attractionsWithinBox.addAll(nodes);
+
+      }
+<span class="fc bfc" id="L223" title="All 2 branches covered.">      if (categories.contains(&quot;Museum&quot;)) {</span>
+<span class="fc" id="L224">        URL url = new URL(</span>
+            &quot;https://api.yelp.com/v3/businesses/search?latitude=&quot; + reqLat + &quot;&amp;longitude=&quot; + reqLon +
+                &quot;&amp;categories=artmuseums&quot;);
+<span class="fc" id="L227">        List&lt;AttractionNode&gt; museums = yelpUrlToAttractions(url, &quot;Museum&quot;);</span>
+<span class="fc" id="L228">        nodes.addAll(museums);</span>
+<span class="fc" id="L229">        System.out.println(museums.size() + &quot; many museums&quot;);</span>
+       // attractionsWithinBox.addAll(nodes);
+      }
+<span class="pc bpc" id="L232" title="1 of 2 branches missed.">      if (categories.contains(&quot;Park&quot;)) {</span>
+<span class="fc" id="L233">        URL url = new URL(</span>
+            &quot;https://api.yelp.com/v3/businesses/search?latitude=&quot; + reqLat + &quot;&amp;longitude=&quot; + reqLon +
+                &quot;&amp;categories=parks&quot;);
+<span class="fc" id="L236">        List&lt;AttractionNode&gt; parks = yelpUrlToAttractions(url, &quot;Park&quot;);</span>
+<span class="fc" id="L237">        nodes.addAll(parks);</span>
+<span class="fc" id="L238">        System.out.println(parks.size() + &quot; many parks&quot;);</span>
+        //attractionsWithinBox.addAll(nodes);
+      }
+<span class="fc" id="L241">      List&lt;AttractionNode&gt; removeRepeats = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L242" title="All 2 branches covered.">      for(AttractionNode n: nodes){</span>
+<span class="fc bfc" id="L243" title="All 2 branches covered.">        if (nameList.contains(n.getName())){</span>
+<span class="fc" id="L244">          removeRepeats.add(n);</span>
+<span class="fc" id="L245">          System.out.println(&quot;A repeat&quot;);</span>
+        }
+        else{
+<span class="fc" id="L248">          nameList.add(n.getName());</span>
+        }
+<span class="fc" id="L250">      }</span>
+<span class="fc" id="L251">      nodes.removeAll(removeRepeats);</span>
+<span class="fc" id="L252">      attractionsWithinBox.addAll(nodes);</span>
+    }
+<span class="fc" id="L254">   double numRest = 0.0;</span>
+<span class="fc" id="L255">   double numPark = 0.0;</span>
+<span class="fc" id="L256">   double numMus = 0.0;</span>
+<span class="fc" id="L257">   double numShops = 0.0;</span>
+<span class="fc bfc" id="L258" title="All 2 branches covered.">    for (AttractionNode a: attractionsWithinBox){</span>
+<span class="pc bpc" id="L259" title="1 of 5 branches missed.">      switch(a.getType()){</span>
+        case 0:
+<span class="fc" id="L261">          numMus ++;</span>
+<span class="fc" id="L262">          break;</span>
+        case 1:
+<span class="fc" id="L264">          numPark++;</span>
+<span class="fc" id="L265">          break;</span>
+        case 2:
+<span class="fc" id="L267">          numRest++;</span>
+<span class="fc" id="L268">          break;</span>
+        case 3:
+<span class="fc" id="L270">          numShops++;</span>
+<span class="fc" id="L271">          break;</span>
+        default:
+          break;
+      }
+<span class="fc" id="L275">    }</span>
+<span class="fc" id="L276">    System.out.println(&quot;Number of Shop: &quot; + numShops);</span>
+<span class="fc" id="L277">    System.out.println(&quot;Number for Restaurant: &quot; + numRest);</span>
+<span class="fc" id="L278">    System.out.println(&quot;Number of  Museum: &quot; + numMus);</span>
+<span class="fc" id="L279">    System.out.println(&quot;Number of Park: &quot; + numPark);</span>
+<span class="fc" id="L280">    return attractionsWithinBox;</span>
+  }
+
+  /**
+   * Helper class that takes in yelp url,
+   * makes an API request,
+   * and creates an attraction node accordingly.
+   * @param yelpUrl yelp url to make API request from
+   * @param attraction type of attraction we are making request for
+   * @return list of attraction nodes, created from data from API call
+   * @throws IOException occurs when failure from API call.
+   */
+  public static List&lt;AttractionNode&gt; yelpUrlToAttractions(URL yelpUrl, String attraction) throws IOException {
+    //System.out.println(&quot;Attraction Parameter is: &quot; + attraction);
+<span class="fc" id="L294">    HttpURLConnection con = (HttpURLConnection) yelpUrl.openConnection();</span>
+<span class="fc" id="L295">    con.setRequestMethod(&quot;GET&quot;);</span>
+<span class="fc" id="L296">    String yelpKeyAbby =</span>
+      &quot;RLI6ay67RiMOfxTbWDWV9iPiC4WyVydxY2ePdMV8SoTi74Ddx6Ez7fkBa8cY2LoI6_yqJaVTGGqsiUT_GeGh4RO0gOyclHeDDaoD43pkWDQmjSHrM_DyifOLaGF7YHYx&quot;;
+<span class="fc" id="L298">    String yelpKey =</span>
+        &quot;PlFxZHha-zmiQvrMQUb12P0uD9s_GZRJzzGZqVSJFKgR4iDXj1aBwOBuMc2DBFYkZODPw2V5PaJBMapJ5WA9PA3Lx2cGXq9FkzzT45m9t9I9gsXDdGCwQnuYu6J3YHYx&quot;;
+<span class="fc" id="L300">    con.setRequestProperty(&quot;Authorization&quot;, &quot;Bearer &quot; + yelpKeyAbby);</span>
+<span class="fc" id="L301">    BufferedReader in = null;</span>
+<span class="fc" id="L302">    List&lt;AttractionNode&gt; attractions = new ArrayList&lt;&gt;();</span>
+    try {
+<span class="fc" id="L304">      in = new BufferedReader(new InputStreamReader(con.getInputStream()));</span>
+<span class="fc" id="L305">      StringBuilder sb = new StringBuilder();</span>
+      String line;
+<span class="fc bfc" id="L307" title="All 2 branches covered.">      while ((line = in.readLine()) != null) {</span>
+<span class="fc" id="L308">        sb.append(line);</span>
+      }
+<span class="fc" id="L310">      JSONObject json = new JSONObject(sb.toString());</span>
+//      System.out.println(&quot;buffered reader&quot;);
+//      System.out.println(json.getInt(&quot;total&quot;));
+//      System.out.println(json.getJSONArray(&quot;businesses&quot;).toString());
+//      System.out.println(&quot;Now Looping&quot;);
+<span class="fc bfc" id="L315" title="All 2 branches covered.">      if (attraction != &quot;Park&quot;) {</span>
+<span class="fc" id="L316">        System.out.println(&quot;attraction: &quot; + attraction + &quot; readIn: &quot; + json.getInt(&quot;total&quot;) );</span>
+      }
+<span class="fc bfc" id="L318" title="All 2 branches covered.">      if (json.getInt(&quot;total&quot;) != 0) {</span>
+<span class="fc bfc" id="L319" title="All 2 branches covered.">        for (int j = 0; j &lt; json.getJSONArray(&quot;businesses&quot;).length(); j++) {</span>
+          try {
+            //for each business create a json object to parse
+            //JSONObject businessJson = null;
+          //  try{
+<span class="fc" id="L324">            JSONObject businessJson = json.getJSONArray(&quot;businesses&quot;).getJSONObject(j);</span>
+           // }
+//            catch(JSONException e){
+//              System.out.println(&quot;Problem w making business object: &quot; +e);
+//            }
+          //  System.out.println(json.getJSONArray(&quot;businesses&quot;).getString(j));
+<span class="fc" id="L330">            String name = businessJson.get(&quot;name&quot;).toString();</span>
+<span class="fc" id="L331">            String id = businessJson.get(&quot;id&quot;).toString();</span>
+<span class="fc" id="L332">            JSONObject locationJson = businessJson.getJSONObject(&quot;location&quot;);</span>
+            //location field is its own json object
+<span class="fc" id="L334">            String[] loc = new String[]{locationJson.get(&quot;address1&quot;).toString(), locationJson.get(</span>
+<span class="fc" id="L335">              &quot;city&quot;).toString(), locationJson.get(&quot;state&quot;).toString(),</span>
+<span class="fc" id="L336">              locationJson.get(&quot;zip_code&quot;).toString()};</span>
+<span class="fc" id="L337">            double[] coords = new double[]{businessJson.getJSONObject(&quot;coordinates&quot;).getDouble(</span>
+<span class="fc" id="L338">              &quot;latitude&quot;), businessJson.getJSONObject(&quot;coordinates&quot;).getDouble(</span>
+              &quot;longitude&quot;)};
+            double price;
+            try { //try catch for price because sometimes it isnt a field
+<span class="fc" id="L342">              price = businessJson.get(&quot;price&quot;).toString().toCharArray().length;</span>
+<span class="fc" id="L343">            } catch (JSONException e) {</span>
+           //   System.out.println(&quot;no price&quot;);
+<span class="fc" id="L345">              price = 0.0;</span>
+<span class="fc" id="L346">            }</span>
+<span class="fc" id="L347">            double rating = businessJson.getDouble(&quot;rating&quot;);</span>
+<span class="fc" id="L348">            double reviewCount = businessJson.getDouble(&quot;review_count&quot;);</span>
+           // System.out.println(&quot;Reviews Count: &quot; + reviewCount );
+//            System.out.println(&quot;the name is : &quot; + name + &quot; id is: &quot; + id + &quot; location is: &quot; + loc[0] + &quot; &quot; + loc[1]
+//              + &quot; coordinates are: &quot; + coords[0] + &quot; and &quot; + coords[1] + &quot; price is: &quot; + price + &quot; &quot; +
+//              &quot;and&quot; +
+//              &quot; rating &quot; +
+//              &quot;is: &quot; + rating);
+//            String category = businessJson.getJSONArray(&quot;categories&quot;).getJSONObject(0).getString(&quot;title&quot;);
+          //  System.out.println(&quot;The category is: &quot; + category); //This is a specific category
+            AttractionNode node;
+<span class="pc bpc" id="L358" title="1 of 5 branches missed.">            switch(attraction){</span>
+              case &quot;Park&quot;:
+<span class="fc" id="L360">                node = new Park(id, name, loc, coords, price, rating, reviewCount);</span>
+<span class="fc" id="L361">                break;</span>
+              case &quot;Restaurant&quot;:
+<span class="fc" id="L363">                node = new Restaurant(id, name, loc, coords, price, rating, reviewCount);</span>
+<span class="fc" id="L364">                break;</span>
+              case &quot;Museum&quot;:
+<span class="fc" id="L366">                node = new Museum(id, name, loc, coords, price, rating, reviewCount);</span>
+<span class="fc" id="L367">                break;</span>
+              case &quot;Shop&quot;:
+<span class="fc" id="L369">                node = new Shop(id, name, loc, coords, price, rating, reviewCount);</span>
+<span class="fc" id="L370">                break;</span>
+              default:
+<span class="nc" id="L372">                node = null;</span>
+                break;
+            }
+<span class="pc bpc" id="L375" title="1 of 2 branches missed.">            if (node!=null){</span>
+<span class="fc" id="L376">              attractions.add(node);</span>
+            }
+          }
+<span class="nc" id="L379">          catch (JSONException e){</span>
+<span class="nc" id="L380">         System.out.println(e + &quot;exception&quot;);</span>
+<span class="fc" id="L381">          }</span>
+          //THEN INSTANTIATE ATTRACTION NODE
+          //attractions.add(attraction node)
+        }
+<span class="fc" id="L385">        return attractions;</span>
+      }
+
+<span class="fc" id="L388">    } catch (IOException | JSONException e) {</span>
+<span class="fc" id="L389">      System.out.println(&quot;ERROR: failed to open input stream&quot;);</span>
+<span class="fc" id="L390">      e.printStackTrace();</span>
+<span class="fc" id="L391">    }</span>
+<span class="fc" id="L392">  return attractions;</span>
+  }
+
+  public static Integer findPriceField(String attributes) {
+<span class="fc" id="L396">    Integer price = null;</span>
+<span class="fc bfc" id="L397" title="All 2 branches covered.">    if (attributes.contains(&quot;RestaurantsPriceRange2&quot;)) {</span>
+<span class="fc" id="L398">      int startIndex = attributes.indexOf(&quot;RestaurantsPriceRange2&quot;);</span>
+<span class="fc" id="L399">      int priceIndex = startIndex + 27;</span>
+<span class="fc" id="L400">      String priceString = attributes.charAt(priceIndex) + &quot;&quot;;</span>
+      try {
+<span class="fc" id="L402">        price = Integer.parseInt(priceString);</span>
+<span class="nc" id="L403">      } catch (Exception e) {</span>
+
+<span class="fc" id="L405">      }</span>
+    }
+<span class="fc" id="L407">    return price;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

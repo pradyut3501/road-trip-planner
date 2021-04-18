@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Dijkstra.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">termProject</a> &gt; <a href="index.source.html" class="el_package">graph</a> &gt; <span class="el_source">Dijkstra.java</span></div><h1>Dijkstra.java</h1><pre class="source lang-java linenums">package graph;
+
+
+import attractions.Park;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.LatLng;
+import edu.brown.cs.student.termProject.AttractionNode;
+import edu.brown.cs.student.termProject.Constants;
+
+import java.io.IOException;
+import java.util.*;
+
+
+/**
+ * Th Dijkstra class performs Dijkstra's algorithm on a list of attraction nodes
+ */
+public class Dijkstra {
+  private List&lt;AttractionNode&gt; nodes;
+  private HashMap&lt;AttractionNode, Boolean&gt; visited; //keep track of visited nodes
+  private HashMap&lt;AttractionNode, Double&gt; distances; //keep track of distances between node and end
+  private HashMap&lt;AttractionNode,AttractionNode&gt; previous; //keep track of previous pointers
+  private double[] preferredStop;
+  private int costPreference;
+  private GeoApiContext connection;
+
+<span class="fc" id="L31">  public Dijkstra(GeoApiContext Apiconnection) {</span>
+<span class="fc" id="L32">    connection = Apiconnection;</span>
+<span class="fc" id="L33">    nodes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L34">    visited = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L35">    distances = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L36">    previous = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L38">  }</span>
+  public List&lt;AttractionNode&gt; execute(double[] starting, double[] ending, int numStops) {
+<span class="fc" id="L40">    double pathDistance = distanceFormula(starting[0], starting[1], ending[0], ending[1]);</span>
+<span class="fc" id="L41">    visited = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L42">    distances = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L43">    previous = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L44">    PriorityQueue&lt;AttractionNode&gt; pq = new PriorityQueue(new Comparator&lt;AttractionNode&gt;() {</span>
+      public int compare(AttractionNode o1, AttractionNode o2) {
+<span class="fc" id="L46">        if ((o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()], pathDistance)) &gt;</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">          (o2.getCost()) + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) {</span>
+<span class="fc" id="L48">          return 1;</span>
+        }
+<span class="fc" id="L50">        if ((o2.getCost() + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) &gt;</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">          (o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()],pathDistance))) {</span>
+<span class="fc" id="L52">          return -1;</span>
+        }
+<span class="fc" id="L54">        return 0;</span>
+      }
+    });
+<span class="fc" id="L57">    List &lt;AttractionNode&gt; shortestPath = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L58">    double[] target = ending; //get the target</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">    if (starting == ending) { //stop if the start and end node are the same</span>
+<span class="nc" id="L60">      return null;</span>
+    }
+    //Make a dumby attraction node to represent start and end? may be a better way to handle this
+<span class="fc" id="L63">    AttractionNode start = new Park(&quot;0&quot;, &quot;starting Node&quot;, new String[0], starting,</span>
+      0.0,0.0, 0.0 );
+<span class="fc" id="L65">    nodes.add(start);</span>
+<span class="fc" id="L66">    AttractionNode end = new Park(&quot;0&quot;, &quot;ending Node&quot;, new String[0], target,</span>
+      0.0,0.0, 0.0 );
+<span class="fc" id="L68">    nodes.add(end);</span>
+<span class="fc" id="L69">    distances.replace(end, 0.0); //setting the distance of end node to 0</span>
+<span class="fc" id="L70">    pq.add(start);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    for (AttractionNode node: nodes){</span>
+<span class="fc" id="L72">      visited.put(node, false);</span>
+<span class="fc" id="L73">      previous.put(node, null);</span>
+<span class="fc" id="L74">      node.setCost(Double.POSITIVE_INFINITY);</span>
+<span class="fc" id="L75">    }</span>
+<span class="fc" id="L76">    start.setCost(0.0);</span>
+<span class="fc" id="L77">    System.out.println(&quot;Ideal Spacing is&quot; + pathDistance/numStops);</span>
+<span class="pc bpc" id="L78" title="1 of 4 branches missed.">    while (!(pq.isEmpty()) &amp;&amp; !(visited.get(end))) {</span>
+<span class="fc" id="L79">      AttractionNode current = pq.poll();</span>
+<span class="fc" id="L80">      visited.replace(current,true); //mark the popped node as visited</span>
+<span class="fc" id="L81">      List&lt;AttractionNode&gt; connectedNodes = getConnectedNodes(current, end, pathDistance, numStops);</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        for (AttractionNode node: connectedNodes) {</span>
+          //if the current nodes cost plus the distance between the current and the node you are
+          // examining is less than the node you are examining's cost
+<span class="fc" id="L85">          double edgeWeight = distanceFormula(current.getCoordinates()[0],</span>
+<span class="fc" id="L86">            current.getCoordinates()[1], node.getCoordinates()[0], node.getCoordinates()[1]);</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">          if ((current.getCost() + edgeWeight) &lt; node.getCost()) {</span>
+<span class="fc" id="L88">            node.setCost(current.getCost() + edgeWeight); //reset the cost</span>
+<span class="fc" id="L89">            previous.replace(node, current); //reset the previous pointer</span>
+<span class="fc" id="L90">            pq.add(node);</span>
+          }
+<span class="fc" id="L92">        }</span>
+<span class="fc" id="L93">        }</span>
+<span class="fc" id="L94">    AttractionNode curr = end;</span>
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">    if(previous.get(curr)== start){</span>
+<span class="nc" id="L96">      System.out.println(&quot;shortest path is direct one :(&quot;);</span>
+    }
+<span class="fc bfc" id="L98" title="All 2 branches covered.">    while(previous.get(curr)!= start){</span>
+<span class="fc" id="L99">      shortestPath.add(previous.get(curr));</span>
+<span class="fc" id="L100">      curr = previous.get(curr);</span>
+    }
+<span class="fc" id="L102">    Collections.reverse(shortestPath); //want path to be in order from start to end</span>
+<span class="fc" id="L103">    nodes.remove(start);</span>
+<span class="fc" id="L104">    nodes.remove(end); //remove the dumby nodes</span>
+<span class="fc" id="L105">    return shortestPath;</span>
+  }
+
+  /**
+   * The distance formula will use the google maps API to compute the distance between a node and
+   * the path
+   *
+   * @param lat1 latitude of point 1
+   * @param long1 longitude of point 1
+   * @param lat2 latitude of point 2
+   * @param long2 longitude of point 2
+   * @return driving distance in Meters
+   */
+  public double distanceFormulaAPI(double lat1, double long1, double lat2, double long2) {
+    try {
+<span class="nc" id="L120">      LatLng start = new LatLng(lat1,long1);</span>
+<span class="nc" id="L121">      LatLng end = new LatLng(lat2, long2);</span>
+<span class="nc" id="L122">      DirectionsApiRequest req = DirectionsApi.newRequest(connection)</span>
+<span class="nc" id="L123">          .origin(start).destination(end).language(&quot;en&quot;);</span>
+
+<span class="nc" id="L125">      DirectionsResult response = req.await();</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">      if (response.routes.length &gt; 0) {</span>
+<span class="nc" id="L127">        double dist = 0;</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        for (int i =0; i &lt; response.routes[0].legs.length; i++) {</span>
+<span class="nc" id="L129">          dist += response.routes[0].legs[i].distance.inMeters;</span>
+        }
+<span class="nc" id="L131">        return dist;</span>
+      }
+<span class="nc" id="L133">    } catch (ApiException | InterruptedException | IOException e) {</span>
+<span class="nc" id="L134">      e.printStackTrace();</span>
+<span class="nc" id="L135">    }</span>
+<span class="nc" id="L136">    return 0.0;</span>
+  }
+
+  /**
+   * Haversine distance formula.
+   * @param lat1 latitude of point 1
+   * @param long1 longitude of point 1
+   * @param lat2 latitude of point 2
+   * @param long2 longitude of point 2
+   * @return driving distance in Meters
+   */
+  private double distanceFormula(double lat1, double long1, double lat2, double long2) {
+<span class="fc" id="L148">    double latDist = lat2 - lat1;</span>
+<span class="fc" id="L149">    double longDist = long2 - long1;</span>
+<span class="fc" id="L150">    latDist = Math.toRadians(latDist);</span>
+<span class="fc" id="L151">    longDist = Math.toRadians(longDist);</span>
+<span class="fc" id="L152">    double la1 = Math.toRadians(lat1);</span>
+<span class="fc" id="L153">    double la2 = Math.toRadians(lat2);</span>
+<span class="fc" id="L154">    double a = Math.pow(Math.sin(latDist / 2), 2) + Math.cos(la1) * Math.cos(la2)</span>
+<span class="fc" id="L155">      * Math.pow(Math.sin((longDist / 2)), 2);</span>
+<span class="fc" id="L156">    return (2.0 * Constants.EARTH_RADIUS * Math.asin(Math.sqrt(a)));</span>
+//    try {
+//      LatLng start = new LatLng(lat1,long1);
+//      LatLng end = new LatLng(lat2, long2);
+//      DirectionsApiRequest req = DirectionsApi.newRequest(connection)
+//          .origin(start).destination(end).language(&quot;en&quot;);
+//
+//      DirectionsResult response = req.await();
+//      if (response.routes.length &gt; 0) {
+//        double dist = 0;
+//        for (int i =0; i &lt; response.routes[0].legs.length; i++) {
+//          dist += response.routes[0].legs[i].distance.inMeters;
+//        }
+//        return dist;
+//      }
+//    } catch (ApiException | InterruptedException | IOException e) {
+//      e.printStackTrace();
+//    }
+//    return 0.0;
+   }
+
+  /**
+   * Gets a list of nodes &quot;connected&quot; to the current node as specified by the &quot;ideal spacing&quot;
+   * between nodes. Works to evenly space out stops on the roadtrip
+   * @param node the node to find connections from
+   * @param end the end node
+   * @param distance the distance between the start and end nodes
+   * @param numStops the number of stops ideally between start and end node
+   * @return list of connected nodes
+   */
+  private List&lt;AttractionNode&gt; getConnectedNodes(AttractionNode node,
+                                                 AttractionNode end, double distance,int numStops){
+<span class="fc" id="L188">    double spacing = distance/numStops;</span>
+<span class="fc" id="L189">    List&lt;AttractionNode&gt; connects = nodes;</span>
+<span class="fc" id="L190">    List&lt;AttractionNode&gt; toRemove = new ArrayList&lt;&gt;(); //To avoid concurrent modification error</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">    for(AttractionNode n: connects){</span>
+<span class="fc" id="L192">      if (distanceFormula(n.getCoordinates()[0],</span>
+<span class="fc" id="L193">        n.getCoordinates()[1], end.getCoordinates()[0], end.getCoordinates()[1]) &gt;=</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        distanceFormula(node.getCoordinates()[0], node.getCoordinates()[1],end.getCoordinates()[0],</span>
+<span class="fc" id="L195">          end.getCoordinates()[1])</span>
+      ){
+<span class="fc" id="L197">        toRemove.add(n); //remove the node from the list of possible connecting nodes if it is</span>
+        // farther from the target than the current node
+      }
+<span class="fc" id="L200">    }</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">    for(AttractionNode r: toRemove){</span>
+<span class="fc" id="L202">      connects.remove(r);</span>
+<span class="fc" id="L203">    }</span>
+<span class="fc" id="L204">    Collections.sort(connects, new Comparator&lt;AttractionNode&gt;(){</span>
+      @Override
+      //this comparator will sort the nodes based on HOW CLOSE THEY are to the target spacing,
+      // i.e. nodes that are spaced closest to the &quot;spacing&quot; metric will be considered connected
+      public int compare(AttractionNode o1, AttractionNode o2) {
+<span class="fc" id="L209">        double distance1 = distanceFormula(o1.getCoordinates()[0], o1.getCoordinates()[1],</span>
+<span class="fc" id="L210">          node.getCoordinates()[0], node.getCoordinates()[1]);</span>
+<span class="fc" id="L211">        double distance2 = distanceFormula(o2.getCoordinates()[0], o2.getCoordinates()[1],</span>
+<span class="fc" id="L212">          node.getCoordinates()[0], node.getCoordinates()[1]);</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">        if (Math.abs(distance1-spacing) &gt; Math.abs(distance2-spacing)) {</span>
+<span class="fc" id="L214">          return 1;</span>
+        }
+<span class="fc bfc" id="L216" title="All 2 branches covered.">        if (Math.abs(distance2-spacing) &gt; Math.abs(distance1-spacing)) {</span>
+<span class="fc" id="L217">          return -1;</span>
+        }
+        else{
+<span class="fc" id="L220">          return 0;</span>
+        }
+      }
+    });
+<span class="fc bfc" id="L224" title="All 2 branches covered.">    if (node == end){</span>
+<span class="fc" id="L225">      System.out.println(&quot;The connected nodes to the end re&quot; + connects);</span>
+    }
+    //return a list of the number of connections specified in the constants class. Pick the n
+    // closest elements to the &quot;ideal distance&quot;
+<span class="fc bfc" id="L229" title="All 2 branches covered.">    if(connects.size()&gt;=Constants.NUM_CONNECTIONS) {</span>
+<span class="fc" id="L230">      return connects.subList(0,Constants.NUM_CONNECTIONS);</span>
+    }
+    //if the list of potential connections is less than the specified number of connections for
+    // each node just return the whole list
+<span class="fc bfc" id="L234" title="All 2 branches covered.">   else if(connects.size() &gt;= 1) {</span>
+<span class="fc" id="L235">     return connects;</span>
+    }
+   else{
+<span class="fc" id="L238">     return new ArrayList&lt;&gt;();</span>
+    }
+  }
+
+  /**
+   * Public method to set the user's preferences of stop types, as indicated in the front end.
+   * Called in Main.java from the routeHandler.
+   * @param prefStop list of how much each type of stop is preferred
+   * @param costPref user's preference between $, $$, $$$
+   * @param nodeList the list of attraction nodes
+   */
+  public void setPreferences(double[] prefStop, int costPref, List&lt;AttractionNode&gt; nodeList){
+<span class="fc" id="L250">    preferredStop = prefStop;</span>
+<span class="fc" id="L251">    costPreference = costPref;</span>
+<span class="fc" id="L252">    nodes = nodeList;</span>
+<span class="fc" id="L253">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
