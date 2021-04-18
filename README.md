@@ -73,3 +73,4 @@ https://developers.google.com/maps/documentation/javascript/reference/places-ser
 ## Other sources utilized
 Animations: http://jsfiddle.net/MDzsR/1/
 Bootstrap: https://react-bootstrap.github.io/layout/grid/
+Flaticon: https://www.flaticon.com/

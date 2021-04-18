@@ -291,9 +291,12 @@ function App() {
 
   }
 
+
+  // use Google API to display the route along the stops selected by the server (ways)
   function getRouteWithStops(ways){
 
     directions = new google.maps.DirectionsService()
+    // don't show markers for each stop now, add flags and start/stop markers later
     directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true})
 
     let waypts = [];
@@ -305,6 +308,7 @@ function App() {
         });
       }
 
+    // use API to get and display the route through the stops
     directions.route({
         origin: origin.value.description,
         destination: dest.value.description,
@@ -318,31 +322,34 @@ function App() {
       })
     }
 
-    // make axios post request to the backend-- get information
+    // make axios post request to the backend-- get stop information with possible error message
     const requestTrip = () => {
       error_message = ""
       resetDisplay()
       setSubmitted(0)
 
       // do preliminary error-checking on front-end user inputs
+      // no origin input
       if(origin == null){
         error_message = "Please enter a starting location"
         loading_class = ""
         setError(1);
+      // no destination input
       } else if (dest == null){
         error_message = "Please enter a destination"
         loading_class = ""
         setError(1);
+      // no max distance entered
       } else if (dist == 0){
         error_message = "Please enter a maximum distance"
         loading_class = ""
         setError(1);
       }
+      // no errors, proceed with regular display
       else {
       loading_message = "Calculating the perfect trip"
       loading_class = "loading"
       setLoading(1)
-
 
       // user preferences and locations to send to backend
       const toSend = {
@@ -360,7 +367,6 @@ function App() {
         maxDist: dist,
         middleLat: middleCoords[0],
         middleLon: middleCoords[1]
-
       }
 
       let config = {
@@ -417,12 +423,12 @@ function App() {
           // add start/end points to the attraction list
           newAttractions.unshift(originNode)
           newAttractions.push(destNode)
+
+          // initialize the route map so we can add stop markers
           initMap()
 
           setAttractions(newAttractions)
           for (let i = 1; i < newAttractions.length - 1; i++){
-
-            // check if it's the intermediate node
 
               let marker = new google.maps.Marker({
                 position: {lat: newAttractions[i].coordinates[0], lng:newAttractions[i].coordinates[1] },
@@ -430,7 +436,7 @@ function App() {
                 icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
               })
 
-
+          // check if it's the intermediate node and handle separately
           let infoWindow = null
           if (newAttractions[i].name == "Intermediate Stop") {
               infoWindow = new google.maps.InfoWindow({
@@ -442,8 +448,6 @@ function App() {
               content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
             })
           }
-
-
 
           marker.addListener('click', function(){
             infoWindow.open(map, marker)
@@ -498,8 +502,6 @@ function App() {
           setDestText(dest.value.structured_formatting)
           setMiddleText(middle.value.structured_formatting)
 
-
-          //initMap()
           tripResourceLink = "https://www.tripsavvy.com/planning-a-road-trip-complete-guide-4845956"
           resource_name = "Planning a Road Trip: The Complete Guide"
           originName = originPlace.name
@@ -516,7 +518,6 @@ function App() {
           originMessage = "Origin"
           destMessage = "Destination"
           driving_message = "(Click on the road icons for directions!)"
-          console.log("dest phone " + destPhone)
           if(destPhone === undefined){
             contactDest = "Contact: None Available"
           }
@@ -530,9 +531,6 @@ function App() {
           setSubmitted(1);
 
         }
-          //specialDisplay()
-
-
         })
 
         .catch(function(error) {
