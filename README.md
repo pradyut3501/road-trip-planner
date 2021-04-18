@@ -77,6 +77,15 @@ likely show up (biased towards their current location).
 
 
 ## Tests
+We divided our Unit tests into three classes: AttractionNodeTests, BoundingBoxTests and DijkstraTests.
+AttractionNodeTests consists of tests for the four different attraction classes, testing the different
+getter and setter methods as well as the value heuristic method for each class. BoundingBoxTests covers
+tests for functions involved in querying AttractionNodes from the Yelp Database within a BoundingBox
+between a start and end position. Edge cases tested for include bounding boxes with the same start and end 
+positions, querying for attractions of invalid categories, querying within an empty bounding box. Lastly, 
+DijkstraTests covers tests for our implementation of Dijkstra's algorithm, testing if paths
+include/exclude certain stops/categories of stops.
+
 
 ## Support sources utilized for Google Maps API implementation
 https://tintef.github.io/react-google-places-autocomplete/docs/
