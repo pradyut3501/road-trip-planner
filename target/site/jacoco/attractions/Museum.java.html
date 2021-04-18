@@ -64,7 +64,7 @@ public class Museum implements AttractionNode {
 
   @Override
   public double[] getCoordinates() {
-<span class="nc" id="L67">    return coordinates;</span>
+<span class="fc" id="L67">    return coordinates;</span>
   }
 
   @Override
@@ -79,25 +79,25 @@ public class Museum implements AttractionNode {
 
   @Override
   public double generateValue(double preferredPrice, double preferredStop, double distance) {
-<span class="nc" id="L82">    double museumValue = preferredStop;</span>
-<span class="nc" id="L83">    value = (1 - museumValue / Constants.VALUE_BOUND) * distance * Constants.PREFERENCE_VALUE_SCALE;</span>
-<span class="nc" id="L84">    value = value + (Constants.AVERAGE_REVIEWS_MUSEUMS / numReviews)</span>
+<span class="fc" id="L82">    double museumValue = preferredStop;</span>
+<span class="fc" id="L83">    value = (1 - museumValue / Constants.VALUE_BOUND) * distance * Constants.PREFERENCE_VALUE_SCALE;</span>
+<span class="fc" id="L84">    value = value + (Constants.AVERAGE_REVIEWS_MUSEUMS / numReviews)</span>
         * distance * Constants.REVIEW_SCALE;
-<span class="nc" id="L86">    value = value + (1 - rating / Constants.MAX_RATING) * distance;</span>
-<span class="nc" id="L87">    value = value + Constants.PRICE_SCALE * Constants.PRICE_SCALE * distance;</span>
-<span class="nc" id="L88">    value = value * Constants.VALUE_SCALE;</span>
-<span class="nc" id="L89">    value = value * Constants.VALUE_SCALE_MUSEUMS;</span>
-<span class="nc" id="L90">    return value;</span>
+<span class="fc" id="L86">    value = value + (1 - rating / Constants.MAX_RATING) * distance;</span>
+<span class="fc" id="L87">    value = value + Constants.PRICE_SCALE * Constants.PRICE_SCALE * distance;</span>
+<span class="fc" id="L88">    value = value * Constants.VALUE_SCALE;</span>
+<span class="fc" id="L89">    value = value * Constants.VALUE_SCALE_MUSEUMS;</span>
+<span class="fc" id="L90">    return value;</span>
   }
 
   @Override
   public void setCost(double c) {
-<span class="nc" id="L95">    cost = c;</span>
-<span class="nc" id="L96">  }</span>
+<span class="fc" id="L95">    cost = c;</span>
+<span class="fc" id="L96">  }</span>
 
   @Override
   public double getCost() {
-<span class="nc" id="L100">    return cost;</span>
+<span class="fc" id="L100">    return cost;</span>
   }
 
   @Override

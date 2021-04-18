@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.13.0" timestamp="2021-04-17T23:04:33.380">
+    version="6.13.0" timestamp="2021-04-18T01:36:39.696">
 <file name="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Museum.java">
 <violation beginline="22" endline="22" begincolumn="18" endcolumn="25" rule="UnusedPrivateField" ruleset="Best Practices" package="attractions" class="Museum" variable="nodeType" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedprivatefield" priority="3">
 Avoid unused private fields such as 'nodeType'.
@@ -24,22 +24,22 @@ Avoid unused private fields such as 'nodeType'.
 </violation>
 </file>
 <file name="/Users/sarasyed/browncs/32/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/database/BoundingBox.java">
-<violation beginline="238" endline="238" begincolumn="12" endcolumn="18" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="findAttractionsWithinBoundingBox" variable="numRest" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+<violation beginline="242" endline="242" begincolumn="12" endcolumn="18" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="findAttractionsWithinBoundingBox" variable="numRest" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
 Avoid unused local variables such as 'numRest'.
 </violation>
-<violation beginline="239" endline="239" begincolumn="12" endcolumn="18" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="findAttractionsWithinBoundingBox" variable="numPark" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+<violation beginline="243" endline="243" begincolumn="12" endcolumn="18" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="findAttractionsWithinBoundingBox" variable="numPark" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
 Avoid unused local variables such as 'numPark'.
 </violation>
-<violation beginline="240" endline="240" begincolumn="12" endcolumn="17" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="findAttractionsWithinBoundingBox" variable="numMus" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+<violation beginline="244" endline="244" begincolumn="12" endcolumn="17" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="findAttractionsWithinBoundingBox" variable="numMus" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
 Avoid unused local variables such as 'numMus'.
 </violation>
-<violation beginline="241" endline="241" begincolumn="12" endcolumn="19" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="findAttractionsWithinBoundingBox" variable="numShops" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+<violation beginline="245" endline="245" begincolumn="12" endcolumn="19" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="findAttractionsWithinBoundingBox" variable="numShops" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
 Avoid unused local variables such as 'numShops'.
 </violation>
-<violation beginline="280" endline="280" begincolumn="12" endcolumn="18" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="yelpUrlToAttractions" variable="yelpKey" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+<violation beginline="353" endline="353" begincolumn="12" endcolumn="18" rule="UnusedLocalVariable" ruleset="Best Practices" package="database" class="BoundingBox" method="yelpUrlToAttractions" variable="yelpKey" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
 Avoid unused local variables such as 'yelpKey'.
 </violation>
-<violation beginline="366" endline="368" begincolumn="9" endcolumn="7" rule="EmptyCatchBlock" ruleset="Error Prone" package="database" class="BoundingBox" method="findPriceField" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+<violation beginline="439" endline="441" begincolumn="9" endcolumn="7" rule="EmptyCatchBlock" ruleset="Error Prone" package="database" class="BoundingBox" method="findPriceField" externalInfoUrl="https://pmd.github.io/pmd-6.13.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>

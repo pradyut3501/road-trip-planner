@@ -5,6 +5,7 @@ import attractions.Park;
 import attractions.Restaurant;
 import attractions.Shop;
 import edu.brown.cs.student.termProject.AttractionNode;
+import edu.brown.cs.student.termProject.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,16 +33,18 @@ public class BoundingBox {
    * and returns a list of the AttractionNodes from the yelp-database within
    * this box that are of the given categories.
    *
-   * @param coords1      - [lat, lon] of the start position
-   * @param coords2      - [lat, lon] of the end position
-   * @param categories   - list of acceptable attraction categories
-   * @param prefNumStops - number of stops user prefers to make
-   * @param costPref     - cost preference of user
+   * @param coords1       - [lat, lon] of the start position
+   * @param coords2       - [lat, lon] of the end position
+   * @param categories    - list of acceptable attraction categories
+   * @param prefNumStops  - number of stops user prefers to make
+   * @param costPref      - cost preference of user
+   * @param preferredStop - list of doubles representing users preference for each stop type
    * @return list of attraction nodes of the given categories within a
    * box around the given positions
    */
   public static List<AttractionNode> findAttractionsBetween(
-      double[] coords1, double[] coords2, List<String> categories, int prefNumStops, int costPref, double[] preferredStop) {
+      double[] coords1, double[] coords2, List<String> categories,
+      int prefNumStops, int costPref, double[] preferredStop) {
     double[] boundingBoxBounds = findBoundingBoxBounds(coords1, coords2);
     double[] expandedBoundingBoxBounds = expandBoundingBoxBounds(boundingBoxBounds, 2.0);
     try {
@@ -170,7 +173,7 @@ public class BoundingBox {
     rs.close();
     System.out.println("Length of attractions from database within bounding box is: "
         + attractionsWithinBox.size());
-    for (int i = 0; i < (4*prefNumStops + 4); i++) {
+    for (int i = 0; i < (4 * prefNumStops + 4); i++) {
       double reqLat = 0;
       double reqLon = 0;
       if (boundingBoxBounds[0] > boundingBoxBounds[1]) { //start lat > end lat
@@ -189,89 +192,41 @@ public class BoundingBox {
       }
       List<AttractionNode> nodes = new ArrayList<>();
       for (int z = 0; z < 4; z++) {
-        if (preferredStop[z] >= 30 && preferredStop[z] < 40){
-          if (i%3 == 0) {
+        if (preferredStop[z] >= Constants.THIRTY_THRESHOLD && preferredStop[z]
+            < Constants.FOURTY_THRESHOLD) {
+          if (i % 3 == 0) {
             List<AttractionNode> req = createYelpRequest(z, reqLat, reqLon, costPref);
             nodes.addAll(req);
           }
-        } else if (preferredStop[z] >= 40 && preferredStop[z] < 50) {
-          if (i%3 == 0 || i%8 == 0) {
+        } else if (preferredStop[z] >= Constants.FOURTY_THRESHOLD && preferredStop[z]
+            < Constants.HALF_THRESHOLD) {
+          if (i % 3 == 0 || i % Constants.EIGHT == 0) {
             List<AttractionNode> req = createYelpRequest(z, reqLat, reqLon, costPref);
             nodes.addAll(req);
           }
-        } else if (preferredStop[z] >= 50 && preferredStop[z] < 60) {
-          if (i%2 == 0){
+        } else if (preferredStop[z] >= Constants.HALF_THRESHOLD && preferredStop[z]
+            < Constants.SIXTY_THRESHOLD) {
+          if (i % 2 == 0) {
             List<AttractionNode> req = createYelpRequest(z, reqLat, reqLon, costPref);
             nodes.addAll(req);
           }
-        } else if (preferredStop[z] >= 60 && preferredStop[z] < 75) {
-          if (i%2 == 0 || i%5 == 0) {
+        } else if (preferredStop[z] >= Constants.SIXTY_THRESHOLD && preferredStop[z]
+            < Constants.THREE_FOURTHS_THRESHOLD) {
+          if (i % 2 == 0 || i % 5 == 0) {
             List<AttractionNode> req = createYelpRequest(z, reqLat, reqLon, costPref);
             nodes.addAll(req);
           }
-        } else if (preferredStop[z] >= 75 && preferredStop[z] < 90) {
-          if (i%2 == 0 || i%3 == 0) {
+        } else if (preferredStop[z] >= Constants.THREE_FOURTHS_THRESHOLD && preferredStop[z]
+            < Constants.HIGH_PREFERENCE) {
+          if (i % 2 == 0 || i % 3 == 0) {
             List<AttractionNode> req = createYelpRequest(z, reqLat, reqLon, costPref);
             nodes.addAll(req);
           }
-        } else if (preferredStop[z] >= 90) {
+        } else if (preferredStop[z] >= Constants.HIGH_PREFERENCE) {
           List<AttractionNode> req = createYelpRequest(z, reqLat, reqLon, costPref);
           nodes.addAll(req);
         }
       }
-//      if (categories.contains("Restaurant")) {
-//        List<String> param = new ArrayList<>();
-//        param.add("restaurant");
-//        param.add("food");
-//        param.add("bars");
-//        URL url = new URL(
-//            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude="
-//                + reqLon + "&categories="
-//                + "\"restaurant\",\"food\",\"bars\"" + "&price=" + costPref);
-//        List<AttractionNode> restaurants = yelpUrlToAttractions(url, "Restaurant");
-//        nodes.addAll(restaurants);
-//        System.out.println(restaurants.size() + " many restaurants");
-//      }
-//      if (categories.contains("Park")) {
-//        URL url = new URL(
-//            "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude="
-//                + reqLon + "&categories=parks");
-//        List<AttractionNode> parks = yelpUrlToAttractions(url, "Park");
-//        nodes.addAll(parks);
-//        System.out.println(parks.size() + " many parks");
-//      }
-//    if (categories.contains("Museum")) {
-//      URL url = new URL(
-//          "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude="
-//              + reqLon + "&categories=museums");
-//      List<AttractionNode> museums = yelpUrlToAttractions(url, "Museum");
-//      nodes.addAll(museums);
-//      System.out.println(museums.size() + " many museums");
-//      double reqLat2 = reqLat + .05;
-//      double reqLon2 = reqLon + .05;
-//      URL url2 = new URL(
-//          "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat2 + "&longitude="
-//              + reqLon2 + "&categories=museums");
-//      List<AttractionNode> museums2 = yelpUrlToAttractions(url2, "Museum");
-//      nodes.addAll(museums2);
-//      System.out.println(museums2.size() + " many museums");
-//    }
-//    if (categories.contains("Shop")) {
-//      URL url = new URL(
-//          "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat + "&longitude="
-//              + reqLon + "&categories=shoppingcenters");
-//      List<AttractionNode> shops = yelpUrlToAttractions(url, "Shop");
-//      nodes.addAll(shops);
-//      System.out.println(shops.size() + " many shops");
-//      double reqLat2 = reqLat + .05;
-//      double reqLon2 = reqLon + .05;
-//      URL url2 = new URL(
-//          "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat2 + "&longitude="
-//              + reqLon2 + "&categories=shoppingcenters");
-//      List<AttractionNode> shops2 = yelpUrlToAttractions(url2, "Shop");
-//      nodes.addAll(shops2);
-//      System.out.println(shops2.size() + " many shops");
-//    }
       List<AttractionNode> removeRepeats = new ArrayList<>();
       for (AttractionNode n : nodes) {
         if (nameList.contains(n.getName())) {
@@ -309,7 +264,17 @@ public class BoundingBox {
     return attractionsWithinBox;
   }
 
-  public static List<AttractionNode> createYelpRequest(int i, double reqLat, double reqLon, int costPref)
+  /**
+   * Helper method that creates yelp api request.
+   * @param i int of attraction type
+   * @param reqLat request latitude
+   * @param reqLon request longitude
+   * @param costPref user's cost preference
+   * @return nodes gotten in request
+   * @throws IOException if request fails
+   */
+  public static List<AttractionNode> createYelpRequest(int i, double reqLat,
+                                                       double reqLon, int costPref)
       throws IOException {
     List<AttractionNode> nodes = new ArrayList<>();
     if (i == 2) {
@@ -340,8 +305,8 @@ public class BoundingBox {
       List<AttractionNode> museums = yelpUrlToAttractions(url, "Museum");
       nodes.addAll(museums);
       System.out.println(museums.size() + " many museums");
-      double reqLat2 = reqLat + .05;
-      double reqLon2 = reqLon + .05;
+      double reqLat2 = reqLat + Constants.LATOFFSET;
+      double reqLon2 = reqLon + Constants.LATOFFSET;
       URL url2 = new URL(
           "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat2 + "&longitude="
               + reqLon2 + "&categories=museums");
@@ -356,8 +321,8 @@ public class BoundingBox {
       List<AttractionNode> shops = yelpUrlToAttractions(url, "Shop");
       nodes.addAll(shops);
       System.out.println(shops.size() + " many shops");
-      double reqLat2 = reqLat + .05;
-      double reqLon2 = reqLon + .05;
+      double reqLat2 = reqLat + Constants.LATOFFSET;
+      double reqLon2 = reqLon + Constants.LATOFFSET;
       URL url2 = new URL(
           "https://api.yelp.com/v3/businesses/search?latitude=" + reqLat2 + "&longitude="
               + reqLon2 + "&categories=shoppingcenters");
@@ -467,7 +432,7 @@ public class BoundingBox {
     Integer price = null;
     if (attributes.contains("RestaurantsPriceRange2")) {
       int startIndex = attributes.indexOf("RestaurantsPriceRange2");
-      int priceIndex = startIndex + 27;
+      int priceIndex = startIndex + Constants.PRICE_INDEX;
       String priceString = attributes.charAt(priceIndex) + "";
       try {
         price = Integer.parseInt(priceString);

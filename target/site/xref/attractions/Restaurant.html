@@ -87,11 +87,11 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>    @Override
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">double</strong> generateValue(<strong class="jxr_keyword">double</strong> preferredPrice, <strong class="jxr_keyword">double</strong> preferredStop, <strong class="jxr_keyword">double</strong> distance) {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">double</strong> restaurantValue = preferredStop;
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      value = (1- restaurantValue/Constants.VALUE_BOUND)
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      value = (1 - restaurantValue / Constants.VALUE_BOUND)
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          * distance * Constants.PREFERENCE_VALUE_SCALE;
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      value = value + (Constants.AVERAGE_REVIEWS_RESTAURANTS / numReviews)
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          * distance * Constants.REVIEW_SCALE;
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      value = value + (1 - rating/Constants.MAX_RATING) * distance;
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      value = value + (1 - rating / Constants.MAX_RATING) * distance;
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      value = value + (Math.abs(price - preferredPrice)) * distance * Constants.PRICE_SCALE;
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      value = value * Constants.VALUE_SCALE;
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>      value = value * Constants.VALUE_SCALE_RESTAURANTS;

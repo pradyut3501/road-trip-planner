@@ -178,138 +178,138 @@
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>         <strong class="jxr_keyword">double</strong> originLon = data.getDouble(<span class="jxr_string">"originLon"</span>);
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>         <strong class="jxr_keyword">double</strong> destLat = data.getDouble(<span class="jxr_string">"destLat"</span>);
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>         <strong class="jxr_keyword">double</strong> destLon = data.getDouble(<span class="jxr_string">"destLon"</span>);
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>         <strong class="jxr_keyword">double</strong> maxDist = data.getDouble(<span class="jxr_string">"maxDist"</span>);
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>         <strong class="jxr_keyword">double</strong> middleLat = 0.0;
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>         <strong class="jxr_keyword">double</strong> middleLong = 0.0;
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>           middleLat = data.getDouble(<span class="jxr_string">"middleLat"</span>);
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>           middleLong = data.getDouble(<span class="jxr_string">"middleLon"</span>);
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>         } <strong class="jxr_keyword">catch</strong> (JSONException e) {
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>           System.out.println(<span class="jxr_string">"Problem getting middle lat: "</span> + e);
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>         }
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>         System.out.println(<span class="jxr_string">"Middle Lat "</span> + middleLat + <span class="jxr_string">" and middle long "</span> + middleLong);
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>         <strong class="jxr_keyword">int</strong> numStops = 0;
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>           numStops = data.getInt(<span class="jxr_string">"stopPref"</span>);
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>           error = <span class="jxr_string">"Number of stops input is in the wrong format. Must be an integer greater than"</span>
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>               + <span class="jxr_string">" 0"</span>;
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Gson().toJson(ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error));
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>         }
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>         List&lt;String&gt; categories = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>         <strong class="jxr_keyword">if</strong> (restaurantValue &gt;= 0.3) {
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>           categories.add(<span class="jxr_string">"Restaurant"</span>);
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>         }
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>         <strong class="jxr_keyword">if</strong> (parkValue &gt;= 0.3) {
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>           categories.add(<span class="jxr_string">"Park"</span>);
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>         }
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>         <strong class="jxr_keyword">if</strong> (museumValue &gt;= 0.3) {
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>           categories.add(<span class="jxr_string">"Museum"</span>);
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>         <strong class="jxr_keyword">double</strong> maxDist = 0.0;
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>           maxDist = data.getDouble(<span class="jxr_string">"maxDist"</span>);
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>         } <strong class="jxr_keyword">catch</strong> (JSONException e) {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>           error = <span class="jxr_string">"Enter a number for the Maximum Distance field, without any punctuation"</span>;
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Gson().toJson(ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error));
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>         }
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>         <strong class="jxr_keyword">double</strong> middleLat = 0.0;
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>         <strong class="jxr_keyword">double</strong> middleLong = 0.0;
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>           middleLat = data.getDouble(<span class="jxr_string">"middleLat"</span>);
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>           middleLong = data.getDouble(<span class="jxr_string">"middleLon"</span>);
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>         } <strong class="jxr_keyword">catch</strong> (JSONException e) {
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>           System.out.println(<span class="jxr_string">"Problem getting middle lat: "</span> + e);
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>         }
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         System.out.println(<span class="jxr_string">"Middle Lat "</span> + middleLat + <span class="jxr_string">" and middle long "</span> + middleLong);
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>         <strong class="jxr_keyword">int</strong> numStops = 0;
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>           numStops = data.getInt(<span class="jxr_string">"stopPref"</span>);
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>           error = <span class="jxr_string">"Number of stops input is in the wrong format. Must be an integer greater than"</span>
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>               + <span class="jxr_string">" 0"</span>;
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Gson().toJson(ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error));
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>         }
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>         List&lt;String&gt; categories = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>         <strong class="jxr_keyword">if</strong> (restaurantValue &gt;= Constants.THRESHOLD_FOR_MIN_PREFERENCE) {
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>           categories.add(<span class="jxr_string">"Restaurant"</span>);
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>         }
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>         <strong class="jxr_keyword">if</strong> (shopValue &gt;= 0.3) {
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>           categories.add(<span class="jxr_string">"Shop"</span>);
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>         <strong class="jxr_keyword">if</strong> (parkValue &gt;= Constants.THRESHOLD_FOR_MIN_PREFERENCE) {
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>           categories.add(<span class="jxr_string">"Park"</span>);
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>         }
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>         <a name="Dijkstra" href="../../../../../graph/Dijkstra.html#D<a name="Dijkstra" href="../../../../../graph/Dijkstra.html#Dijkstra">Dijkstra</a>>Dijkstra</a> dijkstra = <strong class="jxr_keyword">new</strong> <a name="Dijkstra" href="../../../../../graph/Dijkstra.html#Dijkstra">Dijkstra</a>(APICONNECTION);
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>         <strong class="jxr_keyword">if</strong> (numStops &gt; 0) {
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>           <strong class="jxr_keyword">double</strong> miles = dijkstra.distanceFormulaAPI(originLat,
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>               originLon, destLat, destLon) / 1000 / Constants.MILES_TO_KILOMETERS;
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>           System.out.println(<span class="jxr_string">"Google Maps API: "</span> + miles);
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>           <em class="jxr_comment">//check to make sure the inputted max distance is not greater than the minimum distance</em>
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>           <strong class="jxr_keyword">if</strong> ((maxDist * Constants.MILES_TO_KILOMETERS) &lt; (dijkstra.distanceFormulaAPI(originLat,
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>               originLon, destLat, destLon) / 1000)) {
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>             error = <span class="jxr_string">"It is impossible to complete the trip in "</span> + maxDist + <span class="jxr_string">" miles"</span>;
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>             System.out.println(error);
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Gson().toJson(ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error));
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>           }
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>           <em class="jxr_comment">//if the user has to make an intermediate step</em>
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>           <strong class="jxr_keyword">if</strong> (middleLat != 0.0 &amp;&amp; middleLong != 0.0) {
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>             System.out.println(<span class="jxr_string">"Intermediate Stop!"</span>);
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>             <strong class="jxr_keyword">double</strong> proportionBeforeStop = dijkstra.distanceFormulaAPI(originLat, originLon,
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>                 middleLat,
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>                 middleLong) / (dijkstra.distanceFormulaAPI(originLat, originLon, middleLat,
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>                 middleLong) + dijkstra.distanceFormulaAPI(middleLat, middleLong, destLat, destLon));
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>             <strong class="jxr_keyword">double</strong> firstHalf = proportionBeforeStop * numStops;
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>             <strong class="jxr_keyword">int</strong> numStopsFirstHalf = (<strong class="jxr_keyword">int</strong>) Math.floor(firstHalf);
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>             <strong class="jxr_keyword">int</strong> numStopsSecondHalf = numStops - numStopsFirstHalf;
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>             System.out.println(<span class="jxr_string">"First half is : "</span> + numStopsFirstHalf + <span class="jxr_string">" and second half is "</span>
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>                 + numStopsSecondHalf);
-<a class="jxr_linenumber" name="L228" href="#L228">228</a> 
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>             dijkstra
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>                 .setPreferences(preferredStop, costPreference, BoundingBox.findAttractionsBetween(
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>                     <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {originLat, originLon},
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>                     <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {middleLat, middleLong}, categories, numStopsFirstHalf,
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>                     costPreference));
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>             List&lt;AttractionNode&gt; route1 = dijkstra.execute(<strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {originLat, originLon},
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {middleLat, middleLong}, numStopsFirstHalf);
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>             <em class="jxr_comment">//set new preferences</em>
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>             dijkstra
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>                 .setPreferences(preferredStop, costPreference, BoundingBox.findAttractionsBetween(
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>                     <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {middleLat, middleLong},
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>                     <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {destLat, destLon}, categories, numStopsSecondHalf,
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>                     costPreference));
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>             List&lt;AttractionNode&gt; route2 = dijkstra.execute(<strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {middleLat, middleLong},
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {destLat, destLon}, numStopsSecondHalf);
-<a class="jxr_linenumber" name="L244" href="#L244">244</a> 
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>             route.addAll(route1);
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>             <em class="jxr_comment">//dumby "node" to represent the user inputted intermediate stop</em>
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>             route.add(<strong class="jxr_keyword">new</strong> <a name="Park" href="../../../../../attractions/Park.html#Park">Park</a>(<span class="jxr_string">"0"</span>, <span class="jxr_string">"Intermediate Stop"</span>, <strong class="jxr_keyword">new</strong> String[] {<span class="jxr_string">""</span>},
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {middleLat, middleLong}, 0.0, 0.0, 0.0));
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>             route.addAll(route2);
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>             System.out.println(<span class="jxr_string">"The length of your first part is "</span> + route1.size() + <span class="jxr_string">" and your "</span>
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>                 + <span class="jxr_string">"second part is "</span> + route2.size());
-<a class="jxr_linenumber" name="L252" href="#L252">252</a> 
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>           } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>             List&lt;AttractionNode&gt; attractions = BoundingBox.findAttractionsBetween(
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {originLat, originLon},
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {destLat, destLon}, categories, numStops, costPreference);
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>             System.out.println(<span class="jxr_string">"number of nodes: "</span> + attractions.size());
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>             dijkstra.setPreferences(preferredStop, costPreference, attractions);
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>             route = dijkstra.execute(<strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {originLat, originLon},
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {destLat, destLon}, numStops);
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>           }
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (numStops == 0) {
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>           error = <span class="jxr_string">"This route has no stops"</span>;
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Gson().toJson(ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error));
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (numStops &lt; 0) {
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>           error = <span class="jxr_string">"The number of stops cannot be negative"</span>;
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Gson().toJson(ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error));
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>         }
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>         <strong class="jxr_keyword">double</strong> routeLength = 0;
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 1; i &lt; route.size(); i++) {
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>           routeLength += dijkstra.distanceFormulaAPI(route.get(i - 1).getCoordinates()[0],
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>               route.get(i - 1).getCoordinates()[1], route.get(i).getCoordinates()[0],
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>               route.get(i).getCoordinates()[1]);
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>         }
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>         routeLength += dijkstra.distanceFormulaAPI(route.get(0).getCoordinates()[0],
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>             route.get(0).getCoordinates()[1], originLat, originLon);
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>         routeLength += dijkstra.distanceFormulaAPI(route.get(route.size() - 1).getCoordinates()[0],
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>             route.get(route.size() - 1).getCoordinates()[1], destLat, destLon);
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>         routeLength = (routeLength / 1000) / Constants.MILES_TO_KILOMETERS;
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>         System.out.println(<span class="jxr_string">"Dijkstra's Route is this length "</span> + route.size() + <span class="jxr_string">" and this many "</span>
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>             + <span class="jxr_string">"miles: "</span> + routeLength);
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>         <strong class="jxr_keyword">if</strong> (routeLength &gt; maxDist) {
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>           <strong class="jxr_keyword">double</strong> diff = Math.ceil(routeLength - maxDist);
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>           error = <span class="jxr_string">"Unfortunately, we cannot plan you a roadtrip under "</span> + maxDist + <span class="jxr_string">" miles. You"</span>
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>               + <span class="jxr_string">" would need to increase your distance constraint by "</span> + diff;
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>           System.out.println(error);
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>           route = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>         }
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>         <strong class="jxr_keyword">for</strong> (<a name="AttractionNode" href="../../../../../edu/brown/cs/student/termProject/AttractionNode.html#AttractionNode">AttractionNode</a> r : route) {
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>           System.out.println(r.getName() + <span class="jxr_string">" "</span>
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>               + <span class="jxr_string">" and a cost of "</span> + r.getCost() + <span class="jxr_string">" and a value of "</span> + r.getValue());
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>         }
-<a class="jxr_linenumber" name="L293" href="#L293">293</a> 
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         System.out.println(<span class="jxr_string">"problem with dijkstras"</span>);
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>         e.printStackTrace();
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>       }
-<a class="jxr_linenumber" name="L298" href="#L298">298</a> 
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>       Map&lt;String, Object&gt; variables = ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error);
-<a class="jxr_linenumber" name="L300" href="#L300">300</a> <em class="jxr_comment">//      try {</em>
-<a class="jxr_linenumber" name="L301" href="#L301">301</a> <em class="jxr_comment">//      } catch (Exception e) {</em>
-<a class="jxr_linenumber" name="L302" href="#L302">302</a> <em class="jxr_comment">//        System.out.println("something went wrong here");</em>
-<a class="jxr_linenumber" name="L303" href="#L303">303</a> <em class="jxr_comment">//        e.printStackTrace();</em>
-<a class="jxr_linenumber" name="L304" href="#L304">304</a> <em class="jxr_comment">//      }</em>
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>         <strong class="jxr_keyword">if</strong> (museumValue &gt;= Constants.THRESHOLD_FOR_MIN_PREFERENCE) {
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>           categories.add(<span class="jxr_string">"Museum"</span>);
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>         }
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>         <strong class="jxr_keyword">if</strong> (shopValue &gt;= Constants.THRESHOLD_FOR_MIN_PREFERENCE) {
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>           categories.add(<span class="jxr_string">"Shop"</span>);
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>         }
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>         <a name="Dijkstra" href="../../../../../graph/Dijkstra.html#D<a name="Dijkstra" href="../../../../../graph/Dijkstra.html#Dijkstra">Dijkstra</a>>Dijkstra</a> dijkstra = <strong class="jxr_keyword">new</strong> <a name="Dijkstra" href="../../../../../graph/Dijkstra.html#Dijkstra">Dijkstra</a>(APICONNECTION);
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>         <strong class="jxr_keyword">if</strong> (numStops &gt; 0) {
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>           <strong class="jxr_keyword">double</strong> miles = dijkstra.distanceFormulaAPI(originLat,
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>               originLon, destLat, destLon) / Constants.THOUSAND / Constants.MILES_TO_KILOMETERS;
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>           System.out.println(<span class="jxr_string">"Google Maps API: "</span> + miles);
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>           <em class="jxr_comment">//check to make sure the inputted max distance is not greater than the minimum distance</em>
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>           <strong class="jxr_keyword">if</strong> ((maxDist * Constants.MILES_TO_KILOMETERS) &lt; (dijkstra.distanceFormulaAPI(originLat,
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>               originLon, destLat, destLon) / Constants.THOUSAND)) {
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>             error = <span class="jxr_string">"It is impossible to complete the trip in "</span> + maxDist + <span class="jxr_string">" miles"</span>;
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>             System.out.println(error);
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Gson().toJson(ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error));
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>           }
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>           <em class="jxr_comment">//if the user has to make an intermediate step</em>
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>           <strong class="jxr_keyword">if</strong> (middleLat != 0.0 &amp;&amp; middleLong != 0.0) {
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>             System.out.println(<span class="jxr_string">"Intermediate Stop!"</span>);
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>             <strong class="jxr_keyword">double</strong> proportionBeforeStop = dijkstra.distanceFormulaAPI(originLat, originLon,
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>                 middleLat,
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>                 middleLong) / (dijkstra.distanceFormulaAPI(originLat, originLon, middleLat,
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>                 middleLong) + dijkstra.distanceFormulaAPI(middleLat, middleLong, destLat, destLon));
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>             <strong class="jxr_keyword">double</strong> firstHalf = proportionBeforeStop * numStops;
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>             <strong class="jxr_keyword">int</strong> numStopsFirstHalf = (<strong class="jxr_keyword">int</strong>) Math.floor(firstHalf);
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>             <strong class="jxr_keyword">int</strong> numStopsSecondHalf = numStops - numStopsFirstHalf;
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>             System.out.println(<span class="jxr_string">"First half is : "</span> + numStopsFirstHalf + <span class="jxr_string">" and second half is "</span>
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>                 + numStopsSecondHalf);
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>             dijkstra
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>                 .setPreferences(preferredStop, costPreference, BoundingBox.findAttractionsBetween(
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>                     <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {originLat, originLon},
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>                     <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {middleLat, middleLong}, categories, numStopsFirstHalf,
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>                     costPreference, preferredStop));
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>             List&lt;AttractionNode&gt; route1 = dijkstra.execute(<strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {originLat, originLon},
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {middleLat, middleLong}, numStopsFirstHalf);
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>             <em class="jxr_comment">//set new preferences</em>
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>             dijkstra
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>                 .setPreferences(preferredStop, costPreference, BoundingBox.findAttractionsBetween(
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>                     <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {middleLat, middleLong},
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>                     <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {destLat, destLon}, categories, numStopsSecondHalf,
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>                     costPreference, preferredStop));
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>             List&lt;AttractionNode&gt; route2 = dijkstra.execute(<strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {middleLat, middleLong},
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {destLat, destLon}, numStopsSecondHalf);
+<a class="jxr_linenumber" name="L249" href="#L249">249</a> 
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>             route.addAll(route1);
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>             <em class="jxr_comment">//dumby "node" to represent the user inputted intermediate stop</em>
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>             <a name="AttractionNode" href="../../../../../edu/brown/cs/student/termProject/AttractionNode.html#AttractionNode">AttractionNode</a> med = <strong class="jxr_keyword">new</strong> <a name="Park" href="../../../../../attractions/Park.html#Park">Park</a>(<span class="jxr_string">"0"</span>, <span class="jxr_string">"Intermediate Stop"</span>, <strong class="jxr_keyword">new</strong> String[] {<span class="jxr_string">""</span>},
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {middleLat, middleLong}, 0.0, 0.0, 0.0);
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>             med.setCost(0.0);
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>             route.add(med);
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>             route.addAll(route2);
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>             System.out.println(<span class="jxr_string">"The length of your first part is "</span> + route1.size() + <span class="jxr_string">" and your "</span>
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>                 + <span class="jxr_string">"second part is "</span> + route2.size());
+<a class="jxr_linenumber" name="L259" href="#L259">259</a> 
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>           } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>             List&lt;AttractionNode&gt; attractions = BoundingBox.findAttractionsBetween(
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {originLat, originLon}, <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {destLat, destLon},
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>                 categories, numStops, costPreference, preferredStop);
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>             System.out.println(<span class="jxr_string">"number of nodes: "</span> + attractions.size());
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>             dijkstra.setPreferences(preferredStop, costPreference, attractions);
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>             route = dijkstra.execute(<strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {originLat, originLon},
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>                 <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">double</strong>[] {destLat, destLon}, numStops);
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>           }
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (numStops == 0) {
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>           error = <span class="jxr_string">"This route has no stops"</span>;
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Gson().toJson(ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error));
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (numStops &lt; 0) {
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>           error = <span class="jxr_string">"The number of stops cannot be negative"</span>;
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Gson().toJson(ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error));
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>         }
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>         <strong class="jxr_keyword">double</strong> routeLength = 0;
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 1; i &lt; route.size(); i++) {
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>           routeLength += dijkstra.distanceFormulaAPI(route.get(i - 1).getCoordinates()[0],
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>               route.get(i - 1).getCoordinates()[1], route.get(i).getCoordinates()[0],
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>               route.get(i).getCoordinates()[1]);
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         }
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>         routeLength += dijkstra.distanceFormulaAPI(route.get(0).getCoordinates()[0],
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>             route.get(0).getCoordinates()[1], originLat, originLon);
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         routeLength += dijkstra.distanceFormulaAPI(route.get(route.size() - 1).getCoordinates()[0],
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>             route.get(route.size() - 1).getCoordinates()[1], destLat, destLon);
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>         routeLength = (routeLength / Constants.THOUSAND) / Constants.MILES_TO_KILOMETERS;
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>         System.out.println(<span class="jxr_string">"Dijkstra's Route is this length "</span> + route.size() + <span class="jxr_string">" and this many "</span>
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>             + <span class="jxr_string">"miles: "</span> + routeLength);
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>         <strong class="jxr_keyword">if</strong> (routeLength &gt; maxDist) {
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>           <strong class="jxr_keyword">double</strong> diff = Math.ceil(routeLength - maxDist);
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>           error = <span class="jxr_string">"Unfortunately, we cannot plan you a roadtrip under "</span> + maxDist + <span class="jxr_string">" miles. You"</span>
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>               + <span class="jxr_string">" would need to increase your distance constraint by "</span> + diff;
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>           System.out.println(error);
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>           route = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         }
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         <strong class="jxr_keyword">for</strong> (<a name="AttractionNode" href="../../../../../edu/brown/cs/student/termProject/AttractionNode.html#AttractionNode">AttractionNode</a> r : route) {
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>           System.out.println(r.getName() + <span class="jxr_string">" "</span>
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>               + <span class="jxr_string">" and a cost of "</span> + r.getCost() + <span class="jxr_string">" and a value of "</span> + r.getValue());
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>         }
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         System.out.println(<span class="jxr_string">"problem with dijkstras"</span>);
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>         e.printStackTrace();
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>       }
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>       Map&lt;String, Object&gt; variables = ImmutableMap.of(<span class="jxr_string">"route"</span>, route, <span class="jxr_string">"error_message"</span>, error);
 <a class="jxr_linenumber" name="L305" href="#L305">305</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Gson().toJson(variables);
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>     }
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>   }

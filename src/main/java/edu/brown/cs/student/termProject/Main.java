@@ -210,11 +210,11 @@ public final class Main {
         Dijkstra dijkstra = new Dijkstra(APICONNECTION);
         if (numStops > 0) {
           double miles = dijkstra.distanceFormulaAPI(originLat,
-              originLon, destLat, destLon) / 1000 / Constants.MILES_TO_KILOMETERS;
+              originLon, destLat, destLon) / Constants.THOUSAND / Constants.MILES_TO_KILOMETERS;
           System.out.println("Google Maps API: " + miles);
           //check to make sure the inputted max distance is not greater than the minimum distance
           if ((maxDist * Constants.MILES_TO_KILOMETERS) < (dijkstra.distanceFormulaAPI(originLat,
-              originLon, destLat, destLon) / 1000)) {
+              originLon, destLat, destLon) / Constants.THOUSAND)) {
             error = "It is impossible to complete the trip in " + maxDist + " miles";
             System.out.println(error);
             return new Gson().toJson(ImmutableMap.of("route", route, "error_message", error));
@@ -250,7 +250,7 @@ public final class Main {
             route.addAll(route1);
             //dumby "node" to represent the user inputted intermediate stop
             AttractionNode med = new Park("0", "Intermediate Stop", new String[] {""},
-              new double[] {middleLat, middleLong}, 0.0, 0.0, 0.0);
+                new double[] {middleLat, middleLong}, 0.0, 0.0, 0.0);
             med.setCost(0.0);
             route.add(med);
             route.addAll(route2);
@@ -259,8 +259,8 @@ public final class Main {
 
           } else {
             List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
-                new double[] {originLat, originLon},
-                new double[] {destLat, destLon}, categories, numStops, costPreference, preferredStop);
+                new double[] {originLat, originLon}, new double[] {destLat, destLon},
+                categories, numStops, costPreference, preferredStop);
             System.out.println("number of nodes: " + attractions.size());
             dijkstra.setPreferences(preferredStop, costPreference, attractions);
             route = dijkstra.execute(new double[] {originLat, originLon},
@@ -283,7 +283,7 @@ public final class Main {
             route.get(0).getCoordinates()[1], originLat, originLon);
         routeLength += dijkstra.distanceFormulaAPI(route.get(route.size() - 1).getCoordinates()[0],
             route.get(route.size() - 1).getCoordinates()[1], destLat, destLon);
-        routeLength = (routeLength / 1000) / Constants.MILES_TO_KILOMETERS;
+        routeLength = (routeLength / Constants.THOUSAND) / Constants.MILES_TO_KILOMETERS;
         System.out.println("Dijkstra's Route is this length " + route.size() + " and this many "
             + "miles: " + routeLength);
         if (routeLength > maxDist) {
