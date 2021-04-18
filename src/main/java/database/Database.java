@@ -24,7 +24,8 @@ public class Database {
    * @throws ClassNotFoundException if getting the "org.sqlite.JDBC? class object
    *                                cannot be retrieved
    */
-  public static Connection connectToDatabase(String filename) throws SQLException, ClassNotFoundException {
+  public static Connection connectToDatabase(String filename)
+      throws SQLException, ClassNotFoundException {
     File tempFile = new File(filename);
     if (!tempFile.exists()) {
       throw new IllegalArgumentException("ERROR: No database could be found at the given filepath");

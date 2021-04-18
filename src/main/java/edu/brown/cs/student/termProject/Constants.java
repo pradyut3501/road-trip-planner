@@ -9,7 +9,7 @@ public class Constants {
   public static final double VALUE_SCALE_RESTAURANTS = 2;
   public static final double PREFERENCE_VALUE_SCALE = 5;
 
-  //public static final double AVERAGE_REVIEWS_PARKS = 12;
+  public static final double THRESHOLD_FOR_MIN_PREFERENCE = 20;
   public static final double AVERAGE_REVIEWS_PARKS = 20;
   public static final double AVERAGE_REVIEWS_SHOPS = 20;
   public static final double AVERAGE_REVIEWS_RESTAURANTS = 50;
