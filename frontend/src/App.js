@@ -444,11 +444,13 @@ function App() {
                 })
 
           } else{
+            // display the name and location of a stop upon clicking its icon on the map
             infoWindow = new google.maps.InfoWindow({
               content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
             })
           }
 
+          // add a click handler to the marker
           marker.addListener('click', function(){
             infoWindow.open(map, marker)
           })
@@ -462,11 +464,6 @@ function App() {
             label: "A"
           })
 
-          console.log(originMarker)
-          console.log(originCoords)
-          console.log(destCoords)
-
-          // change name
           let infoWindowOrigin = new google.maps.InfoWindow({
             content: '<div> <h3>' + origin.value.structured_formatting.main_text + '</h3>' + origin.value.structured_formatting.secondary_text + '</div>'
           })
@@ -483,7 +480,7 @@ function App() {
             label: "B"
           })
 
-          // change name
+
           let infoWindowDest = new google.maps.InfoWindow({
             content: '<div> <h3>' + dest.value.structured_formatting.main_text + '</h3>' + dest.value.structured_formatting.secondary_text + '</div>'
           })
@@ -493,6 +490,8 @@ function App() {
           })
 
           console.log(response.data["route"])
+          //setDisplay()
+
           response_message = "Trip Itinerary"
           trip_message = "Trip Details"
           route_message = "Route Map"
@@ -500,16 +499,24 @@ function App() {
 
           setOriginText(origin.value.structured_formatting)
           setDestText(dest.value.structured_formatting)
-          setMiddleText(middle.value.structured_formatting)
+          if (middle != undefined){
+            setMiddleText(middle.value.structured_formatting)
+          }
 
+          // this is all information to display in the results
+          // further resources for trip planning
           tripResourceLink = "https://www.tripsavvy.com/planning-a-road-trip-complete-guide-4845956"
           resource_name = "Planning a Road Trip: The Complete Guide"
+
+
+          // further information about the origin location (included in "Trip Details")
           originName = originPlace.name
           originMapURL = originPlace.url
           originWebsite = originPlace.website
           originPhone = originPlace.formatted_phone_number
           originIcon = originPlace.icon
 
+          // further information about the destination location (included in "Trip Details")
           destName = destPlace.name
           destMapURL = destPlace.url
           destWebsite = destPlace.website
@@ -540,22 +547,7 @@ function App() {
     }
   }
 
-    function setDisplay(){
-      tripResourceLink = "https://www.tripsavvy.com/planning-a-road-trip-complete-guide-4845956"
-      originName = originPlace.name
-      originMapURL = originPlace.url
-      originWebsite = originPlace.website
-      originPhone = originPlace.formatted_phone_number
-      originIcon = originPlace.icon
-
-      destName = destPlace.name
-      destMapURL = destPlace.url
-      destWebsite = destPlace.website
-      destPhone = destPlace.formatted_phone_number
-      destIcon = destPlace.icon
-
-    }
-
+    // re-sets the information ot be displayed for the next trip
     function resetDisplay(){
       tripResourceLink = ""
       resource_name = ""
@@ -578,25 +570,27 @@ function App() {
     }
 
 
+    // re-render page when user inputs new start location or end location
     useEffect(()=> {
       distanceMessage[0] = "The quickest route for this origin and destination is "
       distanceMessage[1] = "and"
     }, [shortestRouteTime])
 
+    // re-render page when user hits the submit button
     useEffect(()=> {
 
     }, [submitted])
+
 
     useEffect(()=> {
 
     }, [attractions])
 
     useEffect(()=> {
-      console.log("adding origin")
-      console.log(originText)
 
     }, [originText])
 
+    // re-render page when there's an error
     useEffect(()=> {
       setError(0)
     }, [error])
@@ -616,7 +610,7 @@ function App() {
 
     &nbsp;
 
-    <p class = "question">Where do you want to start?</p>
+    <h4>Where do you want to start?</h4>
     <GooglePlacesAutocomplete id = "origin" apiKey="AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c"
     selectProps={{
           origin,
@@ -625,9 +619,9 @@ function App() {
       style = {{width: '66%'}}/>
 
 
-
+    <br></br>
     &nbsp;
-    <p class = "question">Where do you want to go?</p>
+    <h4>Where do you want to go?</h4>
     <GooglePlacesAutocomplete id = "destination" apiKey="AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c"
     selectProps={{
           dest,
@@ -637,15 +631,16 @@ function App() {
       <br></br>
 
 
-      <p>{distanceMessage[0]} {shortestRouteDist} {distanceMessage[1]} {shortestRouteTime}</p>
+      <p>{distanceMessage[0]} <div class = "question" display = "inline">{shortestRouteDist}</div> {distanceMessage[1]} <div display = "inline" class = "question">{shortestRouteTime}</div></p>
 
 
-      Based on this, how much long would you like to spend on the road?
+      Based on this, how long would you like to spend on the road?
       &nbsp;
       <br></br>
       <TextBox label = {"Maximum distance (miles): "} change = {setDist} />
 
-
+      <br></br>
+      &nbsp;
       &nbsp;
       <p class = "question">What's your budget like?</p>
 
@@ -844,7 +839,8 @@ function App() {
         </div>)
           }})}
 
-
+        <br></br>
+        <br></br>
         </Col>
 
         <Col>
@@ -861,7 +857,7 @@ function App() {
         <p>
         <a href={originWebsite} target="_blank">{originName}</a>
         <br></br>
-        {contactOrigin}{originPhone}
+        {contactOrigin}<a href={"tel:" + {originPhone}}>{originPhone}</a>
         <br></br>
         <a href={originMapURL} target="_blank">{viewInGoogle}</a>
         </p>
@@ -872,7 +868,7 @@ function App() {
         <p>
         <a href={destWebsite} target="_blank">{destName}</a>
         <br></br>
-        {contactDest}{destPhone}
+        {contactDest}<a href={"tel:" + {destPhone}}>{destPhone}</a>
         <br></br>
         <a href={destMapURL} target="_blank">{viewInGoogle}</a>
         </p>

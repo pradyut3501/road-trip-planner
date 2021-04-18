@@ -69,7 +69,8 @@
 }
 
 .question{
-  font-weight: bold
+  font-weight: bold;
+  display: inline
 }
 
 /*.container {

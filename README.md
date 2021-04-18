@@ -56,11 +56,25 @@ categorization of stop types, etc.)
 **Mentor TA:** Ben Silverman, benjamin_silverman1@brown.edu
 
 ## How to Build and Run
-_A necessary part of any README!_
+In the terminal, navigate to the root directory "term-project-adichter-ebussman-psekhsar-ssyed7" and
+run "mvn clean package". Next, run "./run -gui". From another terminal, navigate to the root directory,
+cd into "frontend", and run "npm start". If this doesn't happen automatically, open a browser
+(Chrome works well) and navigate to "https://localhost:3000". Finally, fill out the form
+on the web page and get your roadtrip!
 
 ## Errors/Bugs
+While not an explicit error/bug, the user may achieve more/less satisfactory stops for their route
+based on the kinds of preferences they indicated and how well these preferences align with the data
+in the Yelp DB or the Yelp API. However, we have attempted to match these preferences as closely as
+possible.
 
 ## Design decisions
+On the frontend, we decided to limit both the number of user inputs (to reduce the amount of work
+the user has to do) and the number of "free-text" inputs (eg. boxes where user can type anything).
+This significantly reduced the amount of input sanitizing we had to do, and also allows for a
+simpler, more precise user experience, because the user can begin typing a location and it will
+likely show up (biased towards their current location). 
+
 
 ## Tests
 
