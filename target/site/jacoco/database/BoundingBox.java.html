@@ -154,7 +154,7 @@ public final class BoundingBox {
 <span class="fc bfc" id="L154" title="All 2 branches covered.">      if ((categoriesList.contains(&quot;Restaurants&quot;)</span>
 <span class="fc bfc" id="L155" title="All 2 branches covered.">          || categoriesList.contains(&quot;Food&quot;)</span>
 <span class="fc bfc" id="L156" title="All 2 branches covered.">          || categoriesList.contains(&quot;Bars&quot;))</span>
-<span class="pc bpc" id="L157" title="1 of 2 branches missed.">          &amp;&amp; categories.contains(&quot;Restaurant&quot;)) {</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">          &amp;&amp; categories.contains(&quot;Restaurant&quot;)) {</span>
 <span class="fc" id="L158">        Integer priceInt = findPriceField(rs.getString(&quot;attributes&quot;));</span>
 <span class="fc bfc" id="L159" title="All 2 branches covered.">        if (priceInt != null) {</span>
 <span class="fc" id="L160">          price = priceInt;</span>
@@ -162,11 +162,11 @@ public final class BoundingBox {
 <span class="fc" id="L162">              id, name, location, coords, price, rating, reviewCount);</span>
 <span class="fc" id="L163">          attractionsWithinBox.add(nextAttraction);</span>
         }
-<span class="pc bpc" id="L165" title="1 of 4 branches missed.">      } else if (categoriesList.contains(&quot;Museums&quot;) &amp;&amp; categories.contains(&quot;Museum&quot;)) {</span>
-<span class="nc" id="L166">        AttractionNode nextAttraction = new Museum(</span>
+<span class="fc bfc" id="L165" title="All 4 branches covered.">      } else if (categoriesList.contains(&quot;Museums&quot;) &amp;&amp; categories.contains(&quot;Museum&quot;)) {</span>
+<span class="fc" id="L166">        AttractionNode nextAttraction = new Museum(</span>
             id, name, location, coords, price, rating, reviewCount);
-<span class="nc" id="L168">        attractionsWithinBox.add(nextAttraction);</span>
-<span class="pc bpc" id="L169" title="1 of 4 branches missed.">      } else if (categoriesList.contains(&quot;Parks&quot;) &amp;&amp; categories.contains(&quot;Park&quot;)) {</span>
+<span class="fc" id="L168">        attractionsWithinBox.add(nextAttraction);</span>
+<span class="fc bfc" id="L169" title="All 4 branches covered.">      } else if (categoriesList.contains(&quot;Parks&quot;) &amp;&amp; categories.contains(&quot;Park&quot;)) {</span>
 <span class="fc" id="L170">        AttractionNode nextAttraction = new Park(</span>
             id, name, location, coords, price, rating, reviewCount);
 <span class="fc" id="L172">        attractionsWithinBox.add(nextAttraction);</span>
@@ -186,8 +186,8 @@ public final class BoundingBox {
 <span class="fc" id="L186">        reqLat = ((boundingBoxBounds[1] - boundingBoxBounds[0]) / (prefNumStops + 2)) * i</span>
             + boundingBoxBounds[0];
       }
-<span class="pc bpc" id="L189" title="1 of 2 branches missed.">      if (boundingBoxBounds[2] &gt; boundingBoxBounds[3]) { //start lon &gt; end lon</span>
-<span class="nc" id="L190">        reqLon = ((boundingBoxBounds[2] - boundingBoxBounds[3]) / (prefNumStops + 2)) * i</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">      if (boundingBoxBounds[2] &gt; boundingBoxBounds[3]) { //start lon &gt; end lon</span>
+<span class="fc" id="L190">        reqLon = ((boundingBoxBounds[2] - boundingBoxBounds[3]) / (prefNumStops + 2)) * i</span>
             + boundingBoxBounds[3];
       } else {
 <span class="fc" id="L193">        reqLon = ((boundingBoxBounds[3] - boundingBoxBounds[2]) / (prefNumStops + 2)) * i</span>
@@ -429,21 +429,23 @@ public final class BoundingBox {
   }
 
   /**
-   * helper method that finds price field from DB.
+   * Helper method to extract price field from attributes string.
+   * @param attributes - single attribute entry from yelp db
+   * @return price value is attribute string has price, else null
    */
-  private static Integer findPriceField(String attributes) {
-<span class="fc" id="L435">    Integer price = null;</span>
-<span class="fc bfc" id="L436" title="All 2 branches covered.">    if (attributes.contains(&quot;RestaurantsPriceRange2&quot;)) {</span>
-<span class="fc" id="L437">      int startIndex = attributes.indexOf(&quot;RestaurantsPriceRange2&quot;);</span>
-<span class="fc" id="L438">      int priceIndex = startIndex + Constants.PRICE_INDEX;</span>
-<span class="fc" id="L439">      String priceString = attributes.charAt(priceIndex) + &quot;&quot;;</span>
+  public static Integer findPriceField(String attributes) {
+<span class="fc" id="L437">    Integer price = null;</span>
+<span class="fc bfc" id="L438" title="All 2 branches covered.">    if (attributes.contains(&quot;RestaurantsPriceRange2&quot;)) {</span>
+<span class="fc" id="L439">      int startIndex = attributes.indexOf(&quot;RestaurantsPriceRange2&quot;);</span>
+<span class="fc" id="L440">      int priceIndex = startIndex + Constants.PRICE_INDEX;</span>
+<span class="fc" id="L441">      String priceString = attributes.charAt(priceIndex) + &quot;&quot;;</span>
       try {
-<span class="fc" id="L441">        price = Integer.parseInt(priceString);</span>
-<span class="nc" id="L442">      } catch (Exception e) {</span>
+<span class="fc" id="L443">        price = Integer.parseInt(priceString);</span>
+<span class="fc" id="L444">      } catch (Exception e) {</span>
 
-<span class="fc" id="L444">      }</span>
+<span class="fc" id="L446">      }</span>
     }
-<span class="fc" id="L446">    return price;</span>
+<span class="fc" id="L448">    return price;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

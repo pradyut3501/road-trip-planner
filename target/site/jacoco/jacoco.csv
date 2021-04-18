@@ -3,12 +3,12 @@ termProject,edu.brown.cs.student.termProject,Main.FrontHandler,12,0,0,0,2,0,1,0,
 termProject,edu.brown.cs.student.termProject,Main.ExceptionPrinter,26,0,0,0,8,0,1,0,1,0
 termProject,edu.brown.cs.student.termProject,Main,140,8,6,0,38,2,10,1,7,1
 termProject,edu.brown.cs.student.termProject,Main.RouteHandler,676,0,26,0,109,0,14,0,1,0
-termProject,database,BoundingBox,193,997,24,84,37,199,19,45,0,7
+termProject,database,BoundingBox,155,1035,20,88,33,203,15,49,0,7
 termProject,database,Database,9,33,1,1,3,12,1,3,0,3
 termProject,attractions,Park,27,131,0,0,11,33,8,11,8,11
 termProject,attractions,Restaurant,27,139,0,0,11,33,8,11,8,11
 termProject,attractions,Museum,27,131,0,0,11,33,8,11,8,11
 termProject,attractions,Shop,105,61,0,0,23,21,12,7,12,7
-termProject,graph,Dijkstra,71,453,7,25,16,84,6,16,1,5
+termProject,graph,Dijkstra,68,456,5,27,15,85,4,18,1,5
 termProject,graph,Dijkstra.new Comparator() {...},0,86,0,4,0,10,0,4,0,2
 termProject,graph,Dijkstra.new Comparator() {...},0,87,0,4,0,12,0,4,0,2

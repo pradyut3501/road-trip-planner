@@ -243,6 +243,47 @@ public class BoundingBoxTests {
     }
   }
 
+  @Test
+  public void testFindPriceFieldNoPrice() {
+    assertEquals(BoundingBox.findPriceField(""), null);
+    assertEquals(BoundingBox.findPriceField("{u'BusinessAcceptsCreditCards': u'True'}"),
+            null);
+  }
+
+  @Test
+  public void testFindPriceFieldInvalidPricePosition() {
+    assertEquals(BoundingBox.findPriceField(
+            "{u'BusinessAcceptsCreditCards': u'True', u'RestaurantsPriceRange2': u2', " +
+                    "u'BikeParking': u'True', u'RestaurantsDelivery': u'True'}"), null);
+    assertEquals(BoundingBox.findPriceField(
+            "{u'BusinessAcceptsCreditCards': u'True', u'RestaurantsPriceRange2': u' 2', " +
+                    "u'BikeParking': u'True', u'RestaurantsDelivery': u'True'}"), null);
+  }
+
+  @Test
+  public void testFindPriceFieldInvalidPriceValue() {
+    assertEquals(BoundingBox.findPriceField(
+            "{u'BusinessAcceptsCreditCards': u'True', u'RestaurantsPriceRange2': u'-2', " +
+                    "u'BikeParking': u'True', u'RestaurantsDelivery': u'True'}"), null);
+  }
+
+  @Test
+  public void testFindPriceFieldValidPrice() {
+    Integer price = 2;
+    assertEquals(BoundingBox.findPriceField(
+            "{u'BusinessAcceptsCreditCards': u'True', u'RestaurantsPriceRange2': u'2', " +
+                    "u'BikeParking': u'True', u'RestaurantsDelivery': u'True'}"), price);
+  }
+
+  @Test
+  public void testFindPriceFieldExtractsOnlyInteger() {
+    Integer price = 2;
+    assertEquals(BoundingBox.findPriceField(
+            "{u'BusinessAcceptsCreditCards': u'True', u'RestaurantsPriceRange2': u'2.3', " +
+                    "u'BikeParking': u'True', u'RestaurantsDelivery': u'True'}"), price);
+  }
+
+
   private static boolean containsAttractionWithID(List<AttractionNode> attractions, String Id) {
     for (AttractionNode attraction: attractions) {
       if (attraction.getId().equals(Id)) {

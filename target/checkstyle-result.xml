@@ -1,23 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="8.19">
-<file name="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/edu/brown/cs/student/termProject/Main.java">
-</file>
-<file name="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/edu/brown/cs/student/termProject/AttractionNode.java">
-</file>
-<file name="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/edu/brown/cs/student/termProject/Constants.java">
-</file>
-<file name="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Park.java">
-</file>
-<file name="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Museum.java">
-</file>
-<file name="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Shop.java">
-</file>
-<file name="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/attractions/Restaurant.java">
-</file>
 <file name="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/database/BoundingBox.java">
-</file>
-<file name="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/database/Database.java">
-</file>
-<file name="/Users/pradyut/cs0320/term-project-adichter-ebussman-psekhsar-ssyed7/src/main/java/graph/Dijkstra.java">
 </file>
 </checkstyle>

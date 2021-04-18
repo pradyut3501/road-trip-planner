@@ -429,9 +429,11 @@ public final class BoundingBox {
   }
 
   /**
-   * helper method that finds price field from DB.
+   * Helper method to extract price field from attributes string.
+   * @param attributes - single attribute entry from yelp db
+   * @return price value is attribute string has price, else null
    */
-  private static Integer findPriceField(String attributes) {
+  public static Integer findPriceField(String attributes) {
     Integer price = null;
     if (attributes.contains("RestaurantsPriceRange2")) {
       int startIndex = attributes.indexOf("RestaurantsPriceRange2");

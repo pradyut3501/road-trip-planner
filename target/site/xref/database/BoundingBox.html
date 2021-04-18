@@ -437,23 +437,25 @@
 <a class="jxr_linenumber" name="L429" href="#L429">429</a>   }
 <a class="jxr_linenumber" name="L430" href="#L430">430</a> 
 <a class="jxr_linenumber" name="L431" href="#L431">431</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L432" href="#L432">432</a> <em class="jxr_javadoccomment">   * helper method that finds price field from DB.</em>
-<a class="jxr_linenumber" name="L433" href="#L433">433</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Integer findPriceField(String attributes) {
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>     Integer price = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>     <strong class="jxr_keyword">if</strong> (attributes.contains(<span class="jxr_string">"RestaurantsPriceRange2"</span>)) {
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>       <strong class="jxr_keyword">int</strong> startIndex = attributes.indexOf(<span class="jxr_string">"RestaurantsPriceRange2"</span>);
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>       <strong class="jxr_keyword">int</strong> priceIndex = startIndex + Constants.PRICE_INDEX;
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>       String priceString = attributes.charAt(priceIndex) + <span class="jxr_string">""</span>;
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>         price = Integer.parseInt(priceString);
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L443" href="#L443">443</a> 
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>       }
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>     }
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>     <strong class="jxr_keyword">return</strong> price;
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>   }
-<a class="jxr_linenumber" name="L448" href="#L448">448</a> }
+<a class="jxr_linenumber" name="L432" href="#L432">432</a> <em class="jxr_javadoccomment">   * Helper method to extract price field from attributes string.</em>
+<a class="jxr_linenumber" name="L433" href="#L433">433</a> <em class="jxr_javadoccomment">   * @param attributes - single attribute entry from yelp db</em>
+<a class="jxr_linenumber" name="L434" href="#L434">434</a> <em class="jxr_javadoccomment">   * @return price value is attribute string has price, else null</em>
+<a class="jxr_linenumber" name="L435" href="#L435">435</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Integer findPriceField(String attributes) {
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>     Integer price = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>     <strong class="jxr_keyword">if</strong> (attributes.contains(<span class="jxr_string">"RestaurantsPriceRange2"</span>)) {
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>       <strong class="jxr_keyword">int</strong> startIndex = attributes.indexOf(<span class="jxr_string">"RestaurantsPriceRange2"</span>);
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>       <strong class="jxr_keyword">int</strong> priceIndex = startIndex + Constants.PRICE_INDEX;
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>       String priceString = attributes.charAt(priceIndex) + <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>         price = Integer.parseInt(priceString);
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L445" href="#L445">445</a> 
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>       }
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>     }
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>     <strong class="jxr_keyword">return</strong> price;
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>   }
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021. All rights reserved.</div>
