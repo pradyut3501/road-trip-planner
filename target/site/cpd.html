@@ -99,141 +99,20 @@
 <th>File</th>
 <th>Line</th></tr>
 <tr class="b">
-<td>attractions/Restaurant.java</td>
-<td><a href="./xref/attractions/Restaurant.html#L83">83</a></td></tr>
-<tr class="a">
-<td>attractions/Shop.java</td>
-<td><a href="./xref/attractions/Shop.html#L82">82</a></td></tr>
-<tr class="b"><td colspan='2'>
-<div>
-<pre>    value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_RESTAURANTS) * distance;
-   //value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
-    //value = value * (1 - rating *.1);
-    value = value + (1 - rating/Constants.MAX_RATING) * distance;
-    value = value + (Math.abs(price-PreferredPrice)) * distance;
-    value = value * Constants.VALUE_SCALE;
-  //  System.out.println(&quot;restaurant value is: &quot; + value);
-    return value;
-  }
-
-  @Override
-  public void setCost(double c) {
-    cost = c;
-  }
-
-  @Override
-  public double getCost() {
-    return cost;
-  }
-
-  @Override
-  public void setDistance(double c) {distance = c;}
-
-  @Override
-  public double getDistance() { return distance; }
-
-  @Override
-  public void setVisited(boolean c) { visit = c; }
-
-  @Override
-  public boolean getVisited() { return visit; }
-
-  @Override
-  public void setNumPrev(int c) {numPrev = c;}
-
-  @Override
-  public int getNumPrev() {return numPrev;}
-
-  @Override
-  public void reset() {
-    distance = 0;
-    visit = false;
-    numPrev = 0;
-  }
-
-  @Override
-  public int getType() {return 2;}</pre></div></td></tr></table>
-<table border="0" class="bodyTable">
-<tr class="a">
-<th>File</th>
-<th>Line</th></tr>
-<tr class="b">
 <td>attractions/Museum.java</td>
-<td><a href="./xref/attractions/Museum.html#L85">85</a></td></tr>
+<td><a href="./xref/attractions/Museum.html#L94">94</a></td></tr>
 <tr class="a">
 <td>attractions/Park.java</td>
-<td><a href="./xref/attractions/Park.html#L87">87</a></td></tr>
-<tr class="b"><td colspan='2'>
-<div>
-<pre>    value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_MUSEUMS) * distance;
-   // value = value * (1 - rating *.1);
-    value = value + (1 - rating/Constants.MAX_RATING) * distance;
-  //  value = value + (Math.abs(price-PreferredPrice)) * distance;
-    value = value * Constants.VALUE_SCALE;
-  //  System.out.println(&quot;museum value is: &quot; + value);
-    return value;
-  }
-
-  @Override
-  public void setCost(double c) {
-    cost = c;
-  }
-
-  @Override
-  public double getCost() {
-    return cost;
-  }
-
-  @Override
-  public void setDistance(double c) {distance = c;}
-
-  @Override
-  public double getDistance() { return distance; }
-
-  @Override
-  public void setVisited(boolean c) { visit = c; }
-
-  @Override
-  public boolean getVisited() { return visit; }
-
-  @Override
-  public void setNumPrev(int c) {numPrev = c;}
-
-  @Override
-  public int getNumPrev() {return numPrev;}
-
-  @Override
-  public void reset() {
-    distance = 0;
-    visit = false;
-    numPrev = 0;
-  }
-
-  @Override
-  public int getType() {return 0;}</pre></div></td></tr></table>
-<table border="0" class="bodyTable">
-<tr class="a">
-<th>File</th>
-<th>Line</th></tr>
-<tr class="b">
-<td>attractions/Museum.java</td>
-<td><a href="./xref/attractions/Museum.html#L87">87</a></td></tr>
-<tr class="a">
-<td>attractions/Park.java</td>
-<td><a href="./xref/attractions/Park.html#L88">88</a></td></tr>
+<td><a href="./xref/attractions/Park.html#L95">95</a></td></tr>
 <tr class="b">
 <td>attractions/Restaurant.java</td>
-<td><a href="./xref/attractions/Restaurant.html#L87">87</a></td></tr>
+<td><a href="./xref/attractions/Restaurant.html#L92">92</a></td></tr>
 <tr class="a">
 <td>attractions/Shop.java</td>
-<td><a href="./xref/attractions/Shop.html#L86">86</a></td></tr>
+<td><a href="./xref/attractions/Shop.html#L93">93</a></td></tr>
 <tr class="b"><td colspan='2'>
 <div>
-<pre>    value = value + (1 - rating/Constants.MAX_RATING) * distance;
-  //  value = value + (Math.abs(price-PreferredPrice)) * distance;
-    value = value * Constants.VALUE_SCALE;
-  //  System.out.println(&quot;museum value is: &quot; + value);
-    return value;
+<pre>    return value;
   }
 
   @Override

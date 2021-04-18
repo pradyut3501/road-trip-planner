@@ -28,9 +28,9 @@ public class Dijkstra {
   private int costPreference;
   private GeoApiContext connection;
 
-  public Dijkstra(List<AttractionNode> n, GeoApiContext Apiconnection) {
+  public Dijkstra(GeoApiContext Apiconnection) {
     connection = Apiconnection;
-    nodes = n;
+    nodes = new ArrayList<>();
     visited = new HashMap<>();
     distances = new HashMap<>();
     previous = new HashMap<>();
@@ -43,21 +43,12 @@ public class Dijkstra {
     previous = new HashMap<>();
     PriorityQueue<AttractionNode> pq = new PriorityQueue(new Comparator<AttractionNode>() {
       public int compare(AttractionNode o1, AttractionNode o2) {
-//        if ((o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()], pathDistance)) >
-//          (o2.getCost()) + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) {
-//          return 1;
-//        }
-//        if ((o2.getCost() + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) >
-//          (o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()],pathDistance))) {
-//          return -1;
-//        }
-//        return 0;
-        if ((o1.getCost()) >
-          (o2.getCost())) {
+        if ((o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()], pathDistance)) >
+          (o2.getCost()) + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) {
           return 1;
         }
-        if ((o2.getCost()) >
-          (o1.getCost())) {
+        if ((o2.getCost() + o2.generateValue(costPreference, preferredStop[o2.getType()],pathDistance)) >
+          (o1.getCost() + o1.generateValue(costPreference, preferredStop[o1.getType()],pathDistance))) {
           return -1;
         }
         return 0;
@@ -109,6 +100,8 @@ public class Dijkstra {
       curr = previous.get(curr);
     }
     Collections.reverse(shortestPath); //want path to be in order from start to end
+    nodes.remove(start);
+    nodes.remove(end); //remove the dumby nodes
     return shortestPath;
   }
 
@@ -251,9 +244,11 @@ public class Dijkstra {
    * Called in Main.java from the routeHandler.
    * @param prefStop list of how much each type of stop is preferred
    * @param costPref user's preference between $, $$, $$$
+   * @param nodeList the list of attraction nodes
    */
-  public void setPreferences(double[] prefStop, int costPref){
+  public void setPreferences(double[] prefStop, int costPref, List<AttractionNode> nodeList){
     preferredStop = prefStop;
     costPreference = costPref;
+    nodes = nodeList;
   }
 }

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import attractions.Park;
 import com.google.maps.GeoApiContext;
 import database.BoundingBox;
 import database.Database;
@@ -35,7 +36,7 @@ public final class Main {
 
   private static final int DEFAULT_PORT = 4567;
   private static final int TIMER_DELAY = 2000;
-  private static final GeoApiContext
+  public static final GeoApiContext
       APICONNECTION = new GeoApiContext.Builder().apiKey("AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c").build();
 
   // map of latest checkins: maps user id to their latest checkins
@@ -63,15 +64,13 @@ public final class Main {
    */
   private void run() {
     Database.setYelpDatabaseConnection();
-
-
-    List<String> categories = new ArrayList<>();
-    categories.add("Restaurant");
-    categories.add("Park");
-    categories.add("Museum");
-    List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(new double[]{34.136181, -118.432375},
-      new double[]{41.856898,
-        -71.385573}, categories, 5, 3);
+//    List<String> categories = new ArrayList<>();
+//    categories.add("Restaurant");
+//    categories.add("Park");
+//    categories.add("Museum");
+//    List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(new double[]{34.136181, -118.432375},
+//      new double[]{41.856898,
+//        -71.385573}, categories, 5, 3);
 //    double reviewRest = 0.0;
 //    double numRest = 0.0;
 //    double reviewPark = 0.0;
@@ -107,15 +106,15 @@ public final class Main {
 //    System.out.println("Average Number of Reviews for Museum: " + reviewMus/numMus);
 //    System.out.println("Average Number of Reviews for Park: " + reviewPark/numPark);
 //    System.out.println(attractions.size());
-    Dijkstra dij = new Dijkstra(attractions, APICONNECTION);
-    dij.setPreferences(new double[] {10, 30, 100, 10}, 3);
-    List<AttractionNode> path = dij.execute(new double[]{34.136181, -118.432375},
-      new double[]{41.856898,
-        -71.385573}, 4);
-    for (AttractionNode r: path){
-      System.out.println(r.getName() + " " + r.getLocation()[0] + " "+ r.getLocation()[2] +
-        " and a cost of " + r.getCost() + " and a value of " + r.getValue());
-    }
+//    Dijkstra dij = new Dijkstra(attractions, APICONNECTION);
+//    dij.setPreferences(new double[] {10, 30, 100, 10}, 3);
+//    List<AttractionNode> path = dij.execute(new double[]{34.136181, -118.432375},
+//      new double[]{41.856898,
+//        -71.385573}, 4);
+//    for (AttractionNode r: path){
+//      System.out.println(r.getName() + " " + r.getLocation()[0] + " "+ r.getLocation()[2] +
+//        " and a cost of " + r.getCost() + " and a value of " + r.getValue());
+//    }
 
 
     // Parse command line arguments
@@ -219,10 +218,10 @@ public final class Main {
          double middleLong = 0.0;
          try{
          middleLat = data.getDouble("middleLat");
-         middleLong = data.getDouble("middleLong");
-         
+         middleLong = data.getDouble("middleLon");
          }
          catch(JSONException e){
+           System.out.println("Problem getting middle lat: " + e);
          }
 
          System.out.println("Middle Lat " + middleLat + " and middle long " + middleLong);
@@ -247,18 +246,11 @@ public final class Main {
            categories.add("Shop");
          }
          //NEED TO FIX SO THESE ARE NOT HARD SET START AND END
-         List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
-           new double[]{originLat, originLon},
-           new double[]{destLat, destLon}, categories, numStops, costPreference);
-         System.out.println("number of nodes: " + attractions.size());
-         Dijkstra dijkstra = new Dijkstra(attractions, APICONNECTION);
-         dijkstra.setPreferences(preferredStop, costPreference);
-
+         Dijkstra dijkstra = new Dijkstra(APICONNECTION);
          if (numStops > 0) {
             double miles = dijkstra.distanceFormulaAPI(originLat,
               originLon, destLat, destLon) / 1000 / Constants.MILES_TO_KILOMETERS;
              System.out.println("Google Maps API: " + miles);
-
            //check to make sure the inputted max distance is not greater than the minimum distance
           if ((maxDist * Constants.MILES_TO_KILOMETERS) < (dijkstra.distanceFormulaAPI(originLat,
             originLon, destLat, destLon)/1000)){
@@ -266,18 +258,48 @@ public final class Main {
             System.out.println(error);
             return new Gson().toJson(ImmutableMap.of("route", route, "error_message", error));
           }
-           System.out.println("Categories");
-           for (String s : categories) {
-             System.out.println(s);
+           //if the user has to make an intermediate step
+           if (middleLat!= 0.0 && middleLong != 0.0){
+             System.out.println("Intermediate Stop!");
+             double proportionBeforeStop = dijkstra.distanceFormulaAPI(originLat, originLon,
+               middleLat,
+               middleLong)/ (dijkstra.distanceFormulaAPI(originLat,originLon,middleLat,
+               middleLong) + dijkstra.distanceFormulaAPI(middleLat, middleLong, destLat, destLon));
+             double firstHalf = proportionBeforeStop * numStops;
+             int numStopsFirstHalf = (int) Math.floor(firstHalf);
+             int numStopsSecondHalf = numStops - numStopsFirstHalf;
+             System.out.println("First half is : " + numStopsFirstHalf + " and second half is " + numStopsSecondHalf);
+
+             dijkstra.setPreferences(preferredStop, costPreference,BoundingBox.findAttractionsBetween(
+               new double[]{originLat, originLon},
+               new double[]{middleLat, middleLong}, categories, numStopsFirstHalf, costPreference));
+             List<AttractionNode> route1 = dijkstra.execute(new double[]{originLat, originLon},
+               new double[]{middleLat, middleLong}, numStopsFirstHalf);
+             //set new preferences
+             dijkstra.setPreferences(preferredStop, costPreference, BoundingBox.findAttractionsBetween(
+               new double[]{middleLat, middleLong},
+               new double[]{destLat, destLon}, categories, numStopsSecondHalf, costPreference));
+             List<AttractionNode> route2 = dijkstra.execute(new double[]{middleLat, middleLong},
+               new double[]{destLat, destLon}, numStopsSecondHalf);
+
+             route.addAll(route1);
+             //dumby "node" to represent the user inputed intermediate stop
+             route.add(new Park("0", "Intermediate Stop", new String[]{""},
+               new double[]{middleLat,middleLong}, 0.0,0.0,0.0));
+             route.addAll(route2);
+             System.out.println("The length of your first part is " + route1.size() + " and your " +
+               "second part is " + route2.size());
+
            }
-           System.out.println("PreferedStop is: " + preferredStop);
-           for (double d : preferredStop) {
-             System.out.println(d);
-           }
-           System.out.println("CostPreference is: " + costPreference);
+           else{
            //HARD CODED START AND END FOR DIJKSTRA FOR NOW
-           route = dijkstra.execute(new double[]{originLat, originLon},
-             new double[]{destLat, destLon}, numStops);
+             List<AttractionNode> attractions = BoundingBox.findAttractionsBetween(
+               new double[]{originLat, originLon},
+               new double[]{destLat, destLon}, categories, numStops, costPreference);
+             System.out.println("number of nodes: " + attractions.size());
+             dijkstra.setPreferences(preferredStop, costPreference, attractions);
+            route = dijkstra.execute(new double[]{originLat, originLon},
+             new double[]{destLat, destLon}, numStops);}
          }
          else if (numStops == 0){
            error = "This route has no stops";
@@ -287,8 +309,6 @@ public final class Main {
            error = "The number of stops cannot be negative";
            return new Gson().toJson(ImmutableMap.of("route", route, "error_message", error));
          }
-
-
          double routeLength = 0;
          for (int i = 1; i< route.size(); i++){
            routeLength += dijkstra.distanceFormulaAPI(route.get(i-1).getCoordinates()[0],
@@ -310,7 +330,9 @@ public final class Main {
            route = new ArrayList<>();
          }
          for (AttractionNode r: route){
-           System.out.println(r.getName() + " " + r.getLocation()[0] + " "+ r.getLocation()[2] +
+//           System.out.println(r.getName() + " " + r.getLocation()[0] + " "+ r.getLocation()[2] +
+//             " and a cost of " + r.getCost() + " and a value of " + r.getValue());
+           System.out.println(r.getName() + " "  +
              " and a cost of " + r.getCost() + " and a value of " + r.getValue());
          }
 

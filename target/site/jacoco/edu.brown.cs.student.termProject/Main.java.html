@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import attractions.Park;
 import com.google.maps.GeoApiContext;
 import database.BoundingBox;
 import database.Database;
@@ -35,8 +36,8 @@ public final class Main {
 
   private static final int DEFAULT_PORT = 4567;
   private static final int TIMER_DELAY = 2000;
-  private static final GeoApiContext
-<span class="nc" id="L39">      APICONNECTION = new GeoApiContext.Builder().apiKey(&quot;AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c&quot;).build();</span>
+  public static final GeoApiContext
+<span class="fc" id="L40">      APICONNECTION = new GeoApiContext.Builder().apiKey(&quot;AIzaSyAbX-U5h4aaNk2TTyrhYfFBG5a1C3zGU-c&quot;).build();</span>
 
   // map of latest checkins: maps user id to their latest checkins
 
@@ -45,8 +46,8 @@ public final class Main {
    * @param args An array of command line arguments
    */
   public static void main(String[] args) {
-<span class="nc" id="L48">    new Main(args).run();</span>
-<span class="nc" id="L49">  }</span>
+<span class="nc" id="L49">    new Main(args).run();</span>
+<span class="nc" id="L50">  }</span>
 
   private final String[] args;
 
@@ -54,24 +55,22 @@ public final class Main {
    * main constructor.
    * @param args args.
    */
-<span class="nc" id="L57">  private Main(String[] args) {</span>
-<span class="nc" id="L58">    this.args = args;</span>
-<span class="nc" id="L59">  }</span>
+<span class="nc" id="L58">  private Main(String[] args) {</span>
+<span class="nc" id="L59">    this.args = args;</span>
+<span class="nc" id="L60">  }</span>
 
   /**
    *
    */
   private void run() {
-<span class="nc" id="L65">    Database.setYelpDatabaseConnection();</span>
-
-
-<span class="nc" id="L68">    List&lt;String&gt; categories = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L69">    categories.add(&quot;Restaurant&quot;);</span>
-<span class="nc" id="L70">    categories.add(&quot;Park&quot;);</span>
-<span class="nc" id="L71">    categories.add(&quot;Museum&quot;);</span>
-<span class="nc" id="L72">    List&lt;AttractionNode&gt; attractions = BoundingBox.findAttractionsBetween(new double[]{34.136181, -118.432375},</span>
-      new double[]{41.856898,
-        -71.385573}, categories, 5, 3);
+<span class="nc" id="L66">    Database.setYelpDatabaseConnection();</span>
+//    List&lt;String&gt; categories = new ArrayList&lt;&gt;();
+//    categories.add(&quot;Restaurant&quot;);
+//    categories.add(&quot;Park&quot;);
+//    categories.add(&quot;Museum&quot;);
+//    List&lt;AttractionNode&gt; attractions = BoundingBox.findAttractionsBetween(new double[]{34.136181, -118.432375},
+//      new double[]{41.856898,
+//        -71.385573}, categories, 5, 3);
 //    double reviewRest = 0.0;
 //    double numRest = 0.0;
 //    double reviewPark = 0.0;
@@ -107,45 +106,45 @@ public final class Main {
 //    System.out.println(&quot;Average Number of Reviews for Museum: &quot; + reviewMus/numMus);
 //    System.out.println(&quot;Average Number of Reviews for Park: &quot; + reviewPark/numPark);
 //    System.out.println(attractions.size());
-<span class="nc" id="L110">    Dijkstra dij = new Dijkstra(attractions, APICONNECTION);</span>
-<span class="nc" id="L111">    dij.setPreferences(new double[] {10, 30, 100, 10}, 3);</span>
-<span class="nc" id="L112">    List&lt;AttractionNode&gt; path = dij.execute(new double[]{34.136181, -118.432375},</span>
-      new double[]{41.856898,
-        -71.385573}, 4);
-<span class="nc bnc" id="L115" title="All 2 branches missed.">    for (AttractionNode r: path){</span>
-<span class="nc" id="L116">      System.out.println(r.getName() + &quot; &quot; + r.getLocation()[0] + &quot; &quot;+ r.getLocation()[2] +</span>
-<span class="nc" id="L117">        &quot; and a cost of &quot; + r.getCost() + &quot; and a value of &quot; + r.getValue());</span>
-<span class="nc" id="L118">    }</span>
+//    Dijkstra dij = new Dijkstra(attractions, APICONNECTION);
+//    dij.setPreferences(new double[] {10, 30, 100, 10}, 3);
+//    List&lt;AttractionNode&gt; path = dij.execute(new double[]{34.136181, -118.432375},
+//      new double[]{41.856898,
+//        -71.385573}, 4);
+//    for (AttractionNode r: path){
+//      System.out.println(r.getName() + &quot; &quot; + r.getLocation()[0] + &quot; &quot;+ r.getLocation()[2] +
+//        &quot; and a cost of &quot; + r.getCost() + &quot; and a value of &quot; + r.getValue());
+//    }
 
 
     // Parse command line arguments
-<span class="nc" id="L122">    OptionParser parser = new OptionParser();</span>
-<span class="nc" id="L123">    parser.accepts(&quot;gui&quot;);</span>
-<span class="nc" id="L124">    parser.accepts(&quot;port&quot;).withRequiredArg().ofType(Integer.class)</span>
-<span class="nc" id="L125">        .defaultsTo(DEFAULT_PORT);</span>
-<span class="nc" id="L126">    OptionSet options = parser.parse(args);</span>
+<span class="nc" id="L121">    OptionParser parser = new OptionParser();</span>
+<span class="nc" id="L122">    parser.accepts(&quot;gui&quot;);</span>
+<span class="nc" id="L123">    parser.accepts(&quot;port&quot;).withRequiredArg().ofType(Integer.class)</span>
+<span class="nc" id="L124">        .defaultsTo(DEFAULT_PORT);</span>
+<span class="nc" id="L125">    OptionSet options = parser.parse(args);</span>
 
-<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (options.has(&quot;gui&quot;)) {</span>
-<span class="nc" id="L129">      runSparkServer((int) options.valueOf(&quot;port&quot;));</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    if (options.has(&quot;gui&quot;)) {</span>
+<span class="nc" id="L128">      runSparkServer((int) options.valueOf(&quot;port&quot;));</span>
     }
 
-<span class="nc" id="L132">  }</span>
+<span class="nc" id="L131">  }</span>
 
   /**
    * creates free marker engine.
    * @return free marker engine
    */
   private static FreeMarkerEngine createEngine() {
-<span class="nc" id="L139">    Configuration config = new Configuration();</span>
-<span class="nc" id="L140">    File templates = new File(&quot;src/main/resources/spark/template/freemarker&quot;);</span>
+<span class="nc" id="L138">    Configuration config = new Configuration();</span>
+<span class="nc" id="L139">    File templates = new File(&quot;src/main/resources/spark/template/freemarker&quot;);</span>
     try {
-<span class="nc" id="L142">      config.setDirectoryForTemplateLoading(templates);</span>
-<span class="nc" id="L143">    } catch (IOException ioe) {</span>
-<span class="nc" id="L144">      System.out.printf(&quot;ERROR: Unable use %s for template loading.%n&quot;,</span>
+<span class="nc" id="L141">      config.setDirectoryForTemplateLoading(templates);</span>
+<span class="nc" id="L142">    } catch (IOException ioe) {</span>
+<span class="nc" id="L143">      System.out.printf(&quot;ERROR: Unable use %s for template loading.%n&quot;,</span>
           templates);
-<span class="nc" id="L146">      System.exit(1);</span>
-<span class="nc" id="L147">    }</span>
-<span class="nc" id="L148">    return new FreeMarkerEngine(config);</span>
+<span class="nc" id="L145">      System.exit(1);</span>
+<span class="nc" id="L146">    }</span>
+<span class="nc" id="L147">    return new FreeMarkerEngine(config);</span>
   }
 
   /**
@@ -153,33 +152,33 @@ public final class Main {
    * @param port given number
    */
   private void runSparkServer(int port) {
-<span class="nc" id="L156">    Spark.port(port);</span>
-<span class="nc" id="L157">    Spark.externalStaticFileLocation(&quot;src/main/resources/static&quot;);</span>
-<span class="nc" id="L158">    Spark.exception(Exception.class, new ExceptionPrinter());</span>
+<span class="nc" id="L155">    Spark.port(port);</span>
+<span class="nc" id="L156">    Spark.externalStaticFileLocation(&quot;src/main/resources/static&quot;);</span>
+<span class="nc" id="L157">    Spark.exception(Exception.class, new ExceptionPrinter());</span>
 
 
-<span class="nc" id="L161">    Spark.options(&quot;/*&quot;, (request, response) -&gt; {</span>
-<span class="nc" id="L162">      String accessControlRequestHeaders = request.headers(&quot;Access-Control-Request-Headers&quot;);</span>
-<span class="nc bnc" id="L163" title="All 2 branches missed.">      if (accessControlRequestHeaders != null) {</span>
-<span class="nc" id="L164">        response.header(&quot;Access-Control-Allow-Headers&quot;, accessControlRequestHeaders);</span>
+<span class="nc" id="L160">    Spark.options(&quot;/*&quot;, (request, response) -&gt; {</span>
+<span class="nc" id="L161">      String accessControlRequestHeaders = request.headers(&quot;Access-Control-Request-Headers&quot;);</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">      if (accessControlRequestHeaders != null) {</span>
+<span class="nc" id="L163">        response.header(&quot;Access-Control-Allow-Headers&quot;, accessControlRequestHeaders);</span>
       }
 
-<span class="nc" id="L167">      String accessControlRequestMethod = request.headers(&quot;Access-Control-Request-Method&quot;);</span>
+<span class="nc" id="L166">      String accessControlRequestMethod = request.headers(&quot;Access-Control-Request-Method&quot;);</span>
 
-<span class="nc bnc" id="L169" title="All 2 branches missed.">      if (accessControlRequestMethod != null) {</span>
-<span class="nc" id="L170">        response.header(&quot;Access-Control-Allow-Methods&quot;, accessControlRequestMethod);</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">      if (accessControlRequestMethod != null) {</span>
+<span class="nc" id="L169">        response.header(&quot;Access-Control-Allow-Methods&quot;, accessControlRequestMethod);</span>
       }
 
-<span class="nc" id="L173">      return &quot;OK&quot;;</span>
+<span class="nc" id="L172">      return &quot;OK&quot;;</span>
     });
 
-<span class="nc" id="L176">    FreeMarkerEngine freeMarker = createEngine();</span>
+<span class="nc" id="L175">    FreeMarkerEngine freeMarker = createEngine();</span>
 
     // Setup Spark Routes
-<span class="nc" id="L179">    Spark.before((request, response) -&gt; response.header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;));</span>
-<span class="nc" id="L180">    Spark.exception(Exception.class, new ExceptionPrinter());</span>
-<span class="nc" id="L181">    Spark.post(&quot;/route&quot;, new RouteHandler());</span>
-<span class="nc" id="L182">  }</span>
+<span class="nc" id="L178">    Spark.before((request, response) -&gt; response.header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;));</span>
+<span class="nc" id="L179">    Spark.exception(Exception.class, new ExceptionPrinter());</span>
+<span class="nc" id="L180">    Spark.post(&quot;/route&quot;, new RouteHandler());</span>
+<span class="nc" id="L181">  }</span>
 
   /**
    * Handle requests to the front page of our Stars website.
@@ -187,9 +186,9 @@ public final class Main {
   private static class FrontHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
-<span class="nc" id="L190">      Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;title&quot;,</span>
+<span class="nc" id="L189">      Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;title&quot;,</span>
           &quot;Stars: Query the database&quot;, &quot;answer&quot;, &quot; &quot;);
-<span class="nc" id="L192">      return new ModelAndView(variables, &quot;query.ftl&quot;);</span>
+<span class="nc" id="L191">      return new ModelAndView(variables, &quot;query.ftl&quot;);</span>
     }
   }
   
@@ -199,127 +198,150 @@ public final class Main {
    private static class RouteHandler implements Route {
      @Override
      public Object handle(Request request, Response response) throws Exception {
-<span class="nc" id="L202">      String error = &quot;&quot;;</span>
-<span class="nc" id="L203">       List&lt;AttractionNode&gt; route = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L201">      String error = &quot;&quot;;</span>
+<span class="nc" id="L202">       List&lt;AttractionNode&gt; route = new ArrayList&lt;&gt;();</span>
        try{
-<span class="nc" id="L205">         JSONObject data = new JSONObject(request.body());</span>
+<span class="nc" id="L204">         JSONObject data = new JSONObject(request.body());</span>
          //preferences which will be used for value heuristic
-<span class="nc" id="L207">         int costPreference = data.getInt(&quot;costPref&quot;);</span>
-<span class="nc" id="L208">         double restaurantValue = data.getDouble(&quot;restValue&quot;);</span>
-<span class="nc" id="L209">         double museumValue = data.getDouble(&quot;musValue&quot;);</span>
-<span class="nc" id="L210">         double parkValue = data.getDouble(&quot;parkValue&quot;);</span>
-<span class="nc" id="L211">         double shopValue = data.getDouble(&quot;shopValue&quot;);</span>
-<span class="nc" id="L212">         double[] preferredStop = {museumValue, parkValue, restaurantValue, shopValue};</span>
-<span class="nc" id="L213">         double originLat = data.getDouble(&quot;originLat&quot;);</span>
-<span class="nc" id="L214">         double originLon = data.getDouble(&quot;originLon&quot;);</span>
-<span class="nc" id="L215">         double destLat = data.getDouble(&quot;destLat&quot;);</span>
-<span class="nc" id="L216">         double destLon = data.getDouble(&quot;destLon&quot;);</span>
-<span class="nc" id="L217">         double maxDist = data.getDouble(&quot;maxDist&quot;);</span>
-<span class="nc" id="L218">         double middleLat = 0.0;</span>
-<span class="nc" id="L219">         double middleLong = 0.0;</span>
+<span class="nc" id="L206">         int costPreference = data.getInt(&quot;costPref&quot;);</span>
+<span class="nc" id="L207">         double restaurantValue = data.getDouble(&quot;restValue&quot;);</span>
+<span class="nc" id="L208">         double museumValue = data.getDouble(&quot;musValue&quot;);</span>
+<span class="nc" id="L209">         double parkValue = data.getDouble(&quot;parkValue&quot;);</span>
+<span class="nc" id="L210">         double shopValue = data.getDouble(&quot;shopValue&quot;);</span>
+<span class="nc" id="L211">         double[] preferredStop = {museumValue, parkValue, restaurantValue, shopValue};</span>
+<span class="nc" id="L212">         double originLat = data.getDouble(&quot;originLat&quot;);</span>
+<span class="nc" id="L213">         double originLon = data.getDouble(&quot;originLon&quot;);</span>
+<span class="nc" id="L214">         double destLat = data.getDouble(&quot;destLat&quot;);</span>
+<span class="nc" id="L215">         double destLon = data.getDouble(&quot;destLon&quot;);</span>
+<span class="nc" id="L216">         double maxDist = data.getDouble(&quot;maxDist&quot;);</span>
+<span class="nc" id="L217">         double middleLat = 0.0;</span>
+<span class="nc" id="L218">         double middleLong = 0.0;</span>
          try{
-<span class="nc" id="L221">         middleLat = data.getDouble(&quot;middleLat&quot;);</span>
-<span class="nc" id="L222">         middleLong = data.getDouble(&quot;middleLong&quot;);</span>
-         
+<span class="nc" id="L220">         middleLat = data.getDouble(&quot;middleLat&quot;);</span>
+<span class="nc" id="L221">         middleLong = data.getDouble(&quot;middleLon&quot;);</span>
          }
-<span class="nc" id="L225">         catch(JSONException e){</span>
-<span class="nc" id="L226">         }</span>
+<span class="nc" id="L223">         catch(JSONException e){</span>
+<span class="nc" id="L224">           System.out.println(&quot;Problem getting middle lat: &quot; + e);</span>
+<span class="nc" id="L225">         }</span>
 
-<span class="nc" id="L228">         System.out.println(&quot;Middle Lat &quot; + middleLat + &quot; and middle long &quot; + middleLong);</span>
-<span class="nc" id="L229">         int numStops = 0;</span>
-<span class="nc" id="L230">         try{ numStops = data.getInt(&quot;stopPref&quot;);}</span>
-<span class="nc" id="L231">         catch(Exception e){</span>
-<span class="nc" id="L232">           error = &quot;Number of stops input is in the wrong format. Must be an integer greater than&quot; +</span>
+<span class="nc" id="L227">         System.out.println(&quot;Middle Lat &quot; + middleLat + &quot; and middle long &quot; + middleLong);</span>
+<span class="nc" id="L228">         int numStops = 0;</span>
+<span class="nc" id="L229">         try{ numStops = data.getInt(&quot;stopPref&quot;);}</span>
+<span class="nc" id="L230">         catch(Exception e){</span>
+<span class="nc" id="L231">           error = &quot;Number of stops input is in the wrong format. Must be an integer greater than&quot; +</span>
              &quot; 0&quot;;
-<span class="nc" id="L234">           return new Gson().toJson(ImmutableMap.of(&quot;route&quot;, route, &quot;error_message&quot;, error));</span>
-<span class="nc" id="L235">         }</span>
-<span class="nc" id="L236">         List&lt;String&gt; categories = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L237" title="All 2 branches missed.">         if (restaurantValue &gt;= 0.3) {</span>
-<span class="nc" id="L238">           categories.add(&quot;Restaurant&quot;);</span>
+<span class="nc" id="L233">           return new Gson().toJson(ImmutableMap.of(&quot;route&quot;, route, &quot;error_message&quot;, error));</span>
+<span class="nc" id="L234">         }</span>
+<span class="nc" id="L235">         List&lt;String&gt; categories = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">         if (restaurantValue &gt;= 0.3) {</span>
+<span class="nc" id="L237">           categories.add(&quot;Restaurant&quot;);</span>
          }
-<span class="nc bnc" id="L240" title="All 2 branches missed.">         if (parkValue &gt;= 0.3) {</span>
-<span class="nc" id="L241">           categories.add(&quot;Park&quot;);</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">         if (parkValue &gt;= 0.3) {</span>
+<span class="nc" id="L240">           categories.add(&quot;Park&quot;);</span>
          }
-<span class="nc bnc" id="L243" title="All 2 branches missed.">         if (museumValue &gt;= 0.3) {</span>
-<span class="nc" id="L244">           categories.add(&quot;Museum&quot;);</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">         if (museumValue &gt;= 0.3) {</span>
+<span class="nc" id="L243">           categories.add(&quot;Museum&quot;);</span>
          }
-<span class="nc bnc" id="L246" title="All 2 branches missed.">         if (shopValue &gt;= 0.3){</span>
-<span class="nc" id="L247">           categories.add(&quot;Shop&quot;);</span>
+<span class="nc bnc" id="L245" title="All 2 branches missed.">         if (shopValue &gt;= 0.3){</span>
+<span class="nc" id="L246">           categories.add(&quot;Shop&quot;);</span>
          }
          //NEED TO FIX SO THESE ARE NOT HARD SET START AND END
-<span class="nc" id="L250">         List&lt;AttractionNode&gt; attractions = BoundingBox.findAttractionsBetween(</span>
-           new double[]{originLat, originLon},
-           new double[]{destLat, destLon}, categories, numStops, costPreference);
-<span class="nc" id="L253">         System.out.println(&quot;number of nodes: &quot; + attractions.size());</span>
-<span class="nc" id="L254">         Dijkstra dijkstra = new Dijkstra(attractions, APICONNECTION);</span>
-<span class="nc" id="L255">         dijkstra.setPreferences(preferredStop, costPreference);</span>
-
-<span class="nc bnc" id="L257" title="All 2 branches missed.">         if (numStops &gt; 0) {</span>
-<span class="nc" id="L258">            double miles = dijkstra.distanceFormulaAPI(originLat,</span>
+<span class="nc" id="L249">         Dijkstra dijkstra = new Dijkstra(APICONNECTION);</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">         if (numStops &gt; 0) {</span>
+<span class="nc" id="L251">            double miles = dijkstra.distanceFormulaAPI(originLat,</span>
               originLon, destLat, destLon) / 1000 / Constants.MILES_TO_KILOMETERS;
-<span class="nc" id="L260">             System.out.println(&quot;Google Maps API: &quot; + miles);</span>
-
+<span class="nc" id="L253">             System.out.println(&quot;Google Maps API: &quot; + miles);</span>
            //check to make sure the inputted max distance is not greater than the minimum distance
-<span class="nc bnc" id="L263" title="All 2 branches missed.">          if ((maxDist * Constants.MILES_TO_KILOMETERS) &lt; (dijkstra.distanceFormulaAPI(originLat,</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">          if ((maxDist * Constants.MILES_TO_KILOMETERS) &lt; (dijkstra.distanceFormulaAPI(originLat,</span>
             originLon, destLat, destLon)/1000)){
-<span class="nc" id="L265">            error = &quot;It is impossible to complete the trip in &quot; + maxDist + &quot; miles&quot;;</span>
-<span class="nc" id="L266">            System.out.println(error);</span>
-<span class="nc" id="L267">            return new Gson().toJson(ImmutableMap.of(&quot;route&quot;, route, &quot;error_message&quot;, error));</span>
+<span class="nc" id="L257">            error = &quot;It is impossible to complete the trip in &quot; + maxDist + &quot; miles&quot;;</span>
+<span class="nc" id="L258">            System.out.println(error);</span>
+<span class="nc" id="L259">            return new Gson().toJson(ImmutableMap.of(&quot;route&quot;, route, &quot;error_message&quot;, error));</span>
           }
-<span class="nc" id="L269">           System.out.println(&quot;Categories&quot;);</span>
-<span class="nc bnc" id="L270" title="All 2 branches missed.">           for (String s : categories) {</span>
-<span class="nc" id="L271">             System.out.println(s);</span>
-<span class="nc" id="L272">           }</span>
-<span class="nc" id="L273">           System.out.println(&quot;PreferedStop is: &quot; + preferredStop);</span>
-<span class="nc bnc" id="L274" title="All 2 branches missed.">           for (double d : preferredStop) {</span>
-<span class="nc" id="L275">             System.out.println(d);</span>
-           }
-<span class="nc" id="L277">           System.out.println(&quot;CostPreference is: &quot; + costPreference);</span>
+           //if the user has to make an intermediate step
+<span class="nc bnc" id="L262" title="All 4 branches missed.">           if (middleLat!= 0.0 &amp;&amp; middleLong != 0.0){</span>
+<span class="nc" id="L263">             System.out.println(&quot;Intermediate Stop!&quot;);</span>
+<span class="nc" id="L264">             double proportionBeforeStop = dijkstra.distanceFormulaAPI(originLat, originLon,</span>
+               middleLat,
+<span class="nc" id="L266">               middleLong)/ (dijkstra.distanceFormulaAPI(originLat,originLon,middleLat,</span>
+<span class="nc" id="L267">               middleLong) + dijkstra.distanceFormulaAPI(middleLat, middleLong, destLat, destLon));</span>
+<span class="nc" id="L268">             double firstHalf = proportionBeforeStop * numStops;</span>
+<span class="nc" id="L269">             int numStopsFirstHalf = (int) Math.floor(firstHalf);</span>
+<span class="nc" id="L270">             int numStopsSecondHalf = numStops - numStopsFirstHalf;</span>
+<span class="nc" id="L271">             System.out.println(&quot;First half is : &quot; + numStopsFirstHalf + &quot; and second half is &quot; + numStopsSecondHalf);</span>
+
+<span class="nc" id="L273">             dijkstra.setPreferences(preferredStop, costPreference,BoundingBox.findAttractionsBetween(</span>
+               new double[]{originLat, originLon},
+               new double[]{middleLat, middleLong}, categories, numStopsFirstHalf, costPreference));
+<span class="nc" id="L276">             List&lt;AttractionNode&gt; route1 = dijkstra.execute(new double[]{originLat, originLon},</span>
+               new double[]{middleLat, middleLong}, numStopsFirstHalf);
+             //set new preferences
+<span class="nc" id="L279">             dijkstra.setPreferences(preferredStop, costPreference, BoundingBox.findAttractionsBetween(</span>
+               new double[]{middleLat, middleLong},
+               new double[]{destLat, destLon}, categories, numStopsSecondHalf, costPreference));
+<span class="nc" id="L282">             List&lt;AttractionNode&gt; route2 = dijkstra.execute(new double[]{middleLat, middleLong},</span>
+               new double[]{destLat, destLon}, numStopsSecondHalf);
+
+<span class="nc" id="L285">             route.addAll(route1);</span>
+             //dumby &quot;node&quot; to represent the user inputed intermediate stop
+<span class="nc" id="L287">             route.add(new Park(&quot;0&quot;, &quot;Intermediate Stop&quot;, new String[]{&quot;&quot;},</span>
+               new double[]{middleLat,middleLong}, 0.0,0.0,0.0));
+<span class="nc" id="L289">             route.addAll(route2);</span>
+<span class="nc" id="L290">             System.out.println(&quot;The length of your first part is &quot; + route1.size() + &quot; and your &quot; +</span>
+<span class="nc" id="L291">               &quot;second part is &quot; + route2.size());</span>
+
+<span class="nc" id="L293">           }</span>
+           else{
            //HARD CODED START AND END FOR DIJKSTRA FOR NOW
-<span class="nc" id="L279">           route = dijkstra.execute(new double[]{originLat, originLon},</span>
-             new double[]{destLat, destLon}, numStops);
-<span class="nc" id="L281">         }</span>
-<span class="nc bnc" id="L282" title="All 2 branches missed.">         else if (numStops == 0){</span>
-<span class="nc" id="L283">           error = &quot;This route has no stops&quot;;</span>
-<span class="nc" id="L284">           return new Gson().toJson(ImmutableMap.of(&quot;route&quot;, route, &quot;error_message&quot;, error));</span>
+<span class="nc" id="L296">             List&lt;AttractionNode&gt; attractions = BoundingBox.findAttractionsBetween(</span>
+               new double[]{originLat, originLon},
+               new double[]{destLat, destLon}, categories, numStops, costPreference);
+<span class="nc" id="L299">             System.out.println(&quot;number of nodes: &quot; + attractions.size());</span>
+<span class="nc" id="L300">             dijkstra.setPreferences(preferredStop, costPreference, attractions);</span>
+<span class="nc" id="L301">            route = dijkstra.execute(new double[]{originLat, originLon},</span>
+             new double[]{destLat, destLon}, numStops);}
+<span class="nc" id="L303">         }</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">         else if (numStops == 0){</span>
+<span class="nc" id="L305">           error = &quot;This route has no stops&quot;;</span>
+<span class="nc" id="L306">           return new Gson().toJson(ImmutableMap.of(&quot;route&quot;, route, &quot;error_message&quot;, error));</span>
          }
-<span class="nc bnc" id="L286" title="All 2 branches missed.">         else if (numStops &lt; 0){</span>
-<span class="nc" id="L287">           error = &quot;The number of stops cannot be negative&quot;;</span>
-<span class="nc" id="L288">           return new Gson().toJson(ImmutableMap.of(&quot;route&quot;, route, &quot;error_message&quot;, error));</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">         else if (numStops &lt; 0){</span>
+<span class="nc" id="L309">           error = &quot;The number of stops cannot be negative&quot;;</span>
+<span class="nc" id="L310">           return new Gson().toJson(ImmutableMap.of(&quot;route&quot;, route, &quot;error_message&quot;, error));</span>
          }
-
-
-<span class="nc" id="L292">         double routeLength = 0;</span>
-<span class="nc bnc" id="L293" title="All 2 branches missed.">         for (int i = 1; i&lt; route.size(); i++){</span>
-<span class="nc" id="L294">           routeLength += dijkstra.distanceFormulaAPI(route.get(i-1).getCoordinates()[0],</span>
-<span class="nc" id="L295">             route.get(i-1).getCoordinates()[1],route.get(i).getCoordinates()[0],</span>
-<span class="nc" id="L296">             route.get(i).getCoordinates()[1]);</span>
+<span class="nc" id="L312">         double routeLength = 0;</span>
+<span class="nc bnc" id="L313" title="All 2 branches missed.">         for (int i = 1; i&lt; route.size(); i++){</span>
+<span class="nc" id="L314">           routeLength += dijkstra.distanceFormulaAPI(route.get(i-1).getCoordinates()[0],</span>
+<span class="nc" id="L315">             route.get(i-1).getCoordinates()[1],route.get(i).getCoordinates()[0],</span>
+<span class="nc" id="L316">             route.get(i).getCoordinates()[1]);</span>
          }
-<span class="nc" id="L298">         routeLength += dijkstra.distanceFormulaAPI(route.get(0).getCoordinates()[0],</span>
-<span class="nc" id="L299">           route.get(0).getCoordinates()[1], originLat, originLon);</span>
-<span class="nc" id="L300">         routeLength += dijkstra.distanceFormulaAPI(route.get(route.size()-1).getCoordinates()[0],</span>
-<span class="nc" id="L301">           route.get(route.size()-1).getCoordinates()[1], destLat, destLon);</span>
-<span class="nc" id="L302">         routeLength = (routeLength/1000) / Constants.MILES_TO_KILOMETERS;</span>
-<span class="nc" id="L303">         System.out.println(&quot;Dijkstra's Route is this length &quot; + route.size() + &quot; and this many &quot; +</span>
+<span class="nc" id="L318">         routeLength += dijkstra.distanceFormulaAPI(route.get(0).getCoordinates()[0],</span>
+<span class="nc" id="L319">           route.get(0).getCoordinates()[1], originLat, originLon);</span>
+<span class="nc" id="L320">         routeLength += dijkstra.distanceFormulaAPI(route.get(route.size()-1).getCoordinates()[0],</span>
+<span class="nc" id="L321">           route.get(route.size()-1).getCoordinates()[1], destLat, destLon);</span>
+<span class="nc" id="L322">         routeLength = (routeLength/1000) / Constants.MILES_TO_KILOMETERS;</span>
+<span class="nc" id="L323">         System.out.println(&quot;Dijkstra's Route is this length &quot; + route.size() + &quot; and this many &quot; +</span>
            &quot;miles: &quot; + routeLength);
-<span class="nc bnc" id="L305" title="All 2 branches missed.">         if (routeLength &gt; maxDist){</span>
-<span class="nc" id="L306">           double diff = Math.ceil(routeLength-maxDist);</span>
-<span class="nc" id="L307">           error = &quot;Unfortunately, we cannot plan you a roadtrip under &quot; + maxDist + &quot; miles. You&quot; +</span>
+<span class="nc bnc" id="L325" title="All 2 branches missed.">         if (routeLength &gt; maxDist){</span>
+<span class="nc" id="L326">           double diff = Math.ceil(routeLength-maxDist);</span>
+<span class="nc" id="L327">           error = &quot;Unfortunately, we cannot plan you a roadtrip under &quot; + maxDist + &quot; miles. You&quot; +</span>
              &quot; would need to increase your distance constraint by &quot; + diff;
-<span class="nc" id="L309">           System.out.println(error);</span>
-<span class="nc" id="L310">           route = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L329">           System.out.println(error);</span>
+<span class="nc" id="L330">           route = new ArrayList&lt;&gt;();</span>
          }
-<span class="nc bnc" id="L312" title="All 2 branches missed.">         for (AttractionNode r: route){</span>
-<span class="nc" id="L313">           System.out.println(r.getName() + &quot; &quot; + r.getLocation()[0] + &quot; &quot;+ r.getLocation()[2] +</span>
-<span class="nc" id="L314">             &quot; and a cost of &quot; + r.getCost() + &quot; and a value of &quot; + r.getValue());</span>
-<span class="nc" id="L315">         }</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">         for (AttractionNode r: route){</span>
+//           System.out.println(r.getName() + &quot; &quot; + r.getLocation()[0] + &quot; &quot;+ r.getLocation()[2] +
+//             &quot; and a cost of &quot; + r.getCost() + &quot; and a value of &quot; + r.getValue());
+<span class="nc" id="L335">           System.out.println(r.getName() + &quot; &quot;  +</span>
+<span class="nc" id="L336">             &quot; and a cost of &quot; + r.getCost() + &quot; and a value of &quot; + r.getValue());</span>
+<span class="nc" id="L337">         }</span>
 
-<span class="nc" id="L317">       } catch(Exception e){</span>
-<span class="nc" id="L318">         System.out.println(&quot;problem with dijkstras&quot;);</span>
-<span class="nc" id="L319">         e.printStackTrace();</span>
-<span class="nc" id="L320">       }</span>
+<span class="nc" id="L339">       } catch(Exception e){</span>
+<span class="nc" id="L340">         System.out.println(&quot;problem with dijkstras&quot;);</span>
+<span class="nc" id="L341">         e.printStackTrace();</span>
+<span class="nc" id="L342">       }</span>
 
-<span class="nc" id="L322">       Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;route&quot;, route, &quot;error_message&quot;, error);</span>
+<span class="nc" id="L344">       Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;route&quot;, route, &quot;error_message&quot;, error);</span>
 
      //  System.out.println(variables);
        try{
@@ -328,7 +350,7 @@ public final class Main {
          System.out.println(&quot;something went wrong here&quot;);
          e.printStackTrace();
        }
-<span class="nc" id="L331">       return new Gson().toJson(variables);</span>
+<span class="nc" id="L353">       return new Gson().toJson(variables);</span>
      }
    }
 
@@ -338,15 +360,15 @@ public final class Main {
   private static class ExceptionPrinter implements ExceptionHandler {
     @Override
     public void handle(Exception e, Request req, Response res) {
-<span class="nc" id="L341">      res.status(500);</span>
-<span class="nc" id="L342">      StringWriter stacktrace = new StringWriter();</span>
-<span class="nc" id="L343">      try (PrintWriter pw = new PrintWriter(stacktrace)) {</span>
-<span class="nc" id="L344">        pw.println(&quot;&lt;pre&gt;&quot;);</span>
-<span class="nc" id="L345">        e.printStackTrace(pw);</span>
-<span class="nc" id="L346">        pw.println(&quot;&lt;/pre&gt;&quot;);</span>
+<span class="nc" id="L363">      res.status(500);</span>
+<span class="nc" id="L364">      StringWriter stacktrace = new StringWriter();</span>
+<span class="nc" id="L365">      try (PrintWriter pw = new PrintWriter(stacktrace)) {</span>
+<span class="nc" id="L366">        pw.println(&quot;&lt;pre&gt;&quot;);</span>
+<span class="nc" id="L367">        e.printStackTrace(pw);</span>
+<span class="nc" id="L368">        pw.println(&quot;&lt;/pre&gt;&quot;);</span>
       }
-<span class="nc" id="L348">      res.body(stacktrace.toString());</span>
-<span class="nc" id="L349">    }</span>
+<span class="nc" id="L370">      res.body(stacktrace.toString());</span>
+<span class="nc" id="L371">    }</span>
   }
 
 

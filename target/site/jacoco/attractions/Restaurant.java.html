@@ -48,7 +48,7 @@ public class Restaurant implements AttractionNode {
 
   @Override
   public String getId() {
-<span class="nc" id="L51">    return id;</span>
+<span class="fc" id="L51">    return id;</span>
   }
 
   @Override
@@ -63,79 +63,81 @@ public class Restaurant implements AttractionNode {
 
   @Override
   public double[] getCoordinates() {
-<span class="nc" id="L66">    return coordinates;</span>
+<span class="fc" id="L66">    return coordinates;</span>
   }
 
   @Override
   public double getPrice() {
-<span class="nc" id="L71">    return price;</span>
+<span class="fc" id="L71">    return price;</span>
   }
 
   @Override
   public double getRating() {
-<span class="nc" id="L76">    return rating;</span>
+<span class="fc" id="L76">    return rating;</span>
   }
 
   @Override
   public double generateValue(double PreferredPrice, double PreferredStop, double distance) {
-<span class="nc" id="L81">    double restaurantValue = PreferredStop;</span>
-<span class="nc" id="L82">    value = (1- restaurantValue/Constants.VALUE_BOUND) * distance;</span>
-<span class="nc" id="L83">    value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_RESTAURANTS) * distance;</span>
-   //value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
+<span class="fc" id="L81">    double restaurantValue = PreferredStop;</span>
+<span class="fc" id="L82">    value = (1- restaurantValue/Constants.VALUE_BOUND) * distance * Constants.PREFERENCE_VALUE_SCALE;</span>
+    //value = value + (1- numReviews/Constants.AVERAGE_REVIEWS_RESTAURANTS) * distance;
+<span class="fc" id="L84">    value = value + (Constants.AVERAGE_REVIEWS_RESTAURANTS / numReviews) * distance * Constants.REVIEW_SCALE;</span>
+    //value = (Constants.VALUE_BOUND- restaurantValue) * Constants.VALUE_SCALE_RESTAURANTS;
     //value = value * (1 - rating *.1);
-<span class="nc" id="L86">    value = value + (1 - rating/Constants.MAX_RATING) * distance;</span>
-<span class="nc" id="L87">    value = value + (Math.abs(price-PreferredPrice)) * distance;</span>
-<span class="nc" id="L88">    value = value * Constants.VALUE_SCALE;</span>
-  //  System.out.println(&quot;restaurant value is: &quot; + value);
-<span class="nc" id="L90">    return value;</span>
+<span class="fc" id="L87">    value = value + (1 - rating/Constants.MAX_RATING) * distance;</span>
+<span class="fc" id="L88">    value = value + (Math.abs(price-PreferredPrice)) * distance * Constants.PRICE_SCALE;</span>
+<span class="fc" id="L89">    value = value * Constants.VALUE_SCALE;</span>
+<span class="fc" id="L90">    value = value * Constants.VALUE_SCALE_RESTAURANTS;</span>
+ //   System.out.println(&quot;restaurant value is: &quot; + value);
+<span class="fc" id="L92">    return value;</span>
   }
 
   @Override
   public void setCost(double c) {
-<span class="nc" id="L95">    cost = c;</span>
-<span class="nc" id="L96">  }</span>
+<span class="fc" id="L97">    cost = c;</span>
+<span class="fc" id="L98">  }</span>
 
   @Override
   public double getCost() {
-<span class="nc" id="L100">    return cost;</span>
+<span class="fc" id="L102">    return cost;</span>
   }
 
   @Override
-<span class="nc" id="L104">  public void setDistance(double c) {distance = c;}</span>
+<span class="nc" id="L106">  public void setDistance(double c) {distance = c;}</span>
 
   @Override
-<span class="nc" id="L107">  public double getDistance() { return distance; }</span>
+<span class="nc" id="L109">  public double getDistance() { return distance; }</span>
 
   @Override
-<span class="nc" id="L110">  public void setVisited(boolean c) { visit = c; }</span>
+<span class="nc" id="L112">  public void setVisited(boolean c) { visit = c; }</span>
 
   @Override
-<span class="nc" id="L113">  public boolean getVisited() { return visit; }</span>
+<span class="nc" id="L115">  public boolean getVisited() { return visit; }</span>
 
   @Override
-<span class="nc" id="L116">  public void setNumPrev(int c) {numPrev = c;}</span>
+<span class="nc" id="L118">  public void setNumPrev(int c) {numPrev = c;}</span>
 
   @Override
-<span class="nc" id="L119">  public int getNumPrev() {return numPrev;}</span>
+<span class="nc" id="L121">  public int getNumPrev() {return numPrev;}</span>
 
   @Override
   public void reset() {
-<span class="nc" id="L123">    distance = 0;</span>
-<span class="nc" id="L124">    visit = false;</span>
-<span class="nc" id="L125">    numPrev = 0;</span>
-<span class="nc" id="L126">  }</span>
+<span class="nc" id="L125">    distance = 0;</span>
+<span class="nc" id="L126">    visit = false;</span>
+<span class="nc" id="L127">    numPrev = 0;</span>
+<span class="nc" id="L128">  }</span>
 
   @Override
-<span class="nc" id="L129">  public int getType() {return 2;}</span>
+<span class="fc" id="L131">  public int getType() {return 2;}</span>
 
   @Override
   public double getValue() {
-<span class="nc" id="L133">    return value;</span>
+<span class="nc" id="L135">    return value;</span>
   }
 
   @Override
   public double getNumReviews() {
-<span class="nc" id="L138">    return numReviews;</span>
+<span class="fc" id="L140">    return numReviews;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
