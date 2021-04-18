@@ -54,7 +54,6 @@ let restaurantLogo = "fork.png"
 let response_message = ""
 let trip_message = ""
 let route_message = ""
-let summary_text = ""
 let loading_message = ""
 let loading_class = ""
 let originCoords = []
@@ -524,7 +523,7 @@ function App() {
           destIcon = destPlace.icon
           originMessage = "Origin"
           destMessage = "Destination"
-          driving_message = "(Click on the road icons for directions!)"
+          //driving_message = "(Click on the road icons for directions!)"
           if(destPhone === undefined){
             contactDest = "Contact: None Available"
           }
@@ -746,7 +745,58 @@ function App() {
         </div>
 
         <Row>
+
         <Col>
+
+        <h1>{route_message}</h1>
+        <div id="map" class = "rounded" style={{float: "center", width: 600, height: 400}}></div>
+
+        </Col>
+        <Col>
+
+        <h1>{trip_message}</h1>
+        <br></br>
+        <a href={tripResourceLink} target="_blank">{resource_name}</a>
+        <Row>
+        <Col>
+
+        <br></br>
+        <h3>{originMessage}</h3>
+        <img src = {originIcon} style={{width: '100px'}}/>
+        <p>
+        <a href={originWebsite} target="_blank">{originName}</a>
+        <br></br>
+        {contactOrigin}<a href={"tel:" + {originPhone}}>{originPhone}</a>
+        <br></br>
+        <a href={originMapURL} target="_blank">{viewInGoogle}</a>
+        </p>
+        </Col>
+
+        <Col>
+        <br></br>
+        <h3>{destMessage}</h3>
+        <img src = {destIcon} style={{width: '100px'}}/>
+        <p>
+        <a href={destWebsite} target="_blank">{destName}</a>
+        <br></br>
+        {contactDest}<a href={"tel:" + {destPhone}}>{destPhone}</a>
+        <br></br>
+        <a href={destMapURL} target="_blank">{viewInGoogle}</a>
+        </p>
+        </Col>
+        </Row>
+
+
+        </Col>
+
+        </Row>
+
+        <Row>
+        <Col></Col>
+
+        <Col sm = {6}>
+        <br></br>
+        <br></br>
         <h1>{response_message}</h1>
         &nbsp;
         {driving_message}
@@ -842,41 +892,10 @@ function App() {
         <br></br>
         <br></br>
         </Col>
+        <Col></Col>
 
-        <Col>
-
-        <h1>{route_message}</h1>
-        <div id="map" class = "rounded" style={{float: "center", width: 600, height: 400}}></div>
-        <h1>{trip_message}</h1>
-        <p>
-        {summary_text}
-        <a href={tripResourceLink} target="_blank">{resource_name}</a>
-        <br></br>
-        <h3>{originMessage}</h3>
-        <img src = {originIcon} style={{width: '100px'}}/>
-        <p>
-        <a href={originWebsite} target="_blank">{originName}</a>
-        <br></br>
-        {contactOrigin}<a href={"tel:" + {originPhone}}>{originPhone}</a>
-        <br></br>
-        <a href={originMapURL} target="_blank">{viewInGoogle}</a>
-        </p>
-
-
-        <h3>{destMessage}</h3>
-        <img src = {destIcon} style={{width: '100px'}}/>
-        <p>
-        <a href={destWebsite} target="_blank">{destName}</a>
-        <br></br>
-        {contactDest}<a href={"tel:" + {destPhone}}>{destPhone}</a>
-        <br></br>
-        <a href={destMapURL} target="_blank">{viewInGoogle}</a>
-        </p>
-
-        </p>
-
-        </Col>
         </Row>
+
         </Container>
       </div>
 
