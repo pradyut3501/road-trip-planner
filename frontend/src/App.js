@@ -23,6 +23,7 @@ import park2 from './park2.png'
 import flags from './flags.png'
 import star from './star.png'
 import halfstar from './halfstar.png'
+import logo from './logo1.png'
 
 
 import {Container, Row, Col} from "react-bootstrap"
@@ -52,7 +53,7 @@ let costPreference = 1
 let steps = []
 let shortestRouteDist = ""
 let distanceMessage = ["", ""]
-let logo = "https://i.ibb.co/drqk6c8/logo.png";
+//let logo = "https://i.ibb.co/drqk6c8/logo.png";
 let restaurantLogo = "fork.png"
 let response_message = ""
 let trip_message = ""
