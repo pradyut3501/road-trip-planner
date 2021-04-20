@@ -21,6 +21,9 @@ import finish from './finish.png'
 import road from './road.png'
 import park2 from './park2.png'
 import flags from './flags.png'
+import star from './star.png'
+import halfstar from './halfstar.png'
+
 
 import {Container, Row, Col} from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -79,7 +82,9 @@ let contactOrigin = ""
 let contactDest = ""
 let viewInGoogle = ""
 let destSet = 0
+let originSet = 0
 let intermedText = ""
+let rectangle2 = ""
 
 function App() {
 
@@ -151,6 +156,8 @@ function App() {
           originPlace = result
         }
       })
+
+      originSet = 1
 
       // update the time/distance display for shortest route,
       // but only if the destination has already been set
@@ -229,7 +236,10 @@ function App() {
 
       destSet = 1
 
-    getRouteInfo();
+    if (originSet == 1){
+      getRouteInfo();
+    }
+
   }
 
     // initializes the Google Map that will be displayed with the route
@@ -429,6 +439,12 @@ function App() {
           setAttractions(newAttractions)
           for (let i = 1; i < newAttractions.length - 1; i++){
 
+              let current = newAttractions[i]
+              current.wholeStars = current.rating - (current.rating % 1.0)
+
+              current.halfStars = (current.rating % 1.0)*2
+
+
               let marker = new google.maps.Marker({
                 position: {lat: newAttractions[i].coordinates[0], lng:newAttractions[i].coordinates[1] },
                 map: map,
@@ -439,13 +455,13 @@ function App() {
           let infoWindow = null
           if (newAttractions[i].name == "Intermediate Stop") {
               infoWindow = new google.maps.InfoWindow({
-                  content: '<div> <h3>' + middle.value.structured_formatting.main_text + '</h3>' + middle.value.structured_formatting.secondary_text + '</div>'
+                  content: '<div> <h4>' + middle.value.structured_formatting.main_text + '</h4>' + middle.value.structured_formatting.secondary_text + '</div>'
                 })
 
           } else{
             // display the name and location of a stop upon clicking its icon on the map
             infoWindow = new google.maps.InfoWindow({
-              content: '<div> <h3>' + newAttractions[i].name + '</h3>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
+              content: '<div> <h4>' + newAttractions[i].name + '</h4>' + newAttractions[i].location[1] + ", " + newAttractions[i].location[2] + '</div>'
             })
           }
 
@@ -495,6 +511,7 @@ function App() {
           trip_message = "Trip Details"
           route_message = "Route Map"
           intermedText =  "(You added this stop!)"
+          rectangle2 = "rectangle2"
 
           setOriginText(origin.value.structured_formatting)
           setDestText(dest.value.structured_formatting)
@@ -565,6 +582,11 @@ function App() {
       destMessage = ""
       contactDest = ""
       contactOrigin = ""
+      rectangle2 = ""
+      route_message = ""
+      trip_message = ""
+      viewInGoogle = ""
+
 
     }
 
@@ -749,12 +771,15 @@ function App() {
         <Col>
 
         <h1>{route_message}</h1>
+        <div class = {rectangle2}>
         <div id="map" class = "rounded" style={{float: "center", width: 600, height: 400}}></div>
-
+        </div>
         </Col>
         <Col>
 
         <h1>{trip_message}</h1>
+        <br></br>
+        <br></br>
         <br></br>
         <a href={tripResourceLink} target="_blank">{resource_name}</a>
         <Row>
@@ -840,7 +865,8 @@ function App() {
             <br></br>
           <p class = "pad"><h2> {x.name}</h2>
           <p class = "description"> {x.location[1]}, {x.location[2]}
-          <br></br> {x.rating} stars
+          <br></br> {[...Array(x.wholeStars)].map((e, i) => <img src={star} style={{width: '15px'}}/>)}
+          {[...Array(x.halfStars)].map((e, i) => <img src={halfstar} style={{width: '15px'}}/>)}
           <br></br>
           <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a></p></p>
         </div>
@@ -853,7 +879,8 @@ function App() {
             <br></br>
           <p class = "pad"><h2> {x.name}</h2>
           <p class = "description"> {x.location[1]}, {x.location[2]}
-          <br></br> {x.rating} stars
+          <br></br> {[...Array(x.wholeStars)].map((e, i) => <img src={star} style={{width: '15px'}}/>)}
+          {[...Array(x.halfStars)].map((e, i) => <img src={halfstar} style={{width: '15px'}}/>)}
           <br></br>
           <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a></p></p>
         </div>
@@ -866,7 +893,8 @@ function App() {
             <br></br>
           <p class = "pad"><h2> {x.name}</h2>
           <p class = "description"> {x.location[1]}, {x.location[2]}
-          <br></br> {x.rating} stars
+          <br></br> {[...Array(x.wholeStars)].map((e, i) => <img src={star} style={{width: '15px'}}/>)}
+          {[...Array(x.halfStars)].map((e, i) => <img src={halfstar} style={{width: '15px'}}/>)}
           <br></br>
           <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a></p></p>
         </div>
@@ -879,7 +907,8 @@ function App() {
             <br></br>
           <p class = "pad"><h2> {x.name}</h2>
           <div class = "description"> {x.location[1]}, {x.location[2]}
-          <br></br> {x.rating} stars
+          <br></br> {[...Array(x.wholeStars)].map((e, i) => <img src={star} style={{width: '15px'}}/>)}
+          {[...Array(x.halfStars)].map((e, i) => <img src={halfstar} style={{width: '15px'}}/>)}
           <br></br>
           <a href={"https://www.yelp.com/biz/" + x.id} target="_blank">Learn more</a></div></p>
         </div>

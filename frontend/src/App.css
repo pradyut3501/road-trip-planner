@@ -116,6 +116,17 @@
   padding: 20px;
 }
 
+.rectangle2 {
+  /*height: 25px;
+  width: 800px;*/
+  background-color: #C0C0C0;
+  border-radius: 20px;
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  padding: 30px;
+}
+
 
 .scroll-box1{
   height:500px;
