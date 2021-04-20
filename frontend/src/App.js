@@ -335,6 +335,7 @@ function App() {
     const requestTrip = () => {
       error_message = ""
       resetDisplay()
+      map = null
       setSubmitted(0)
 
       // do preliminary error-checking on front-end user inputs
